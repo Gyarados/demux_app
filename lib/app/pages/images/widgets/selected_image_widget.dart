@@ -16,52 +16,32 @@ class SelectedImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(30))),
-                  child: IconButton(
-                    padding: EdgeInsets.all(0),
-                    onPressed: loadingResults ? null : closeButtonOnPressed,
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ),
-                  )),
-            ],
-          ),
-          Image.memory(
-            selectedImage,
-            fit: BoxFit.cover,
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(10))),
+            child: Row(
+              children: [
+                SizedBox(width: 8,),
+                Expanded(child:Text("Selected image", textAlign: TextAlign.start,)),
+                IconButton(
+                  padding: EdgeInsets.all(0),
+                  onPressed: loadingResults ? null : closeButtonOnPressed,
+                  icon: Icon(
+                Icons.close,
+                color: Colors.red,
+                  ),
+                ),
+              ],
+            )),
+        Image.memory(
+          selectedImage,
+          fit: BoxFit.cover,
+        ),
+      ],
     );
-
-    // return Stack(
-    //   children: [
-    //     Image.memory(
-    //       selectedImage,
-    //       fit: BoxFit.cover,
-    //     ),
-    //     Align(
-    //       alignment: Alignment(1, 0),
-    //       child: IconButton(
-    //         onPressed: loadingResults ? null : closeButtonOnPressed,
-    //         icon: Icon(
-    //           Icons.close,
-    //           color: Colors.red,
-    //         ),
-    //       ),
-    //     ),
-    //   ],
-    // );
   }
 }

@@ -24,8 +24,54 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
+        Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 8,
+                ),
+                Expanded(
+                    child: Text(
+                  "Selected image",
+                  textAlign: TextAlign.start,
+                )),
+                GestureDetector(
+                  onTap: loadingResults ? null : removeLastSelectedPoint,
+                  onLongPress: loadingResults
+                      ? null
+                      : () {
+                          setState(() {
+                            timer = Timer.periodic(Duration(milliseconds: 25),
+                                (timer) {
+                              removeLastSelectedPoint();
+                            });
+                          });
+                        },
+                  onLongPressEnd: (_) {
+                    setState(() {
+                      print("up");
+                      timer?.cancel();
+                    });
+                  },
+                  child: Icon(
+                    Icons.undo_rounded,
+                    color: Colors.black,
+                  ),
+                ),
+                IconButton(
+                  onPressed: loadingResults ? null : removeSelectedImage,
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            )),
         GestureDetector(
           onPanDown: updateSelectionArea,
           onPanUpdate: updateSelectionArea,
@@ -43,43 +89,6 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                 ),
               );
             },
-          ),
-        ),
-        Align(
-          alignment: Alignment(1, 0),
-          child: IconButton(
-            onPressed: loadingResults ? null : removeSelectedImage,
-            icon: Icon(
-              Icons.close,
-              color: Colors.red,
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(0.8, 0),
-          child: GestureDetector(
-            onTap: loadingResults ? null : removeLastSelectedPoint,
-            onLongPress: loadingResults
-                ? null
-                : () {
-                    setState(() {
-                      timer =
-                          Timer.periodic(Duration(milliseconds: 25), (timer) {
-                        removeLastSelectedPoint();
-                      });
-                    });
-                  },
-            onLongPressEnd: (_) {
-              setState(() {
-                print("up");
-                timer?.cancel();
-              });
-            },
-            // style: TextButton.styleFrom(backgroundColor: Colors.transparent),
-            child: Icon(
-              Icons.undo_rounded,
-              color: Colors.black,
-            ),
           ),
         ),
       ],
