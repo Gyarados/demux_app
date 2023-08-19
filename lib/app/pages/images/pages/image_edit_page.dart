@@ -6,7 +6,6 @@ import 'package:demux_app/app/pages/images/utils/image_processing.dart';
 import 'package:demux_app/app/pages/images/widgets/edit_area_painter.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results_list.dart';
-import 'package:demux_app/app/pages/images/widgets/selectable_area_image_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,6 +49,8 @@ class _ImageEditPageState extends State<ImageEditPage> {
           loadingSelectedImage: loadingSelectedImage,
           selectedImageSize: selectedImageSize,
           sendButtonText: "Get edits!",
+          selectedImage: selectedImage,
+          editAreaPainter: editAreaPainter,
           sendButtonEnabled: selectedImage != null && !loadingSelectedImage,
           imageQuantityController: imageQuantityController,
           descriptionController: descriptionController,
@@ -57,9 +58,8 @@ class _ImageEditPageState extends State<ImageEditPage> {
           galleryOnPressed: galleryOnPressed,
           cameraOnPressed: cameraOnPressed,
           sendButtonOnPressed: getImageEdits,
+          removeSelectedImage: removeSelectedImage,
         ),
-        if (selectedImage != null)
-          SelectableAreaImage(editAreaPainter, removeSelectedImage),
         getImageResultsWidget(context, imageUrls, loadingResults),
       ],
     );

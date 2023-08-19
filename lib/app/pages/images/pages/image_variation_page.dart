@@ -5,7 +5,6 @@ import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/pages/images/utils/image_processing.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results_list.dart';
-import 'package:demux_app/app/pages/images/widgets/selected_image_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -48,19 +47,14 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
           selectedImageSize: selectedImageSize,
           sendButtonText: "Get variations!",
           sendButtonEnabled: selectedImage != null && !loadingSelectedImage,
+          selectedImage: selectedImage,
           imageQuantityController: imageQuantityController,
           imageSizeOnChanged: imageSizeOnChanged,
           galleryOnPressed: galleryOnPressed,
           cameraOnPressed: cameraOnPressed,
           sendButtonOnPressed: getImageVariations,
+          closeButtonOnPressed: closeButtonOnPressed
         ),
-        // if (selectedImage != null) Text("Selected image"),
-        if (selectedImage != null)
-          SelectedImageWidget(
-            selectedImage: selectedImage!,
-            loadingResults: loadingResults,
-            closeButtonOnPressed: closeButtonOnPressed,
-          ),
         getImageResultsWidget(context, imageUrls, loadingResults),
       ],
     );
