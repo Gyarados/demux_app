@@ -58,11 +58,11 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                     });
                   },
                   child: IconButton(
-                    onPressed: null,
-                    icon:Icon(
-                    Icons.undo_rounded,
-                    color: Colors.black,
-                  )),
+                      onPressed: null,
+                      icon: Icon(
+                        Icons.undo_rounded,
+                        color: Colors.black,
+                      )),
                 ),
                 IconButton(
                   onPressed: loadingResults ? null : removeAllPoints,
@@ -127,7 +127,7 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
     });
   }
 
-    void removeAllPoints() {
+  void removeAllPoints() {
     setState(() {
       widget.editAreaPainter.removeAllPoints();
       canvasKey.currentContext!.findRenderObject()!.markNeedsPaint();
