@@ -54,12 +54,20 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                         },
                   onLongPressEnd: (_) {
                     setState(() {
-                      print("up");
                       timer?.cancel();
                     });
                   },
-                  child: Icon(
+                  child: IconButton(
+                    onPressed: null,
+                    icon:Icon(
                     Icons.undo_rounded,
+                    color: Colors.black,
+                  )),
+                ),
+                IconButton(
+                  onPressed: loadingResults ? null : removeAllPoints,
+                  icon: Icon(
+                    Icons.replay_sharp,
                     color: Colors.black,
                   ),
                 ),
@@ -115,6 +123,13 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
   void removeLastSelectedPoint() {
     setState(() {
       widget.editAreaPainter.removeLastPoint();
+      canvasKey.currentContext!.findRenderObject()!.markNeedsPaint();
+    });
+  }
+
+    void removeAllPoints() {
+    setState(() {
+      widget.editAreaPainter.removeAllPoints();
       canvasKey.currentContext!.findRenderObject()!.markNeedsPaint();
     });
   }

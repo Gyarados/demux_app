@@ -34,7 +34,7 @@ class EditAreaPainter extends CustomPainter {
     image = null;
   }
 
-  void removePoints() {
+  void removeAllPoints() {
     points.clear();
   }
 
@@ -46,7 +46,7 @@ class EditAreaPainter extends CustomPainter {
 
   void reset() {
     removeImage();
-    removePoints();
+    removeAllPoints();
   }
 
   Future<Uint8List> exportMask() async {
