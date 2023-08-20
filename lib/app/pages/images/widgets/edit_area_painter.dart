@@ -5,9 +5,19 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
+
+class SelectedCircle {
+  Offset center;
+  double radius;
+
+  SelectedCircle({required this.center, required this.radius});
+
+}
+
+
 class EditAreaPainter extends CustomPainter {
   ui.Image? image;
-  List<Offset> points = [];
+  List<SelectedCircle> points = [];
   Size? lastPaintSize;
 
   final Paint selectionPaint = Paint()
@@ -22,7 +32,7 @@ class EditAreaPainter extends CustomPainter {
     return completer.future;
   }
 
-  void updatePoints(Offset offset) {
+  void updatePoints(SelectedCircle offset) {
     points.add(offset);
   }
 
@@ -43,6 +53,10 @@ class EditAreaPainter extends CustomPainter {
       points.removeLast();
     }
   }
+
+  // void updateRadius(double newRadius){
+  //   radius = newRadius;
+  // }
 
   void reset() {
     removeImage();
@@ -90,8 +104,8 @@ class EditAreaPainter extends CustomPainter {
       ..blendMode = BlendMode.dstOut
       ..style = PaintingStyle.fill;
 
-    for (Offset offset in points) {
-      canvas.drawCircle(offset, 10, transparentCirclePaint);
+    for (SelectedCircle selectedCircle in points) {
+      canvas.drawCircle(selectedCircle.center, selectedCircle.radius, transparentCirclePaint);
     }
   }
 
@@ -123,8 +137,8 @@ class EditAreaPainter extends CustomPainter {
       ..color = Colors.blueGrey
       ..style = PaintingStyle.fill;
 
-    for (Offset offset in points) {
-      offscreenCanvas.drawCircle(offset, 10, opaqueCirclePaint);
+    for (SelectedCircle selectedCircle in points) {
+      offscreenCanvas.drawCircle(selectedCircle.center, selectedCircle.radius, opaqueCirclePaint);
     }
 
     final picture = recorder.endRecording();

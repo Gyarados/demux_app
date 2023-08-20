@@ -21,6 +21,7 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
   bool loadingSelectedImage = false;
   Uint8List? selectedImage;
   Timer? timer;
+  double sliderValue = 27.5;
 
   @override
   Widget build(BuildContext context) {
@@ -30,56 +31,81 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
             decoration: BoxDecoration(
                 color: Colors.grey.shade300,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                    child: Text(
-                  "Selected image",
-                  textAlign: TextAlign.start,
-                )),
-                GestureDetector(
-                  onTap: loadingResults ? null : removeLastSelectedPoint,
-                  onLongPress: loadingResults
-                      ? null
-                      : () {
-                          setState(() {
-                            timer = Timer.periodic(Duration(milliseconds: 25),
-                                (timer) {
-                              removeLastSelectedPoint();
+            child: Column(children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                      child: Text(
+                    "Selected image",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  GestureDetector(
+                    onTap: loadingResults ? null : removeLastSelectedPoint,
+                    onLongPress: loadingResults
+                        ? null
+                        : () {
+                            setState(() {
+                              timer = Timer.periodic(Duration(milliseconds: 25),
+                                  (timer) {
+                                removeLastSelectedPoint();
+                              });
                             });
-                          });
-                        },
-                  onLongPressEnd: (_) {
-                    setState(() {
-                      timer?.cancel();
-                    });
-                  },
-                  child: IconButton(
-                      onPressed: null,
-                      icon: Icon(
-                        Icons.undo_rounded,
-                        color: Colors.black,
-                      )),
-                ),
-                IconButton(
-                  onPressed: loadingResults ? null : removeAllPoints,
-                  icon: Icon(
-                    Icons.replay_sharp,
-                    color: Colors.black,
+                          },
+                    onLongPressEnd: (_) {
+                      setState(() {
+                        timer?.cancel();
+                      });
+                    },
+                    child: IconButton(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.undo_rounded,
+                          color: Colors.black,
+                        )),
                   ),
-                ),
-                IconButton(
-                  onPressed: loadingResults ? null : removeSelectedImage,
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.red,
+                  IconButton(
+                    onPressed: loadingResults ? null : removeAllPoints,
+                    icon: Icon(
+                      Icons.replay_sharp,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-              ],
-            )),
+                  IconButton(
+                    onPressed: loadingResults ? null : removeSelectedImage,
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                  padding: EdgeInsets.all(8),
+                  child: Column(children: [
+                    Text("Selection radius"),
+                    SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                            overlayShape: SliderComponentShape.noOverlay,
+                            showValueIndicator:
+                                ShowValueIndicator.onlyForContinuous),
+                        child: Slider(
+                          min: 5,
+                          max: 50,
+                          label: sliderValue.toStringAsFixed(2),
+                          value: sliderValue,
+                          onChanged: (value) {
+                            setState(() {
+                              sliderValue = value;
+                            });
+                          },
+                        )),
+                    Text("The selected area will be replaced by AI."),
+                  ])),
+            ])),
         GestureDetector(
           onPanDown: updateSelectionArea,
           onPanUpdate: updateSelectionArea,
@@ -106,7 +132,9 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
   void updateSelectionArea(detailData) {
     setState(() {
       Offset point = detailData.localPosition;
-      widget.editAreaPainter.updatePoints(point);
+      SelectedCircle selectedCircle =
+          SelectedCircle(center: point, radius: sliderValue);
+      widget.editAreaPainter.updatePoints(selectedCircle);
       canvasKey.currentContext!.findRenderObject()!.markNeedsPaint();
     });
   }
