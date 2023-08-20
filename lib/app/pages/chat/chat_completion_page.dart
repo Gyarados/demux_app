@@ -36,6 +36,10 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
   final ExpansionTileController settingsExpandController =
       ExpansionTileController();
   bool systemPromptsAreVisible = true;
+  int systemPromptMaxLines = 1;
+  int messagePromptMaxLines = 1;
+  FocusNode systemPromptFocusNode = FocusNode();
+  FocusNode messagePromptFocusNode = FocusNode();
   bool sendEmptyMessage = false;
   StreamController? streamController;
   List<Map<String, String>> messages = [];
@@ -83,9 +87,36 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     }
   }
 
+  systemPromptListener() {
+    if (systemPromptFocusNode.hasFocus) {
+      setState(() {
+        systemPromptMaxLines = 5;
+      });
+    } else {
+      setState(() {
+        systemPromptMaxLines = 1;
+      });
+    }
+  }
+
+  messagePromptListener() {
+    if (messagePromptFocusNode.hasFocus) {
+      setState(() {
+        messagePromptMaxLines = 5;
+        settingsExpandController.collapse();
+      });
+    } else {
+      setState(() {
+        messagePromptMaxLines = 1;
+      });
+    }
+  }
+
   @override
   void initState() {
     scrollController.addListener(scrollListener);
+    systemPromptFocusNode.addListener(systemPromptListener);
+    messagePromptFocusNode.addListener(messagePromptListener);
     super.initState();
   }
 
@@ -199,9 +230,10 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
               ],
             ),
             TextField(
+              focusNode: systemPromptFocusNode,
               enabled: !loading,
               controller: systemPromptController,
-              maxLines: 5,
+              maxLines: systemPromptMaxLines,
               minLines: 1,
               decoration: InputDecoration(
                 labelText: 'System prompt',
@@ -257,7 +289,8 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
               ),
-              maxLines: 5,
+              focusNode: messagePromptFocusNode,
+              maxLines: messagePromptMaxLines,
               minLines: 1,
               textCapitalization: TextCapitalization.sentences,
             ),
@@ -333,7 +366,11 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                 child: Icon(
               getMessageIcon(messages[index]["role"]!),
             )),
-            Expanded(child: Icon(Icons.more_horiz, color: Colors.black,))
+            Expanded(
+                child: Icon(
+              Icons.more_horiz,
+              color: Colors.black,
+            ))
           ])),
       titleAlignment: ListTileTitleAlignment.top,
       title: messageBeingEdited == index
