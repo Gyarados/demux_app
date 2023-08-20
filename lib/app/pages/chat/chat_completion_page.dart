@@ -201,7 +201,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
             TextField(
               enabled: !loading,
               controller: systemPromptController,
-              maxLines: 10,
+              maxLines: 5,
               minLines: 1,
               decoration: InputDecoration(
                 labelText: 'System prompt',
@@ -286,103 +286,107 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     FocusScope.of(context).unfocus();
   }
 
+  Widget chatMessageWidget(int index) {
+    return ListTile(
+      dense: true,
+      contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 0),
+      horizontalTitleGap: 0,
+      tileColor: getMessageColor(messages[index]["role"]!),
+      leading: GestureDetector(
+          onTapDown: (details) => loading
+              ? null
+              : showMenu(
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                    details.globalPosition.dx,
+                    details.globalPosition.dy,
+                    details.globalPosition.dx,
+                    details.globalPosition.dy,
+                  ),
+                  items: [
+                      PopupMenuItem(
+                        child: TextButton(
+                          child: Text('Edit'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            startEditingMessage(context, index);
+                          },
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.red),
+                          child: Text('Delete'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              messages.removeAt(index);
+                            });
+                          },
+                        ),
+                      ),
+                    ]),
+          child: Column(children: [
+            Expanded(
+                child: Icon(
+              getMessageIcon(messages[index]["role"]!),
+            )),
+            Expanded(child: Icon(Icons.more_horiz, color: Colors.black,))
+          ])),
+      titleAlignment: ListTileTitleAlignment.top,
+      title: messageBeingEdited == index
+          ? Column(
+              children: [
+                TextField(
+                  maxLines: null,
+                  controller: messageEditController,
+                  focusNode: messageEditFocusNode,
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          stopEditingMessage(context);
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.red,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          messages[index]["content"] =
+                              messageEditController.text;
+                          stopEditingMessage(context);
+                        },
+                        icon: Icon(
+                          Icons.done,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ])
+              ],
+            )
+          : MarkdownBody(
+              data: messages[index]["content"]!,
+              selectable: true,
+            ),
+    );
+  }
+
   Widget getChatMessages() {
     return ListView.builder(
+      shrinkWrap: true,
       controller: scrollController,
       itemCount: messages.length,
       itemBuilder: (context, index) {
         if (!systemPromptsAreVisible && messages[index]["role"]! == "system") {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
-        return ListTile(
-          dense: true,
-          contentPadding: EdgeInsets.only(left: 10.0, top: 10),
-          horizontalTitleGap: 0,
-          tileColor: getMessageColor(messages[index]["role"]!),
-          leading: GestureDetector(
-              onTapDown: (details) => loading
-                  ? null
-                  : showMenu(
-                      context: context,
-                      position: RelativeRect.fromLTRB(
-                        details.globalPosition.dx,
-                        details.globalPosition.dy,
-                        details.globalPosition.dx,
-                        details.globalPosition.dy,
-                      ),
-                      items: [
-                          PopupMenuItem(
-                            child: TextButton(
-                              child: Text('Edit'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                startEditingMessage(context, index);
-                              },
-                            ),
-                          ),
-                          PopupMenuItem(
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.red),
-                              child: Text('Delete'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                setState(() {
-                                  messages.removeAt(index);
-                                });
-                              },
-                            ),
-                          ),
-                        ]),
-              child: Column(children: [
-                Expanded(
-                    child: Icon(
-                  getMessageIcon(messages[index]["role"]!),
-                )),
-                Expanded(child: Icon(Icons.more_horiz))
-              ])),
-          title: messageBeingEdited == index
-              ? Container(
-                  child: Column(
-                    children: [
-                      TextField(
-                        maxLines: null,
-                        controller: messageEditController,
-                        focusNode: messageEditFocusNode,
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                stopEditingMessage(context);
-                              },
-                              icon: Icon(
-                                Icons.close,
-                                color: Colors.red,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                messages[index]["content"] =
-                                    messageEditController.text;
-                                stopEditingMessage(context);
-                              },
-                              icon: Icon(
-                                Icons.done,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ])
-                    ],
-                  ),
-                )
-              : MarkdownBody(
-                  data: messages[index]["content"]!,
-                  selectable: true,
-                ),
-        );
+        return chatMessageWidget(index);
       },
     );
   }
