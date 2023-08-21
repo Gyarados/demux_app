@@ -103,7 +103,7 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                             });
                           },
                         )),
-                    Text("The selected area will be replaced by AI."),
+                    Text("Select the area which will be replaced."),
                   ])),
             ])),
         GestureDetector(
