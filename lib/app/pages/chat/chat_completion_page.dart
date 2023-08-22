@@ -4,6 +4,7 @@ import 'package:demux_app/app/constants.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatCompletionPage extends OpenAIBasePage {
@@ -319,10 +320,20 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     FocusScope.of(context).unfocus();
   }
 
+  Future<void> copyMessage(BuildContext context, String message) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: message));
+      showSnackbar('Message copied to your clipboard!', context);
+    } catch (e) {
+      showSnackbar('Failed to copy message', context,
+          criticality: MessageCriticality.error);
+    }
+  }
+
   Widget chatMessageWidget(int index) {
     return ListTile(
       dense: true,
-      contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 0),
+      contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
       horizontalTitleGap: 0,
       tileColor: getMessageColor(messages[index]["role"]!),
       leading: GestureDetector(
@@ -337,6 +348,15 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                     details.globalPosition.dy,
                   ),
                   items: [
+                      PopupMenuItem(
+                        child: TextButton(
+                          child: Text('Copy'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            copyMessage(context, messages[index]["content"]!);
+                          },
+                        ),
+                      ),
                       PopupMenuItem(
                         child: TextButton(
                           child: Text('Edit'),
@@ -410,6 +430,14 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
           : MarkdownBody(
               data: messages[index]["content"]!,
               selectable: true,
+              styleSheet: MarkdownStyleSheet(
+                  code: TextStyle(
+                      color: Colors.blueGrey.shade100,
+                      backgroundColor: Colors.grey.shade800,
+                      ),
+                  codeblockDecoration:
+                      BoxDecoration(color: Colors.grey.shade800,
+                      borderRadius: BorderRadius.circular(5))),
             ),
     );
   }
