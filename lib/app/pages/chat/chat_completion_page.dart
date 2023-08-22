@@ -418,14 +418,28 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     return ListView.builder(
       shrinkWrap: true,
       controller: scrollController,
-      itemCount: messages.length,
+      itemCount: messages.length + 1,
       itemBuilder: (context, index) {
         if (!systemPromptsAreVisible && messages[index]["role"]! == "system") {
           return const SizedBox.shrink();
         }
+        if (index == messages.length) {
+          return loading
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 150),
+                  child: TextButton(
+                      onPressed: loading ? null : sendContinueMessage,
+                      child: Text("Continue")));
+        }
         return chatMessageWidget(index);
       },
     );
+  }
+
+  void sendContinueMessage() {
+    userMessageController.text = 'Continue';
+    sendMessage();
   }
 
   bool isListViewScrolledToMax() {
@@ -459,6 +473,10 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
   }
 
   void sendMessage() async {
+    setState(() {
+      loading = true;
+    });
+
     settingsExpandController.collapse();
     String systemPrompt = systemPromptController.text;
     String userMessageContent = userMessageController.text;
@@ -494,7 +512,6 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     }
 
     setState(() {
-      loading = true;
       userMessageController.clear();
       needsScroll = true;
     });
