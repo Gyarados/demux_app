@@ -5,7 +5,7 @@ import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_selectionarea/flutter_markdown_selectionarea.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatCompletionPage extends OpenAIBasePage {
@@ -428,11 +428,11 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                     ])
               ],
             )
-          : MarkdownBody(
+          : SelectionArea(
+              child: MarkdownBody(
               data: messages[index]["content"]!,
-              selectable: true,
               onTapLink: (text, url, title) {
-                launchUrl(Uri.parse(url!)); 
+                launchUrl(Uri.parse(url!));
               },
               styleSheet: MarkdownStyleSheet(
                   code: TextStyle(
@@ -442,7 +442,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                   codeblockDecoration: BoxDecoration(
                       color: Colors.grey.shade800,
                       borderRadius: BorderRadius.circular(5))),
-            ),
+            )),
     );
   }
 
@@ -456,7 +456,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
           return const SizedBox.shrink();
         }
         if (index == messages.length) {
-          return loading
+          return loading || messages.isEmpty
               ? const SizedBox.shrink()
               : Padding(
                   padding: EdgeInsets.symmetric(horizontal: 150),

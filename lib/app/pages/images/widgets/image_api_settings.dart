@@ -5,7 +5,7 @@ import 'package:demux_app/app/pages/images/widgets/edit_area_painter.dart';
 import 'package:demux_app/app/pages/images/widgets/selectable_area_image_widget.dart';
 import 'package:demux_app/app/pages/images/widgets/selected_image_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_selectionarea/flutter_markdown_selectionarea.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Widget getAPISettingsContainer({
