@@ -6,6 +6,7 @@ import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatCompletionPage extends OpenAIBasePage {
   @override
@@ -430,13 +431,16 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
           : MarkdownBody(
               data: messages[index]["content"]!,
               selectable: true,
+              onTapLink: (text, url, title) {
+                launchUrl(Uri.parse(url!)); 
+              },
               styleSheet: MarkdownStyleSheet(
                   code: TextStyle(
-                      color: Colors.blueGrey.shade100,
-                      backgroundColor: Colors.grey.shade800,
-                      ),
-                  codeblockDecoration:
-                      BoxDecoration(color: Colors.grey.shade800,
+                    color: Colors.blueGrey.shade100,
+                    backgroundColor: Colors.grey.shade800,
+                  ),
+                  codeblockDecoration: BoxDecoration(
+                      color: Colors.grey.shade800,
                       borderRadius: BorderRadius.circular(5))),
             ),
     );
