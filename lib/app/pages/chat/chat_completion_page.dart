@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:demux_app/app/constants.dart';
+import 'package:demux_app/app/models/chat_completion_request_body.dart';
+import 'package:demux_app/app/models/message.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +46,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
   FocusNode messagePromptFocusNode = FocusNode();
   bool sendEmptyMessage = false;
   StreamController? streamController;
-  List<Map<String, String>> messages = [];
+  List<Message> messages = [];
   bool loading = false;
   bool needsScroll = false;
   bool isScrollAtTop = true;
@@ -309,7 +311,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
   void startEditingMessage(BuildContext context, int index) {
     setState(() {
       messageBeingEdited = index;
-      messageEditController.text = messages[index]["content"]!;
+      messageEditController.text = messages[index].content;
     });
     FocusScope.of(context).unfocus();
   }
@@ -331,12 +333,39 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     }
   }
 
+  Widget getEditingMessageWidget(int index) {
+    return Column(
+      children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          TextButton(
+            onPressed: () {
+              stopEditingMessage(context);
+            },
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              messages[index].content = messageEditController.text;
+              stopEditingMessage(context);
+            },
+            child: Text("Save"),
+          ),
+        ]),
+        TextField(
+          maxLines: null,
+          controller: messageEditController,
+          focusNode: messageEditFocusNode,
+        ),
+      ],
+    );
+  }
+
   Widget chatMessageWidget(int index) {
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
       horizontalTitleGap: 0,
-      tileColor: getMessageColor(messages[index]["role"]!),
+      tileColor: getMessageColor(messages[index].role),
       leading: GestureDetector(
           onTapDown: (details) => loading
               ? null
@@ -354,7 +383,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                           child: Text('Copy'),
                           onPressed: () {
                             Navigator.pop(context);
-                            copyMessage(context, messages[index]["content"]!);
+                            copyMessage(context, messages[index].content);
                           },
                         ),
                       ),
@@ -385,7 +414,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
           child: Column(children: [
             Expanded(
                 child: Icon(
-              getMessageIcon(messages[index]["role"]!),
+              getMessageIcon(messages[index].role),
             )),
             Expanded(
                 child: Icon(
@@ -395,36 +424,10 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
           ])),
       titleAlignment: ListTileTitleAlignment.top,
       title: messageBeingEdited == index
-          ? Column(
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          stopEditingMessage(context);
-                        },
-                        child: Text("Cancel"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          messages[index]["content"] =
-                              messageEditController.text;
-                          stopEditingMessage(context);
-                        },
-                        child: Text("Save"),
-                      ),
-                    ]),
-                TextField(
-                  maxLines: null,
-                  controller: messageEditController,
-                  focusNode: messageEditFocusNode,
-                ),
-              ],
-            )
+          ? getEditingMessageWidget(index)
           : SelectionArea(
               child: MarkdownBody(
-              data: messages[index]["content"]!,
+              data: messages[index].content,
               onTapLink: (text, url, title) {
                 launchUrl(Uri.parse(url!));
               },
@@ -446,7 +449,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
       controller: scrollController,
       itemCount: messages.length + 1,
       itemBuilder: (context, index) {
-        if (!systemPromptsAreVisible && messages[index]["role"]! == "system") {
+        if (!systemPromptsAreVisible && messages[index].role == "system") {
           return const SizedBox.shrink();
         }
         if (index == messages.length) {
@@ -517,10 +520,8 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     bool isStream = true;
 
     if (systemPrompt.isNotEmpty) {
-      Map<String, String> systemMessage = {
-        "role": "system",
-        "content": systemPrompt
-      };
+      Message systemMessage = Message("system", systemPrompt);
+
       setState(() {
         messages.add(systemMessage);
         systemPromptController.clear();
@@ -528,10 +529,8 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     }
 
     if (userMessageContent.isNotEmpty || sendEmptyMessage) {
-      Map<String, String> userMessage = {
-        "role": "user",
-        "content": userMessageContent
-      };
+      Message userMessage = Message("user", userMessageContent);
+
       setState(() {
         messages.add(userMessage);
       });
@@ -542,30 +541,27 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
       needsScroll = true;
     });
 
-    Map<String, dynamic> body = {
-      'model': selectedModel,
-      'messages': messages,
-      'temperature': temperature,
-      'stream': isStream,
-    };
+    ChatCompletionRequestBody body = ChatCompletionRequestBody(
+      model: selectedModel,
+      messages: messages,
+      temperature: temperature,
+    );
 
-    if (false) {
-      body['top_p'] = '';
-      body['n'] = '';
-      body['stop'] = '';
-      body['max_tokens'] = '';
-      body['presence_penalty'] = '';
-      body['frequency_penalty'] = '';
-      body['logit_bias'] = '';
-      body['user'] = '';
-    }
+    // if (false) {
+    //   body['top_p'] = '';
+    //   body['n'] = '';
+    //   body['stop'] = '';
+    //   body['max_tokens'] = '';
+    //   body['presence_penalty'] = '';
+    //   body['frequency_penalty'] = '';
+    //   body['logit_bias'] = '';
+    //   body['user'] = '';
+    // }
 
     try {
-      streamController = widget.openAI.streamPost(widget.pageEndpoint, body);
-      Map<String, String> assistantMessage = {
-        "role": "assistant",
-        "content": ""
-      };
+      streamController = widget.openAI.streamPost(widget.pageEndpoint, body.toJson());
+      Message assistantMessage = Message("assistant", "");
+
       setState(() {
         messages.add(assistantMessage);
         needsScroll = isListViewScrolledToMax();
@@ -574,7 +570,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
       streamController!.stream.listen((event) {
         assistantMessageContent += event;
         setState(() {
-          messages.last["content"] = assistantMessageContent;
+          messages.last.content = assistantMessageContent;
           needsScroll = isListViewScrolledToMax();
         });
       }, onError: (err) {
