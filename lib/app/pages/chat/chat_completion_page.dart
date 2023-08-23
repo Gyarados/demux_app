@@ -397,35 +397,29 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
       title: messageBeingEdited == index
           ? Column(
               children: [
-                TextField(
-                  maxLines: null,
-                  controller: messageEditController,
-                  focusNode: messageEditFocusNode,
-                ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
+                      TextButton(
                         onPressed: () {
                           stopEditingMessage(context);
                         },
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.red,
-                        ),
+                        child: Text("Cancel"),
                       ),
-                      IconButton(
+                      TextButton(
                         onPressed: () {
                           messages[index]["content"] =
                               messageEditController.text;
                           stopEditingMessage(context);
                         },
-                        icon: Icon(
-                          Icons.done,
-                          color: Colors.green,
-                        ),
+                        child: Text("Save"),
                       ),
-                    ])
+                    ]),
+                TextField(
+                  maxLines: null,
+                  controller: messageEditController,
+                  focusNode: messageEditFocusNode,
+                ),
               ],
             )
           : SelectionArea(
