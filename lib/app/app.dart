@@ -39,7 +39,7 @@ class _AppState extends State<App> {
       actions: [
         IconButton(
             onPressed: () async {
-              Uri apiReferenceUri = Uri.parse(getCurrentPage().apiReferenceURL);
+              Uri apiReferenceUri = Uri.parse(getCurrentPage().apiReferenceUrl);
               try {
                 if (await canLaunchUrl(apiReferenceUri)) {
                   await launchUrl(apiReferenceUri,

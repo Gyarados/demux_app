@@ -2,11 +2,9 @@ import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_states.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ImageGenerationPage extends OpenAIBasePage {
   @override
@@ -14,7 +12,7 @@ class ImageGenerationPage extends OpenAIBasePage {
   @override
   final String pageEndpoint = OPENAI_IMAGE_GENERATION_ENDPOINT;
   @override
-  final String apiReferenceURL = OPENAI_IMAGE_GENERATION_REFERENCE;
+  final String apiReferenceUrl = OPENAI_IMAGE_GENERATION_REFERENCE;
 
   ImageGenerationPage({super.key});
 

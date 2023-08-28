@@ -7,13 +7,24 @@ abstract class ApiServiceBase {
 
   ApiServiceBase(String baseUrl) : baseUrl = Uri.parse(baseUrl);
 
-  bool isSuccess(http.Response response) {
-    return response.statusCode >= 200 && response.statusCode < 300;
-  }
-
-  Future<http.Response> get(String endpoint);
-  Future<http.Response> post(String endpoint, Map<String, dynamic> body);
-  StreamController streamPost(String endpoint, Map<String, dynamic> body);
-  Future<http.Response> filePost(String endpoint, Map<String, String> body,
-      List<http.MultipartFile> files);
+  Future<http.Response> get(
+    String endpoint,
+    Map<String, String> headers,
+  );
+  Future<http.Response> post(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, dynamic> body,
+  );
+  StreamController streamPost(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, dynamic> body,
+  );
+  Future<http.Response> filePost(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, String> body,
+    List<http.MultipartFile> files,
+  );
 }

@@ -11,12 +11,12 @@ class MockedApiService extends ApiServiceBase {
   Map<String, String> mockedImageUrls = {
     '1024x1024': 'https://i.imgur.com/0tkMZOt.png',
     '512x512': 'https://i.imgur.com/UDUgasP.png',
-    '256x256': 'https://i.imgur.com/tBKMUluERROR.png',
+    '256x256': 'https://i.imgur.com/tBKMUlu_ERROR.png',
   };
 
   MockedApiService(super.baseUrl);
 
-  http.Response mockImageResults(Map<String, dynamic> body){
+  http.Response mockImageResults(Map<String, dynamic> body) {
     int quantity = body["n"] as int;
     String size = body["size"] as String;
     List data = List.generate(quantity, (i) => {"url": mockedImageUrls[size]});
@@ -26,7 +26,10 @@ class MockedApiService extends ApiServiceBase {
   }
 
   @override
-  Future<http.Response> get(String endpoint) async {
+  Future<http.Response> get(
+    String endpoint,
+    Map<String, String> headers,
+  ) async {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
     http.Response response = await _client.get(
@@ -35,30 +38,18 @@ class MockedApiService extends ApiServiceBase {
         'Authorization': "Bearer $OPENAI_API_KEY",
       },
     );
-    if (isSuccess(response)) {
-      return response;
-      // return jsonDecode(response.body);
-    } else {
-      print(response.body);
-      throw Exception(
-          'GET request failed with status code ${response.statusCode}');
-    }
+    return response;
   }
 
   @override
-  Future<http.Response> post(String endpoint, Map<String, dynamic> body) async {
-
+  Future<http.Response> post(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, dynamic> body,
+  ) async {
     http.Response response = mockImageResults(body);
-
     await Future.delayed(Duration(seconds: 1));
-    if (isSuccess(response)) {
-      return response;
-      // return jsonDecode(utf8.decode(response.bodyBytes));
-    } else {
-      print(response.body);
-      throw Exception(
-          'POST request failed with status code ${response.statusCode}');
-    }
+    return response;
   }
 
   String? dataMapper(String event) {
@@ -71,7 +62,11 @@ class MockedApiService extends ApiServiceBase {
   }
 
   @override
-  StreamController streamPost(String endpoint, Map<String, dynamic> body) {
+  StreamController streamPost(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, dynamic> body,
+  ) {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
     final request = http.Request(
@@ -123,19 +118,14 @@ class MockedApiService extends ApiServiceBase {
   }
 
   @override
-  Future<http.Response> filePost(String endpoint, Map<String, String> body,
-    List<http.MultipartFile> files) async {
-
+  Future<http.Response> filePost(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, String> body,
+    List<http.MultipartFile> files,
+  ) async {
     http.Response response = mockImageResults(body);
-
     await Future.delayed(Duration(seconds: 1));
-    if (isSuccess(response)) {
-      return response;
-      // return jsonDecode(response.body);
-    } else {
-      print(response.body);
-      throw Exception(
-          'POST request failed with status code ${response.statusCode}');
-    }
+    return response;
   }
 }

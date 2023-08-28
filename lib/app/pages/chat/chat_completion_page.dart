@@ -16,7 +16,7 @@ class ChatCompletionPage extends OpenAIBasePage {
   @override
   final String pageEndpoint = OPENAI_CHAT_COMPLETION_ENDPOINT;
   @override
-  final String apiReferenceURL = OPENAI_CHAT_COMPLETION_REFERENCE;
+  final String apiReferenceUrl = OPENAI_CHAT_COMPLETION_REFERENCE;
 
   ChatCompletionPage({super.key});
 

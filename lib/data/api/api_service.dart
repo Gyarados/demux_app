@@ -3,56 +3,39 @@ import 'dart:convert';
 import 'package:demux_app/data/api/abstract_api_service.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:demux_app/domain/constants.dart';
-
-class ApiService extends ApiServiceBase{
+class ApiService extends ApiServiceBase {
   static final _client = http.Client();
 
   ApiService(super.baseUrl);
 
   @override
-  Future<http.Response> get(String endpoint) async {
+  Future<http.Response> get(
+      String endpoint, Map<String, String> headers) async {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
     http.Response response = await _client.get(
       fullUri,
-      headers: <String, String>{
-        'Authorization': "Bearer $OPENAI_API_KEY",
-      },
+      headers: headers,
     );
-    if (isSuccess(response)) {
-      return response;
-      // return jsonDecode(response.body);
-    } else {
-      print(response.body);
-      throw Exception(
-          'GET request failed with status code ${response.statusCode}');
-    }
+    return response;
   }
 
   @override
   Future<http.Response> post(
-      String endpoint, Map<String, dynamic> body) async {
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, dynamic> body,
+  ) async {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
 
     http.Response response = await _client.post(
       fullUri,
-      headers: <String, String>{
-        'Authorization': "Bearer $OPENAI_API_KEY",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(body),
     );
 
-    if (isSuccess(response)) {
-      return response;
-      // return jsonDecode(utf8.decode(response.bodyBytes));
-    } else {
-      print(response.body);
-      throw Exception(
-          'POST request failed with status code ${response.statusCode}');
-    }
+    return response;
   }
 
   String? dataMapper(String event) {
@@ -65,17 +48,18 @@ class ApiService extends ApiServiceBase{
   }
 
   @override
-  StreamController streamPost(String endpoint, Map<String, dynamic> body) {
+  StreamController streamPost(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, dynamic> body,
+  ) {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
     final request = http.Request(
       "POST",
       fullUri,
     );
-    request.headers.addAll({
-      'Authorization': "Bearer $OPENAI_API_KEY",
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
+    request.headers.addAll(headers);
     request.body = jsonEncode(body);
 
     final streamController = StreamController<String>();
@@ -117,25 +101,20 @@ class ApiService extends ApiServiceBase{
   }
 
   @override
-  Future<http.Response> filePost(String endpoint,
-      Map<String, String> body, List<http.MultipartFile> files) async {
+  Future<http.Response> filePost(
+    String endpoint,
+    Map<String, String> headers,
+    Map<String, String> body,
+    List<http.MultipartFile> files,
+  ) async {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
     var request = http.MultipartRequest("POST", fullUri);
-    request.headers.addAll({
-      'Authorization': "Bearer $OPENAI_API_KEY",
-    });
+    request.headers.addAll(headers);
     request.fields.addAll(body);
     request.files.addAll(files);
     final responseStream = await request.send();
     final response = await http.Response.fromStream(responseStream);
-    if (isSuccess(response)) {
-      return response;
-      // return jsonDecode(response.body);
-    } else {
-      print(response.body);
-      throw Exception(
-          'POST request failed with status code ${response.statusCode}');
-    }
+    return response;
   }
 }

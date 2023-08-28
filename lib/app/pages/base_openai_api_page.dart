@@ -9,7 +9,7 @@ abstract class OpenAIBasePage extends StatefulWidget {
       : ApiService(OPENAI_API_URL);
   final String pageName = "Abstract";
   final String pageEndpoint = "Abstract";
-  final String apiReferenceURL =
+  final String apiReferenceUrl =
       "https://platform.openai.com/docs/api-reference/";
 
   OpenAIBasePage({super.key});
