@@ -1,9 +1,12 @@
-import 'package:demux_app/app/constants.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results_list.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_states.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ImageGenerationPage extends OpenAIBasePage {
   @override
@@ -30,6 +33,8 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
 
   List<String> imageUrls = [];
 
+  GenerationImageResultsCubit imageResultsCubit = GenerationImageResultsCubit();
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -43,7 +48,7 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
           imageSizeOnChanged: imageSizeOnChanged,
           sendButtonOnPressed: getImageGenerations,
         ),
-        getImageResultsWidget(context, imageUrls, loading),
+        getImageResultsWidget(imageResultsCubit),
       ],
     );
   }
@@ -89,6 +94,9 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
         imageUrls =
             List<String>.from(response['data'].map((item) => item['url']));
       });
+
+      imageResultsCubit.showImageResults(imageUrls);
+
     } catch (e) {
       showSnackbar(e.toString(), context,
           criticality: MessageCriticality.error);

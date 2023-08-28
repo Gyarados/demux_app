@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:demux_app/app/constants.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/images/widgets/edit_area_painter.dart';
 import 'package:demux_app/app/pages/images/widgets/selectable_area_image_widget.dart';
 import 'package:demux_app/app/pages/images/widgets/selected_image_widget.dart';

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:demux_app/app/constants.dart';
-import 'package:demux_app/app/models/chat_completion_request_body.dart';
-import 'package:demux_app/app/models/message.dart';
+import 'package:demux_app/domain/constants.dart';
+import 'package:demux_app/data/models/chat_completion_request_body.dart';
+import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';

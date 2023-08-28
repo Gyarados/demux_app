@@ -1,20 +1,32 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:demux_app/data/api/abstract_api_service.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:demux_app/app/constants.dart';
+import 'package:demux_app/domain/constants.dart';
 
-class ApiService {
+class MockedApiService extends ApiServiceBase {
   static final _client = http.Client();
-  final Uri baseUrl;
 
-  ApiService(String baseUrl) : baseUrl = Uri.parse(baseUrl);
+  Map<String, String> mockedImageUrls = {
+    '1024x1024': 'https://i.imgur.com/0tkMZOt.png',
+    '512x512': 'https://i.imgur.com/UDUgasP.png',
+    '256x256': 'https://i.imgur.com/tBKMUluERROR.png',
+  };
 
-  bool isSuccess(http.Response response) {
-    return response.statusCode >= 200 && response.statusCode < 300;
+  MockedApiService(super.baseUrl);
+
+  http.Response mockImageResults(Map<String, dynamic> body){
+    int quantity = body["n"] as int;
+    String size = body["size"] as String;
+    List data = List.generate(quantity, (i) => {"url": mockedImageUrls[size]});
+    Map<String, dynamic> mockedResponse = {"data": data};
+
+    return http.Response(jsonEncode(mockedResponse), 200);
   }
 
-  Future<Map<String, dynamic>> get(String endpoint) async {
+  @override
+  Future<http.Response> get(String endpoint) async {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
     http.Response response = await _client.get(
@@ -24,7 +36,8 @@ class ApiService {
       },
     );
     if (isSuccess(response)) {
-      return jsonDecode(response.body);
+      return response;
+      // return jsonDecode(response.body);
     } else {
       print(response.body);
       throw Exception(
@@ -32,22 +45,15 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> post(
-      String endpoint, Map<String, dynamic> body) async {
-    Uri endpointUri = Uri.parse(endpoint);
-    Uri fullUri = baseUrl.resolveUri(endpointUri);
+  @override
+  Future<http.Response> post(String endpoint, Map<String, dynamic> body) async {
 
-    http.Response response = await _client.post(
-      fullUri,
-      headers: <String, String>{
-        'Authorization': "Bearer $OPENAI_API_KEY",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(body),
-    );
+    http.Response response = mockImageResults(body);
 
+    await Future.delayed(Duration(seconds: 1));
     if (isSuccess(response)) {
-      return jsonDecode(utf8.decode(response.bodyBytes));
+      return response;
+      // return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
       print(response.body);
       throw Exception(
@@ -64,6 +70,7 @@ class ApiService {
     return eventObj['choices'][0]['delta']['content'];
   }
 
+  @override
   StreamController streamPost(String endpoint, Map<String, dynamic> body) {
     Uri endpointUri = Uri.parse(endpoint);
     Uri fullUri = baseUrl.resolveUri(endpointUri);
@@ -115,20 +122,16 @@ class ApiService {
     return streamController;
   }
 
-  Future<Map<String, dynamic>> filePost(String endpoint,
-      Map<String, String> body, List<http.MultipartFile> files) async {
-    Uri endpointUri = Uri.parse(endpoint);
-    Uri fullUri = baseUrl.resolveUri(endpointUri);
-    var request = http.MultipartRequest("POST", fullUri);
-    request.headers.addAll({
-      'Authorization': "Bearer $OPENAI_API_KEY",
-    });
-    request.fields.addAll(body);
-    request.files.addAll(files);
-    final responseStream = await request.send();
-    final response = await http.Response.fromStream(responseStream);
+  @override
+  Future<http.Response> filePost(String endpoint, Map<String, String> body,
+    List<http.MultipartFile> files) async {
+
+    http.Response response = mockImageResults(body);
+
+    await Future.delayed(Duration(seconds: 1));
     if (isSuccess(response)) {
-      return jsonDecode(response.body);
+      return response;
+      // return jsonDecode(response.body);
     } else {
       print(response.body);
       throw Exception(

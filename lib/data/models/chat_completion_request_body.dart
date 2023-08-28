@@ -1,4 +1,4 @@
-import 'package:demux_app/app/models/message.dart';
+import 'package:demux_app/data/models/message.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part "chat_completion_request_body.g.dart";

@@ -12,15 +12,6 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
-
-  // Message.fromJson(Map<String, dynamic> json)
-  //     : role = json['role'],
-  //       content = json['content'];
-
-  // Map<String, dynamic> toJson() => {
-  //       'role': role,
-  //       'content': content,
-  //     };
 }
 
 List<Map<String, dynamic>> messageListToJson(List<Message> messages) {

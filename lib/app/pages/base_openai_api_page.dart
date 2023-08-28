@@ -1,6 +1,6 @@
-import 'package:demux_app/app/api_service.dart';
-import 'package:demux_app/app/constants.dart';
-import 'package:demux_app/app/mocked_api_service.dart';
+import 'package:demux_app/data/api/api_service.dart';
+import 'package:demux_app/domain/constants.dart';
+import 'package:demux_app/data/api/mocked_api_service.dart';
 import 'package:flutter/material.dart';
 
 abstract class OpenAIBasePage extends StatefulWidget {

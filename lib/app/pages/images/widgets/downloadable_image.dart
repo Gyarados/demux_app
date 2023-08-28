@@ -1,10 +1,10 @@
 import 'package:demux_app/app/utils/show_snackbar.dart';
+import 'package:demux_app/domain/storage_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'dart:async';
 
@@ -34,11 +34,6 @@ class DownloadableImage extends StatelessWidget {
   Future<void> downloadImage([BuildContext? context]) async {
     Uri uri = Uri.parse(url);
     var response = await http.get(uri);
-
-    if (!(await Permission.storage.status.isGranted)) {
-      await Permission.storage.request();
-    }
-
     File file;
     Directory directory;
     try {
@@ -99,9 +94,10 @@ class DownloadableImage extends StatelessWidget {
                 PopupMenuItem(
                   child: TextButton(
                     child: Text('Download'),
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.pop(context);
-                      downloadImage(context);
+                      await grantExternalStoragePermission();
+                      await downloadImage(context);
                     },
                   ),
                 ),

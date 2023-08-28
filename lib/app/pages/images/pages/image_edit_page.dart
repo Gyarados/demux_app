@@ -1,15 +1,18 @@
 import 'dart:typed_data';
 
-import 'package:demux_app/app/constants.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/pages/images/utils/image_processing.dart';
 import 'package:demux_app/app/pages/images/widgets/edit_area_painter.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results_list.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_states.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import "package:http/http.dart" as http;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ImageEditPage extends OpenAIBasePage {
   @override
@@ -40,6 +43,8 @@ class _ImageEditPageState extends State<ImageEditPage> {
 
   List<String> imageUrls = [];
 
+  EditImageResultsCubit imageResultsCubit = EditImageResultsCubit();
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -60,7 +65,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
           sendButtonOnPressed: getImageEdits,
           removeSelectedImage: removeSelectedImage,
         ),
-        getImageResultsWidget(context, imageUrls, loadingResults),
+        getImageResultsWidget(imageResultsCubit),
       ],
     );
   }
@@ -158,6 +163,9 @@ class _ImageEditPageState extends State<ImageEditPage> {
         imageUrls =
             List<String>.from(response['data'].map((item) => item['url']));
       });
+
+      imageResultsCubit.showImageResults(imageUrls);
+
     } catch (e) {
       showSnackbar(e.toString(), context,
           criticality: MessageCriticality.error);
