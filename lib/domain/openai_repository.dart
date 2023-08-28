@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:demux_app/data/api/abstract_api_service.dart';
 import 'package:demux_app/data/api/api_service.dart';
+import 'package:demux_app/data/api/mocked_api_service.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:http/http.dart' as http;
 
 class OpenAiRepository {
-  ApiService apiService = ApiService(OPENAI_API_URL);
+  ApiServiceBase apiService = USE_MOCK_API_SERVICE
+      ? MockedApiService(OPENAI_API_URL)
+      : ApiService(OPENAI_API_URL);
 
-  OpenAiRepository(this.apiService);
+  OpenAiRepository();
 
   List<String> getImageUrlListFromResponse(http.Response response) {
     Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -23,8 +27,9 @@ class OpenAiRepository {
     if (isSuccess(response)) {
       return getImageUrlListFromResponse(response);
     } else {
-      print(response.body);
-      throw Exception('Request failed');
+      Map<String, dynamic> responseJson = jsonDecode(response.body);
+      print(responseJson);
+      throw "Request failed: ${responseJson['error']['message']}";
     }
   }
 
@@ -47,7 +52,8 @@ class OpenAiRepository {
     };
     late http.Response response;
     try {
-      response = await apiService.post(OPENAI_IMAGE_GENERATION_ENDPOINT, getHeaders(), body);
+      response = await apiService.post(
+          OPENAI_IMAGE_GENERATION_ENDPOINT, getHeaders(), body);
     } catch (e) {
       throw Exception('Server error');
     }
@@ -69,8 +75,8 @@ class OpenAiRepository {
 
     late http.Response response;
     try {
-      response = await apiService
-          .filePost(OPENAI_IMAGE_VARIATION_ENDPOINT, getHeaders(), body, [imageFile]);
+      response = await apiService.filePost(
+          OPENAI_IMAGE_VARIATION_ENDPOINT, getHeaders(), body, [imageFile]);
     } catch (e) {
       throw Exception('Server error');
     }
@@ -97,8 +103,8 @@ class OpenAiRepository {
     };
     late http.Response response;
     try {
-      response = await apiService
-          .filePost(OPENAI_IMAGE_EDIT_ENDPOINT, getHeaders(), body, [imageFile, maskFile]);
+      response = await apiService.filePost(OPENAI_IMAGE_EDIT_ENDPOINT,
+          getHeaders(), body, [imageFile, maskFile]);
     } catch (e) {
       throw Exception('Server error');
     }

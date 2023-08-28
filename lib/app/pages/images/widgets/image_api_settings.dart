@@ -76,6 +76,7 @@ Widget getDescriptionTextField({
         enabled: !loadingResults,
         maxLines: 5,
         minLines: 1,
+        maxLength: 1000,
         decoration: InputDecoration(
           labelText: 'Description',
         ),
