@@ -6,9 +6,3 @@ sealed class ImageResultsState {
 class ImageResultsReturned extends ImageResultsState {
   ImageResultsReturned(super.urls);
 }
-
-// class ImageResultsDowloading extends ImageResultsState {
-//   final int count;
-//   final int total;
-//   ImageResultsDowloading(super.urls, this.count, this.total);
-// }

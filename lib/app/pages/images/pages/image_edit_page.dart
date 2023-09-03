@@ -8,9 +8,9 @@ import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
+import 'package:demux_app/domain/openai_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import "package:http/http.dart" as http;
 
 class ImageEditPage extends OpenAIBasePage {
   @override
@@ -42,6 +42,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
   List<String> imageUrls = [];
 
   EditImageResultsCubit imageResultsCubit = EditImageResultsCubit();
+  final repository = OpenAiRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -137,30 +138,20 @@ class _ImageEditPageState extends State<ImageEditPage> {
       return;
     }
 
-    http.MultipartFile imageFile = http.MultipartFile.fromBytes(
-        "image", selectedImage!,
-        filename: "image.png");
-
     mask = await editAreaPainter.exportMask();
 
     setState(() {});
 
-    http.MultipartFile maskFile =
-        http.MultipartFile.fromBytes("mask", mask!, filename: "mask.png");
-
-    Map<String, String> body = {
-      "prompt": description,
-      "n": quantity.toString(),
-      "size": selectedImageSize
-    };
-
     try {
-      Map<String, dynamic> response = await widget.openAI
-          .filePost(widget.pageEndpoint, body, [imageFile, maskFile]);
-      setState(() {
-        imageUrls =
-            List<String>.from(response['data'].map((item) => item['url']));
-      });
+      imageUrls = await repository.getEditedImages(
+        image: selectedImage!,
+        mask: mask!,
+        prompt: description,
+        quantity: quantity,
+        size: selectedImageSize,
+      );
+
+      setState(() {});
 
       imageResultsCubit.showImageResults(imageUrls);
 

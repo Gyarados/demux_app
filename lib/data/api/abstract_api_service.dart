@@ -16,7 +16,7 @@ abstract class ApiServiceBase {
     Map<String, String> headers,
     Map<String, dynamic> body,
   );
-  StreamController streamPost(
+  Future<http.StreamedResponse> streamPost(
     String endpoint,
     Map<String, String> headers,
     Map<String, dynamic> body,

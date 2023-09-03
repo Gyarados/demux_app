@@ -9,7 +9,8 @@ class Message {
 
   Message(this.role, this.content);
 
-  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
+  factory Message.fromJson(Map<String, dynamic> json) =>
+      _$MessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 }
@@ -18,4 +19,10 @@ List<Map<String, dynamic>> messageListToJson(List<Message> messages) {
   List<Map<String, dynamic>> messagesJson =
       messages.map((message) => message.toJson()).toList();
   return messagesJson;
+}
+
+List<Message> jsonToMessageList(List<Map<String, dynamic>> messagesJson) {
+  List<Message> messages =
+      messagesJson.map((messageJson) => Message.fromJson(messageJson)).toList();
+  return messages;
 }

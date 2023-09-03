@@ -7,9 +7,9 @@ import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
+import 'package:demux_app/domain/openai_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import "package:http/http.dart" as http;
 
 class ImageVariationPage extends OpenAIBasePage {
   @override
@@ -39,6 +39,7 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
   List<String> imageUrls = [];
 
   VariationImageResultsCubit imageResultsCubit = VariationImageResultsCubit();
+  final repository = OpenAiRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -125,25 +126,16 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
       return;
     }
 
-    http.MultipartFile imageFile = http.MultipartFile.fromBytes(
-        "image", selectedImage!,
-        filename: "image.png");
-
-    Map<String, String> body = {
-      "n": quantity.toString(),
-      "size": selectedImageSize
-    };
-
     try {
-      Map<String, dynamic> response =
-          await widget.openAI.filePost(widget.pageEndpoint, body, [imageFile]);
-      setState(() {
-        imageUrls =
-            List<String>.from(response['data'].map((item) => item['url']));
-      });
+      imageUrls = await repository.getImageVariations(
+        image: selectedImage!,
+        quantity: quantity,
+        size: selectedImageSize,
+      );
+
+      setState(() {});
 
       imageResultsCubit.showImageResults(imageUrls);
-
     } catch (e) {
       showSnackbar(e.toString(), context,
           criticality: MessageCriticality.error);

@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:demux_app/data/api/abstract_api_service.dart';
 import 'package:demux_app/data/api/api_service.dart';
 import 'package:demux_app/data/api/mocked_api_service.dart';
+import 'package:demux_app/data/models/chat_completion_request_body.dart';
+import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -109,5 +112,66 @@ class OpenAiRepository {
       throw Exception('Server error');
     }
     return processResponse(response);
+  }
+
+  String? dataMapper(String event) {
+    event = event.substring(6);
+    Map<String, dynamic> eventObj = jsonDecode(event);
+    if (eventObj['choices'][0]["finish_reason"] == "stop") {
+      return null;
+    }
+    return eventObj['choices'][0]['delta']['content'];
+  }
+
+  StreamController getChatResponseStream({
+    required String model,
+    required List<Message> messages,
+    required double temperature,
+  }) {
+    final body = ChatCompletionRequestBody(
+      model: model,
+      messages: messages,
+      temperature: temperature,
+    );
+    final streamController = StreamController<String>();
+
+    Future<http.StreamedResponse> streamedResponseFuture =
+        apiService.streamPost(
+      OPENAI_CHAT_COMPLETION_ENDPOINT,
+      getHeaders(),
+      body.toJson(),
+    );
+
+    streamedResponseFuture.then((streamedResponse) {
+      Stream stream = streamedResponse.stream;
+      stream = stream.transform(utf8.decoder);
+      stream = stream.transform(const LineSplitter());
+
+      late StreamSubscription<dynamic> subscription;
+      subscription = stream.listen((event) {
+        String eventStr = event;
+        if (eventStr.contains("data")) {
+          String? data = dataMapper(eventStr);
+          if (data != null && !streamController.isClosed) {
+            try {
+              streamController.add(data);
+            } catch (e) {
+              print(e);
+            }
+          } else {
+            streamController.close();
+          }
+        }
+        if (streamController.isClosed) {
+          subscription.cancel();
+        }
+      }, onError: (error) {
+        streamController.addError(error);
+      }, onDone: () {
+        streamController.close();
+      });
+    });
+
+    return streamController;
   }
 }

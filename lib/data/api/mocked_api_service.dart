@@ -3,11 +3,7 @@ import 'dart:convert';
 import 'package:demux_app/data/api/abstract_api_service.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:demux_app/domain/constants.dart';
-
 class MockedApiService extends ApiServiceBase {
-  static final _client = http.Client();
-
   Map<String, String> mockedImageUrls = {
     '1024x1024': 'https://i.imgur.com/0tkMZOt.png',
     '512x512': 'https://i.imgur.com/UDUgasP.png',
@@ -30,15 +26,8 @@ class MockedApiService extends ApiServiceBase {
     String endpoint,
     Map<String, String> headers,
   ) async {
-    Uri endpointUri = Uri.parse(endpoint);
-    Uri fullUri = baseUrl.resolveUri(endpointUri);
-    http.Response response = await _client.get(
-      fullUri,
-      headers: <String, String>{
-        'Authorization': "Bearer $OPENAI_API_KEY",
-      },
-    );
-    return response;
+    Map<String, dynamic> mockedResponse = {"data": "OK"};
+    return http.Response(jsonEncode(mockedResponse), 200);
   }
 
   @override
@@ -52,69 +41,44 @@ class MockedApiService extends ApiServiceBase {
     return response;
   }
 
-  String? dataMapper(String event) {
-    event = event.substring(6);
-    Map<String, dynamic> eventObj = jsonDecode(event);
-    if (eventObj['choices'][0]["finish_reason"] == "stop") {
-      return null;
-    }
-    return eventObj['choices'][0]['delta']['content'];
-  }
-
   @override
-  StreamController streamPost(
+  Future<http.StreamedResponse> streamPost(
     String endpoint,
     Map<String, String> headers,
     Map<String, dynamic> body,
-  ) {
-    Uri endpointUri = Uri.parse(endpoint);
-    Uri fullUri = baseUrl.resolveUri(endpointUri);
-    final request = http.Request(
-      "POST",
-      fullUri,
+  ) async {
+    final StreamController<List<int>> streamController = StreamController();
+
+    const mockText =
+        """Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Vivamus lacinia odio vitae vestibulum. Donec in efficitur leo. Integer nec felis purus. 
+        Nullam sodales et eros nec facilisis. Nullam non dolor quis tellus dapibus tincidunt. 
+        Mauris commodo, risus sit amet facilisis facilisis, turpis erat porta neque, 
+        at ullamcorper arcu elit a eros. Vivamus eu vestibulum purus, sit amet dictum sapien. 
+        Pellentesque orci ex, fringilla id ante sit amet, rutrum elementum nisl. 
+        Etiam lacinia, nulla a vestibulum pharetra, justo nulla luctus urna, 
+        vitae tempor dui est eget arcu.""";
+
+    // Schedule the streaming of "Lorem Ipsum" text
+    Future.microtask(() async {
+      const chunkSize = 30; // Length of each chunk
+      for (int i = 0; i < mockText.length; i += chunkSize) {
+        final end =
+            (i + chunkSize < mockText.length) ? i + chunkSize : mockText.length;
+        final data = utf8.encode(mockText.substring(i, end));
+        streamController.add(data);
+        await Future.delayed(Duration(milliseconds: 500));
+      }
+
+      streamController.close();
+    });
+
+    http.StreamedResponse streamedResponseFuture = http.StreamedResponse(
+      streamController.stream,
+      200,
+      contentLength: null,
     );
-    request.headers.addAll({
-      'Authorization': "Bearer $OPENAI_API_KEY",
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
-    request.body = jsonEncode(body);
-
-    final streamController = StreamController<String>();
-
-    Future<http.StreamedResponse> streamedResponseFuture =
-        _client.send(request);
-
-    streamedResponseFuture.then((streamedResponse) {
-      Stream stream = streamedResponse.stream;
-      stream = stream.transform(utf8.decoder);
-      stream = stream.transform(const LineSplitter());
-
-      late StreamSubscription<dynamic> subscription;
-      subscription = stream.listen((event) {
-        String eventStr = event;
-        if (eventStr.contains("data")) {
-          String? data = dataMapper(eventStr);
-          if (data != null && !streamController.isClosed) {
-            try {
-              streamController.add(data);
-            } catch (e) {
-              print(e);
-            }
-          } else {
-            streamController.close();
-          }
-        }
-        if (streamController.isClosed) {
-          subscription.cancel();
-        }
-      }, onError: (error) {
-        streamController.addError(error);
-      }, onDone: () {
-        streamController.close();
-      });
-    });
-
-    return streamController;
+    return streamedResponseFuture;
   }
 
   @override

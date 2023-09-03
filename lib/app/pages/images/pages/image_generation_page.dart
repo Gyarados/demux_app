@@ -33,6 +33,7 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
   List<String> imageUrls = [];
 
   GenerationImageResultsCubit imageResultsCubit = GenerationImageResultsCubit();
+  final repository = OpenAiRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,6 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
     }
 
     try {
-      var repository = OpenAiRepository();
       imageUrls = await repository.getGeneratedImages(
           prompt: description, quantity: quantity, size: selectedImageSize);
 

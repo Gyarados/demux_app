@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:demux_app/app/pages/chat/bloc/chat_completion_cubit.dart';
 import 'package:demux_app/domain/constants.dart';
-import 'package:demux_app/data/models/chat_completion_request_body.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
+import 'package:demux_app/domain/openai_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_selectionarea/flutter_markdown_selectionarea.dart';
@@ -55,6 +56,9 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
   late String selectedModel = "gpt-3.5-turbo";
   int? messageBeingEdited;
   FocusNode messageEditFocusNode = FocusNode();
+
+  ChatCompletionCubit chatCompletionCubit = ChatCompletionCubit();
+  final repository = OpenAiRepository();
 
   void animateToEnd() async {
     scrollController.animateTo(
@@ -479,7 +483,16 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
   }
 
   Color getMessageColor(String role) {
-    return role == "user" ? Colors.blueGrey.shade50 : Colors.white;
+    switch (role) {
+      case 'user':
+        return Colors.blueGrey.shade50;
+      case 'assistant':
+        return Colors.white;
+      case 'system':
+        return Colors.white;
+      default:
+        return Colors.white;
+    }
   }
 
   IconData getMessageIcon(String role) {
@@ -541,12 +554,6 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
       needsScroll = true;
     });
 
-    ChatCompletionRequestBody body = ChatCompletionRequestBody(
-      model: selectedModel,
-      messages: messages,
-      temperature: temperature,
-    );
-
     // if (false) {
     //   body['top_p'] = '';
     //   body['n'] = '';
@@ -559,7 +566,13 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     // }
 
     try {
-      streamController = widget.openAI.streamPost(widget.pageEndpoint, body.toJson());
+
+      streamController = repository.getChatResponseStream(
+        model: selectedModel,
+        messages: messages,
+        temperature: temperature,
+      );
+
       Message assistantMessage = Message("assistant", "");
 
       setState(() {
@@ -576,6 +589,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
       }, onError: (err) {
         print(err);
       }, onDone: () {
+        chatCompletionCubit.saveMessages(messages);
         setState(() {
           loading = false;
         });

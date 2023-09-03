@@ -38,17 +38,8 @@ class ApiService extends ApiServiceBase {
     return response;
   }
 
-  String? dataMapper(String event) {
-    event = event.substring(6);
-    Map<String, dynamic> eventObj = jsonDecode(event);
-    if (eventObj['choices'][0]["finish_reason"] == "stop") {
-      return null;
-    }
-    return eventObj['choices'][0]['delta']['content'];
-  }
-
   @override
-  StreamController streamPost(
+  Future<http.StreamedResponse> streamPost(
     String endpoint,
     Map<String, String> headers,
     Map<String, dynamic> body,
@@ -61,43 +52,9 @@ class ApiService extends ApiServiceBase {
     );
     request.headers.addAll(headers);
     request.body = jsonEncode(body);
-
-    final streamController = StreamController<String>();
-
     Future<http.StreamedResponse> streamedResponseFuture =
         _client.send(request);
-
-    streamedResponseFuture.then((streamedResponse) {
-      Stream stream = streamedResponse.stream;
-      stream = stream.transform(utf8.decoder);
-      stream = stream.transform(const LineSplitter());
-
-      late StreamSubscription<dynamic> subscription;
-      subscription = stream.listen((event) {
-        String eventStr = event;
-        if (eventStr.contains("data")) {
-          String? data = dataMapper(eventStr);
-          if (data != null && !streamController.isClosed) {
-            try {
-              streamController.add(data);
-            } catch (e) {
-              print(e);
-            }
-          } else {
-            streamController.close();
-          }
-        }
-        if (streamController.isClosed) {
-          subscription.cancel();
-        }
-      }, onError: (error) {
-        streamController.addError(error);
-      }, onDone: () {
-        streamController.close();
-      });
-    });
-
-    return streamController;
+    return streamedResponseFuture;
   }
 
   @override
