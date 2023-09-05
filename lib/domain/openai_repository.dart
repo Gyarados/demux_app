@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:demux_app/data/api/abstract_api_service.dart';
 import 'package:demux_app/data/api/api_service.dart';
 import 'package:demux_app/data/api/mocked_api_service.dart';
-import 'package:demux_app/data/models/chat_completion_request_body.dart';
+import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:http/http.dart' as http;
@@ -123,24 +123,21 @@ class OpenAiRepository {
     return eventObj['choices'][0]['delta']['content'];
   }
 
-  StreamController getChatResponseStream({
-    required String model,
-    required List<Message> messages,
-    required double temperature,
-  }) {
-    final body = ChatCompletionRequestBody(
-      model: model,
-      messages: messages,
-      temperature: temperature,
-    );
-    final streamController = StreamController<String>();
+  StreamController getChatResponseStream(
+    ChatCompletionSettings chatCompletionSettings,
+    List<Message> messages,
+  ) {
+    final body = chatCompletionSettings.getRequestJson();
+    body['messages'] = messageListToJson(messages);
 
     Future<http.StreamedResponse> streamedResponseFuture =
         apiService.streamPost(
       OPENAI_CHAT_COMPLETION_ENDPOINT,
       getHeaders(),
-      body.toJson(),
+      body,
     );
+
+    final streamController = StreamController<String>();
 
     streamedResponseFuture.then((streamedResponse) {
       Stream stream = streamedResponse.stream;

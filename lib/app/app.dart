@@ -1,8 +1,8 @@
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/pages/chat/chat_completion_page.dart';
-import 'package:demux_app/app/pages/images/pages/image_edit_page.dart';
-import 'package:demux_app/app/pages/images/pages/image_generation_page.dart';
-import 'package:demux_app/app/pages/images/pages/image_variation_page.dart';
+import 'package:demux_app/app/pages/images/image_edit_page.dart';
+import 'package:demux_app/app/pages/images/image_generation_page.dart';
+import 'package:demux_app/app/pages/images/image_variation_page.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';

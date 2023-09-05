@@ -21,7 +21,7 @@ List<Map<String, dynamic>> messageListToJson(List<Message> messages) {
   return messagesJson;
 }
 
-List<Message> jsonToMessageList(List<Map<String, dynamic>> messagesJson) {
+List<Message> jsonToMessageList(List<dynamic> messagesJson) {
   List<Message> messages =
       messagesJson.map((messageJson) => Message.fromJson(messageJson)).toList();
   return messages;
