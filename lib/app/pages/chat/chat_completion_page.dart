@@ -62,36 +62,13 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
     super.initState();
   }
 
-  void _listener(BuildContext context, ChatCompletionState state) {
-    print('whatttt the fuckkkk why are you not working');
-    setState(() {
-      loading = state is ChatCompletionLoading;
-    });
-    if (state is ChatCompletionRetrievedFromMemory) {
-      setState(() {
-        selectedModel = state.chatCompletionSettings.model;
-        systemPromptController.text =
-            state.chatCompletionSettings.systemPrompt ?? "";
-        temperatureController.text =
-            state.chatCompletionSettings.temperature.toString();
-        systemPromptsAreVisible =
-            state.chatCompletionSettings.systemPromptsAreVisible ?? true;
-        sendEmptyMessage =
-            state.chatCompletionSettings.sendEmptyMessage ?? false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => chatCompletionCubit,
       child: Scaffold(
-        body: BlocConsumer<ChatCompletionCubit, ChatCompletionState>(
-          listener: _listener,
+        body: BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
           builder: (context, state) {
-            print('this is the current state:');
-            print(state);
             if (state is ChatCompletionRetrievedFromMemory) {
               selectedModel = state.chatCompletionSettings.model;
               systemPromptController.text =
@@ -213,6 +190,8 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                     setState(() {
                       systemPromptsAreVisible = newValue!;
                     });
+                    chatCompletionCubit
+                        .saveShowSystemPrompt(systemPromptsAreVisible);
                   },
                 ),
               ],
@@ -227,6 +206,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
                     setState(() {
                       sendEmptyMessage = newValue!;
                     });
+                    chatCompletionCubit.saveSendEmptyMessage(sendEmptyMessage);
                   },
                 ),
               ],

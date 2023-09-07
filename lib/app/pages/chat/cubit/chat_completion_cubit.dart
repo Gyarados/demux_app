@@ -71,6 +71,22 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
         state.chatCompletionSettings, state.messages));
   }
 
+  void saveShowSystemPrompt(
+    bool systemPromptsAreVisible,
+  ) {
+    state.chatCompletionSettings.systemPromptsAreVisible = systemPromptsAreVisible;
+    emit(ChatCompletionSettingsSaved(
+        state.chatCompletionSettings, state.messages));
+  }
+
+  void saveSendEmptyMessage(
+    bool sendEmptyMessage,
+  ) {
+    state.chatCompletionSettings.sendEmptyMessage = sendEmptyMessage;
+    emit(ChatCompletionSettingsSaved(
+        state.chatCompletionSettings, state.messages));
+  }
+
   void saveCurrentMessages(
     List<Message> messages,
   ) {
@@ -96,8 +112,6 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   @override
   void onError(Object error, StackTrace stackTrace) {
     print(error);
-
-    // Always call super.onError with the current error and stackTrace
     super.onError(error, stackTrace);
   }
 }

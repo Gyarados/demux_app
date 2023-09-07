@@ -74,14 +74,16 @@ class _ChatWidgetState extends State<ChatWidget> {
 
     return BlocConsumer<ChatCompletionCubit, ChatCompletionState>(
         listener: (context, state) {
-      setState(() {
-        loading = state is ChatCompletionLoading;
-        chatCompletionSettings = state.chatCompletionSettings;
-        systemPromptsAreVisible =
-            chatCompletionSettings.systemPromptsAreVisible!;
-        messages = state.messages;
-      });
+      if (state is ChatCompletionReturned) {
+        loading = true;
+
+        streamController = state.streamController;
+        getStreamedResponse();
+      }
     }, builder: (context, state) {
+      chatCompletionSettings = state.chatCompletionSettings;
+      systemPromptsAreVisible = chatCompletionSettings.systemPromptsAreVisible!;
+      messages = state.messages;
       return Scaffold(
         floatingActionButton: getFloatingActionButton(),
         body: Column(children: [
@@ -114,7 +116,41 @@ class _ChatWidgetState extends State<ChatWidget> {
     });
   }
 
-void sendMessage() async {
+  void getStreamedResponse() async {
+    try {
+      setState(() {
+        needsScroll = isListViewScrolledToMax();
+        loading = true;
+      });
+      String assistantMessageContent = "";
+      streamController!.stream.listen((event) {
+        assistantMessageContent += event;
+        setState(() {
+          messages.last.content = assistantMessageContent;
+          needsScroll = isListViewScrolledToMax();
+        });
+        chatCompletionCubit.saveCurrentMessages(messages);
+      }, onError: (err) {
+        print(err);
+        setState(() {
+          loading = false;
+        });
+      }, onDone: () {
+        setState(() {
+          loading = false;
+        });
+        chatCompletionCubit.saveCurrentMessages(messages);
+      });
+    } catch (e) {
+      showSnackbar(e.toString(), context,
+          criticality: MessageCriticality.error);
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void sendMessage() async {
     setState(() {
       loading = true;
     });
@@ -126,30 +162,6 @@ void sendMessage() async {
       userMessageController.clear();
       needsScroll = true;
     });
-
-    try {
-
-      setState(() {
-        needsScroll = isListViewScrolledToMax();
-      });
-      String assistantMessageContent = "";
-      streamController!.stream.listen((event) {
-        assistantMessageContent += event;
-        setState(() {
-          messages.last.content = assistantMessageContent;
-          needsScroll = isListViewScrolledToMax();
-        });
-      }, onError: (err) {
-        print(err);
-      }, onDone: () {
-        setState(() {
-          loading = false;
-        });
-      });
-    } catch (e) {
-      showSnackbar(e.toString(), context,
-          criticality: MessageCriticality.error);
-    }
   }
 
   Widget getMessageControls() {
@@ -233,6 +245,7 @@ void sendMessage() async {
             onPressed: () {
               messages[index].content = messageEditController.text;
               stopEditingMessage(context);
+              chatCompletionCubit.saveCurrentMessages(messages);
             },
             child: Text("Save"),
           ),
