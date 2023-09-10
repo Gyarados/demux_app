@@ -6,10 +6,9 @@ import 'package:demux_app/data/models/message.dart';
 sealed class ChatCompletionState {
   final ChatCompletionSettings chatCompletionSettings;
   final List<Message> messages;
-  ChatCompletionState(
-    this.chatCompletionSettings,
-    this.messages,
-  );
+  final bool settingsExpanded;
+  ChatCompletionState(this.chatCompletionSettings, this.messages,
+      {this.settingsExpanded = false});
 }
 
 class ChatCompletionLoading extends ChatCompletionState {
@@ -20,10 +19,8 @@ class ChatCompletionLoading extends ChatCompletionState {
 }
 
 class ChatCompletionSettingsSaved extends ChatCompletionState {
-  ChatCompletionSettingsSaved(
-    super.chatCompletionSettings,
-    super.messages,
-  );
+  ChatCompletionSettingsSaved(super.chatCompletionSettings, super.messages,
+      {super.settingsExpanded = false});
 }
 
 class ChatCompletionSettingsChanged extends ChatCompletionState {
@@ -41,7 +38,6 @@ class ChatCompletionMessagesSaved extends ChatCompletionState {
 }
 
 class ChatCompletionInitial extends ChatCompletionState {
-  
   ChatCompletionInitial(
     super.chatCompletionSettings,
     super.messages,

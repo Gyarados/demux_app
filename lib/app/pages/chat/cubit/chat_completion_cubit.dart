@@ -46,6 +46,14 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     ));
   }
 
+  void toggleSettingsExpand([bool? expanded]) {
+    emit(ChatCompletionSettingsSaved(
+      state.chatCompletionSettings,
+      state.messages,
+      settingsExpanded: expanded ?? !state.settingsExpanded,
+    ));
+  }
+
   void saveSelectedModel(
     String selectedModel,
   ) {
