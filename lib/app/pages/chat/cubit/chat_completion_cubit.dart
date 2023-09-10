@@ -74,7 +74,8 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   void saveShowSystemPrompt(
     bool systemPromptsAreVisible,
   ) {
-    state.chatCompletionSettings.systemPromptsAreVisible = systemPromptsAreVisible;
+    state.chatCompletionSettings.systemPromptsAreVisible =
+        systemPromptsAreVisible;
     emit(ChatCompletionSettingsSaved(
         state.chatCompletionSettings, state.messages));
   }
@@ -91,6 +92,10 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     List<Message> messages,
   ) {
     emit(ChatCompletionMessagesSaved(state.chatCompletionSettings, messages));
+  }
+
+  void clearChat() {
+    emit(ChatCompletionMessagesSaved(state.chatCompletionSettings, []));
   }
 
   @override

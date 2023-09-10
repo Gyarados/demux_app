@@ -176,6 +176,7 @@ class _ChatWidgetState extends State<ChatWidget> {
             child: TextField(
               enabled: !loading,
               controller: userMessageController,
+              keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                 hintText: "Message",
                 border: InputBorder.none,
@@ -290,9 +291,6 @@ class _ChatWidgetState extends State<ChatWidget> {
       controller: scrollController,
       itemCount: messages.length + 1,
       itemBuilder: (context, index) {
-        if (!systemPromptsAreVisible && messages[index].role == "system") {
-          return const SizedBox.shrink();
-        }
         if (index == messages.length) {
           return loading || messages.isEmpty
               ? const SizedBox.shrink()
@@ -301,6 +299,11 @@ class _ChatWidgetState extends State<ChatWidget> {
                   child: TextButton(
                       onPressed: sendContinueMessage, child: Text("Continue")));
         }
+
+        if (!systemPromptsAreVisible && messages[index].role == "system") {
+          return const SizedBox.shrink();
+        }
+
         return chatMessageWidget(index);
       },
     );

@@ -108,110 +108,118 @@ class _ChatCompletionPageState extends State<ChatCompletionPage> {
 
   Widget getAPISettings() {
     return Container(
-        decoration: BoxDecoration(
-            color: Colors.grey[200],
-            border: Border.all(color: Colors.blueGrey[200]!)),
-        child: ExpansionTile(
-          controller: settingsExpandController,
-          maintainState: true,
-          tilePadding: EdgeInsets.symmetric(horizontal: 16),
-          childrenPadding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: 16,
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      decoration: BoxDecoration(
+          color: Colors.grey[200],
+          border: Border.all(color: Colors.blueGrey[200]!)),
+      child: ExpansionTile(
+        controller: settingsExpandController,
+        maintainState: true,
+        tilePadding: EdgeInsets.symmetric(horizontal: 16),
+        childrenPadding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: 16,
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Icon(Icons.settings),
+            Text(selectedModel),
+            Icon(Icons.thermostat),
+            Text(temperatureController.text),
+          ],
+        ),
+        children: [
+          Row(
             children: [
-              Icon(Icons.settings),
-              Text(selectedModel),
-              Icon(Icons.thermostat),
-              Text(temperatureController.text),
+              Expanded(
+                flex: 4,
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Model',
+                    contentPadding: EdgeInsets.all(0.0),
+                  ),
+                  value: selectedModel,
+                  onChanged: !loading
+                      ? (String? value) {
+                          setState(() {
+                            selectedModel = value!;
+                          });
+                          chatCompletionCubit.saveSelectedModel(selectedModel);
+                        }
+                      : null,
+                  items:
+                      modelList.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: getTemperatureInputWidget(
+                    temperatureController, loading, onTemperatureChanged),
+              ),
             ],
           ),
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: DropdownButtonFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Model',
-                      contentPadding: EdgeInsets.all(0.0),
-                    ),
-                    value: selectedModel,
-                    onChanged: !loading
-                        ? (String? value) {
-                            setState(() {
-                              selectedModel = value!;
-                            });
-                            chatCompletionCubit
-                                .saveSelectedModel(selectedModel);
-                          }
-                        : null,
-                    items:
-                        modelList.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: getTemperatureInputWidget(
-                      temperatureController, loading, onTemperatureChanged),
-                ),
-              ],
+          TextField(
+            focusNode: systemPromptFocusNode,
+            enabled: !loading,
+            onChanged: (value) {
+              chatCompletionCubit.saveSystemPrompt(systemPromptController.text);
+            },
+            controller: systemPromptController,
+            maxLines: systemPromptMaxLines,
+            minLines: 1,
+            keyboardType: TextInputType.multiline,
+            decoration: InputDecoration(
+              labelText: 'System prompt',
+              contentPadding: EdgeInsets.symmetric(vertical: 16),
             ),
-            TextField(
-              focusNode: systemPromptFocusNode,
-              enabled: !loading,
-              onChanged: (value) {
-                chatCompletionCubit
-                    .saveSystemPrompt(systemPromptController.text);
-              },
-              controller: systemPromptController,
-              maxLines: systemPromptMaxLines,
-              minLines: 1,
-              decoration: InputDecoration(
-                labelText: 'System prompt',
-                contentPadding: EdgeInsets.symmetric(vertical: 16),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Show system prompts'),
+              Checkbox(
+                value: systemPromptsAreVisible,
+                onChanged: (newValue) {
+                  setState(() {
+                    systemPromptsAreVisible = newValue!;
+                  });
+                  chatCompletionCubit
+                      .saveShowSystemPrompt(systemPromptsAreVisible);
+                },
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Show system prompts'),
-                Checkbox(
-                  value: systemPromptsAreVisible,
-                  onChanged: (newValue) {
-                    setState(() {
-                      systemPromptsAreVisible = newValue!;
-                    });
-                    chatCompletionCubit
-                        .saveShowSystemPrompt(systemPromptsAreVisible);
-                  },
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Send empty message'),
-                Checkbox(
-                  value: sendEmptyMessage,
-                  onChanged: (newValue) {
-                    setState(() {
-                      sendEmptyMessage = newValue!;
-                    });
-                    chatCompletionCubit.saveSendEmptyMessage(sendEmptyMessage);
-                  },
-                ),
-              ],
-            ),
-          ],
-        ));
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Send empty message'),
+              Checkbox(
+                value: sendEmptyMessage,
+                onChanged: (newValue) {
+                  setState(() {
+                    sendEmptyMessage = newValue!;
+                  });
+                  chatCompletionCubit.saveSendEmptyMessage(sendEmptyMessage);
+                },
+              ),
+            ],
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.red),
+            child: Text('Clear chat'),
+            onPressed: () {
+              chatCompletionCubit.clearChat();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
