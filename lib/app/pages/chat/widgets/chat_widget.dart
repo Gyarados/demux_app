@@ -86,10 +86,12 @@ class _ChatWidgetState extends State<ChatWidget> {
       messages = state.messages;
       return Scaffold(
         floatingActionButton: getFloatingActionButton(),
-        body: Column(children: [
-          Expanded(child: getChatMessages()),
-          getMessageControls(),
-        ]),
+        body: Column(
+          children: [
+            Expanded(child: getChatMessages()),
+            getMessageControls(),
+          ],
+        ),
       );
     });
   }

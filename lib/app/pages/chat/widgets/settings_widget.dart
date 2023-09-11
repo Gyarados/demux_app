@@ -56,6 +56,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   @override
   void initState() {
     chatCompletionCubit = BlocProvider.of(context);
+    updateSettingsFromState(chatCompletionCubit.state);
     systemPromptFocusNode.addListener(systemPromptListener);
     super.initState();
   }
@@ -71,21 +72,23 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
       builder: (context, state) {
-        
         if (state is ChatCompletionRetrievedFromMemory) {
-          selectedModel = state.chatCompletionSettings.model;
-          systemPromptController.text =
-              state.chatCompletionSettings.systemPrompt ?? "";
-          temperatureController.text =
-              state.chatCompletionSettings.temperature.toString();
-          systemPromptsAreVisible =
-              state.chatCompletionSettings.systemPromptsAreVisible ?? true;
-          sendEmptyMessage =
-              state.chatCompletionSettings.sendEmptyMessage ?? false;
+          updateSettingsFromState(state);
         }
-        return getAPISettingsV2();
+        return getAPISettingsV3();
       },
     );
+  }
+
+  void updateSettingsFromState(ChatCompletionState state) {
+    selectedModel = state.chatCompletionSettings.model;
+    systemPromptController.text =
+        state.chatCompletionSettings.systemPrompt ?? "";
+    temperatureController.text =
+        state.chatCompletionSettings.temperature.toString();
+    systemPromptsAreVisible =
+        state.chatCompletionSettings.systemPromptsAreVisible ?? true;
+    sendEmptyMessage = state.chatCompletionSettings.sendEmptyMessage ?? false;
   }
 
   void onTemperatureChanged(String value) {
@@ -244,6 +247,30 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           chatCompletionCubit.clearChat();
         },
       ),
+      TextButton(
+        style: TextButton.styleFrom(
+            foregroundColor: Colors.white, backgroundColor: Colors.red),
+        child: Text('Clear chat'),
+        onPressed: () {
+          chatCompletionCubit.clearChat();
+        },
+      ),
+      TextButton(
+        style: TextButton.styleFrom(
+            foregroundColor: Colors.white, backgroundColor: Colors.red),
+        child: Text('Clear chat'),
+        onPressed: () {
+          chatCompletionCubit.clearChat();
+        },
+      ),
+      TextButton(
+        style: TextButton.styleFrom(
+            foregroundColor: Colors.white, backgroundColor: Colors.red),
+        child: Text('Clear chat'),
+        onPressed: () {
+          chatCompletionCubit.clearChat();
+        },
+      ),
     ];
   }
 
@@ -329,28 +356,14 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
 
   Widget getAPISettingsV3() {
     return Container(
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
           color: Colors.grey[200],
           border: Border.all(color: Colors.blueGrey[200]!)),
-      child: ExpandablePanel(
-        controller: settingsExpandControllerV3,
-        header: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(Icons.settings),
-            Text(selectedModel),
-            Icon(Icons.thermostat),
-            Text(temperatureController.text),
-          ],
-        ),
-        collapsed: SizedBox.shrink(),
-        expanded: SizedBox(
-            height: 200,
-            child: SingleChildScrollView(
-                child: Column(
-              children: getSettingsInputWidgets(),
-            ))),
-      ),
+      child: SingleChildScrollView(
+          child: Column(
+        children: getSettingsInputWidgets(),
+      )),
     );
   }
 }
