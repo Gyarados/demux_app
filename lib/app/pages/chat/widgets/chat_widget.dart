@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
+import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +30,11 @@ class _ChatWidgetState extends State<ChatWidget> {
   bool needsScroll = false;
   bool isScrollAtTop = true;
   bool isScrollAtBottom = true;
-  ChatCompletionSettings chatCompletionSettings =
-      ChatCompletionSettings.initial();
-  List<Message> messages = [];
+  int currentChatIndex = 0;
+  Chat currentChat = Chat.initial();
+  late ChatCompletionSettings chatCompletionSettings =
+      currentChat.chatCompletionSettings;
+  late List<Message> messages = currentChat.messages;
   bool loading = false;
   bool systemPromptsAreVisible = true;
   late ChatCompletionCubit chatCompletionCubit;
@@ -81,9 +84,11 @@ class _ChatWidgetState extends State<ChatWidget> {
         getStreamedResponse();
       }
     }, builder: (context, state) {
-      chatCompletionSettings = state.chatCompletionSettings;
+      currentChatIndex = state.currentChatIndex;
+      currentChat = state.chats[currentChatIndex];
+      chatCompletionSettings = currentChat.chatCompletionSettings;
       systemPromptsAreVisible = chatCompletionSettings.systemPromptsAreVisible!;
-      messages = state.messages;
+      messages = currentChat.messages;
       return Scaffold(
         floatingActionButton: getFloatingActionButton(),
         body: Column(

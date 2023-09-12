@@ -1,6 +1,8 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/widgets/temperature_input_widget.dart';
+import 'package:demux_app/data/models/chat.dart';
+import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +43,11 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   bool sendEmptyMessage = false;
   late ChatCompletionCubit chatCompletionCubit;
 
+  int currentChatIndex = 0;
+  Chat currentChat = Chat.initial();
+  late ChatCompletionSettings chatCompletionSettings =
+      currentChat.chatCompletionSettings;
+
   systemPromptListener() {
     if (systemPromptFocusNode.hasFocus) {
       setState(() {
@@ -72,7 +79,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
       builder: (context, state) {
-        if (state is ChatCompletionRetrievedFromMemory) {
+        if (state is ChatCompletionRetrievedFromMemory || state is ChatCompletionChatSelected) {
           updateSettingsFromState(state);
         }
         return getAPISettingsV3();
@@ -81,14 +88,15 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   }
 
   void updateSettingsFromState(ChatCompletionState state) {
-    selectedModel = state.chatCompletionSettings.model;
-    systemPromptController.text =
-        state.chatCompletionSettings.systemPrompt ?? "";
-    temperatureController.text =
-        state.chatCompletionSettings.temperature.toString();
+    currentChatIndex = state.currentChatIndex;
+    currentChat = state.chats[currentChatIndex];
+    chatCompletionSettings = currentChat.chatCompletionSettings;
+    selectedModel = chatCompletionSettings.model;
+    systemPromptController.text = chatCompletionSettings.systemPrompt ?? "";
+    temperatureController.text = chatCompletionSettings.temperature.toString();
     systemPromptsAreVisible =
-        state.chatCompletionSettings.systemPromptsAreVisible ?? true;
-    sendEmptyMessage = state.chatCompletionSettings.sendEmptyMessage ?? false;
+        chatCompletionSettings.systemPromptsAreVisible ?? true;
+    sendEmptyMessage = chatCompletionSettings.sendEmptyMessage ?? false;
   }
 
   void onTemperatureChanged(String value) {
@@ -178,97 +186,9 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
       TextButton(
         style: TextButton.styleFrom(
             foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
+        child: Text('Delete chat'),
         onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
-        },
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat'),
-        onPressed: () {
-          chatCompletionCubit.clearChat();
+          chatCompletionCubit.deleteChat();
         },
       ),
     ];

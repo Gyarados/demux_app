@@ -1,61 +1,70 @@
 import 'dart:async';
 
-import 'package:demux_app/data/models/chat_completion_settings.dart';
-import 'package:demux_app/data/models/message.dart';
+import 'package:demux_app/data/models/chat.dart';
 
 sealed class ChatCompletionState {
-  final ChatCompletionSettings chatCompletionSettings;
-  final List<Message> messages;
-  final bool settingsExpanded;
-  ChatCompletionState(this.chatCompletionSettings, this.messages,
-      {this.settingsExpanded = false});
+  final List<Chat> chats;
+  final int currentChatIndex;
+  ChatCompletionState(
+    this.chats,
+    this.currentChatIndex,
+  );
 }
 
 class ChatCompletionLoading extends ChatCompletionState {
   ChatCompletionLoading(
-    super.chatCompletionSettings,
-    super.messages,
+    super.chats,
+    super.currentChatIndex,
   );
 }
 
 class ChatCompletionSettingsSaved extends ChatCompletionState {
-  ChatCompletionSettingsSaved(super.chatCompletionSettings, super.messages,
-      {super.settingsExpanded = false});
+  ChatCompletionSettingsSaved(
+    super.chats,
+    super.currentChatIndex,
+  );
 }
 
 class ChatCompletionSettingsChanged extends ChatCompletionState {
   ChatCompletionSettingsChanged(
-    super.chatCompletionSettings,
-    super.messages,
+    super.chats,
+    super.currentChatIndex,
   );
 }
 
 class ChatCompletionMessagesSaved extends ChatCompletionState {
   ChatCompletionMessagesSaved(
-    super.chatCompletionSettings,
-    super.messages,
+    super.chats,
+    super.currentChatIndex,
+  );
+}
+
+class ChatCompletionChatSelected extends ChatCompletionState {
+  ChatCompletionChatSelected(
+    super.chats,
+    super.currentChatIndex,
   );
 }
 
 class ChatCompletionInitial extends ChatCompletionState {
   ChatCompletionInitial(
-    super.chatCompletionSettings,
-    super.messages,
+    super.chats,
+    super.currentChatIndex,
   );
 }
 
 class ChatCompletionRetrievedFromMemory extends ChatCompletionState {
   ChatCompletionRetrievedFromMemory(
-    super.chatCompletionSettings,
-    super.messages,
+    super.chats,
+    super.currentChatIndex,
   );
 }
 
 class ChatCompletionReturned extends ChatCompletionState {
   final StreamController? streamController;
   ChatCompletionReturned(
-    super.chatCompletionSettings,
-    super.messages, {
+    super.chats,
+    super.currentChatIndex, {
     this.streamController,
   });
 }

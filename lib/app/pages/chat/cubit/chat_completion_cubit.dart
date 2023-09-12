@@ -1,5 +1,5 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
-import 'package:demux_app/data/models/chat_completion_settings.dart';
+import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/domain/openai_repository.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -7,123 +7,143 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   final repository = OpenAiRepository();
 
-  ChatCompletionCubit()
-      : super(ChatCompletionInitial(ChatCompletionSettings.initial(), []));
+  ChatCompletionCubit() : super(ChatCompletionInitial([Chat.initial()], 0));
+
+  Chat getCurrentChat(int index) {
+    return state.chats[index];
+  }
 
   void getChatCompletion(String userMessageContent) {
-    emit(ChatCompletionLoading(state.chatCompletionSettings, state.messages));
-
-    String systemPrompt = state.chatCompletionSettings.systemPrompt ?? "";
+    int chatIndex = state.currentChatIndex;
+    emit(ChatCompletionLoading(state.chats, chatIndex));
+    Chat chat = getCurrentChat(chatIndex);
+    String systemPrompt = chat.chatCompletionSettings.systemPrompt ?? "";
     if (systemPrompt.isNotEmpty) {
       Message systemMessage = Message("system", systemPrompt);
-      state.messages.add(systemMessage);
-      state.chatCompletionSettings.systemPrompt = "";
-      emit(ChatCompletionSettingsChanged(
-          state.chatCompletionSettings, state.messages));
+      chat.messages.add(systemMessage);
+      chat.chatCompletionSettings.systemPrompt = "";
+      emit(ChatCompletionSettingsChanged(state.chats, chatIndex));
     }
 
     bool sendEmptyMessage =
-        state.chatCompletionSettings.sendEmptyMessage ?? true;
+        chat.chatCompletionSettings.sendEmptyMessage ?? true;
     if (userMessageContent.isNotEmpty || sendEmptyMessage) {
       Message userMessage = Message("user", userMessageContent);
-      state.messages.add(userMessage);
-      emit(ChatCompletionMessagesSaved(
-          state.chatCompletionSettings, state.messages));
+      chat.messages.add(userMessage);
+      emit(ChatCompletionMessagesSaved(state.chats, chatIndex));
     }
 
     var streamController = repository.getChatResponseStream(
-      state.chatCompletionSettings,
-      state.messages,
+      chat.chatCompletionSettings,
+      chat.messages,
     );
 
     Message assistantMessage = Message("assistant", "");
-    state.messages.add(assistantMessage);
+    chat.messages.add(assistantMessage);
 
     emit(ChatCompletionReturned(
-      state.chatCompletionSettings,
-      state.messages,
+      state.chats,
+      chatIndex,
       streamController: streamController,
-    ));
-  }
-
-  void toggleSettingsExpand([bool? expanded]) {
-    emit(ChatCompletionSettingsSaved(
-      state.chatCompletionSettings,
-      state.messages,
-      settingsExpanded: expanded ?? !state.settingsExpanded,
     ));
   }
 
   void saveSelectedModel(
     String selectedModel,
   ) {
-    state.chatCompletionSettings.model = selectedModel;
-    emit(ChatCompletionSettingsSaved(
-        state.chatCompletionSettings, state.messages));
+    Chat chat = getCurrentChat(state.currentChatIndex);
+    chat.chatCompletionSettings.model = selectedModel;
+    emit(ChatCompletionSettingsSaved(state.chats, state.currentChatIndex));
   }
 
   void saveTemperature(
     String temperatureString,
   ) {
     double temperature = double.parse(temperatureString);
-    state.chatCompletionSettings.temperature = temperature;
-    emit(ChatCompletionSettingsSaved(
-        state.chatCompletionSettings, state.messages));
+    Chat chat = getCurrentChat(state.currentChatIndex);
+    chat.chatCompletionSettings.temperature = temperature;
+    emit(ChatCompletionSettingsSaved(state.chats, state.currentChatIndex));
   }
 
   void saveSystemPrompt(
     String systemPrompt,
   ) {
-    state.chatCompletionSettings.systemPrompt = systemPrompt;
-    emit(ChatCompletionSettingsSaved(
-        state.chatCompletionSettings, state.messages));
+    Chat chat = getCurrentChat(state.currentChatIndex);
+    chat.chatCompletionSettings.systemPrompt = systemPrompt;
+    emit(ChatCompletionSettingsSaved(state.chats, state.currentChatIndex));
   }
 
   void saveShowSystemPrompt(
     bool systemPromptsAreVisible,
   ) {
-    state.chatCompletionSettings.systemPromptsAreVisible =
+    Chat chat = getCurrentChat(state.currentChatIndex);
+    chat.chatCompletionSettings.systemPromptsAreVisible =
         systemPromptsAreVisible;
-    emit(ChatCompletionSettingsSaved(
-        state.chatCompletionSettings, state.messages));
+    emit(ChatCompletionSettingsSaved(state.chats, state.currentChatIndex));
   }
 
   void saveSendEmptyMessage(
     bool sendEmptyMessage,
   ) {
-    state.chatCompletionSettings.sendEmptyMessage = sendEmptyMessage;
-    emit(ChatCompletionSettingsSaved(
-        state.chatCompletionSettings, state.messages));
+    Chat chat = getCurrentChat(state.currentChatIndex);
+    chat.chatCompletionSettings.sendEmptyMessage = sendEmptyMessage;
+    emit(ChatCompletionSettingsSaved(state.chats, state.currentChatIndex));
   }
 
   void saveCurrentMessages(
     List<Message> messages,
   ) {
-    emit(ChatCompletionMessagesSaved(state.chatCompletionSettings, messages));
+    Chat chat = getCurrentChat(state.currentChatIndex);
+    chat.messages = messages;
+    emit(ChatCompletionMessagesSaved(state.chats, state.currentChatIndex));
   }
 
   void clearChat() {
-    emit(ChatCompletionMessagesSaved(state.chatCompletionSettings, []));
+    Chat chat = getCurrentChat(state.currentChatIndex);
+    chat.messages = [];
+    emit(ChatCompletionMessagesSaved(state.chats, state.currentChatIndex));
+  }
+
+  void deleteChat() {
+    state.chats.removeAt(state.currentChatIndex);
+    emit(ChatCompletionMessagesSaved(state.chats, state.currentChatIndex));
+  }
+
+  void selectChat(
+    int chatIndex,
+  ) {
+    emit(ChatCompletionChatSelected(state.chats, chatIndex));
+  }
+
+  void createNewChat() {
+    Chat newChat = Chat.initial();
+    state.chats.add(newChat);
+    int currentIndex = state.chats.length - 1;
+    emit(ChatCompletionChatSelected(state.chats, currentIndex));
   }
 
   @override
   ChatCompletionState fromJson(Map<String, dynamic> json) {
-    return ChatCompletionRetrievedFromMemory(
-      ChatCompletionSettings.fromJson(json['settings']),
-      jsonToMessageList(json['messages']),
-    );
+    List<dynamic> jsonChats = json['chats'];
+
+    List<Chat> chats =
+        jsonChats.map((chatJson) => Chat.fromJson(chatJson)).toList();
+
+    int currentChatIndex = json['currentChatIndex'] as int;
+    return ChatCompletionRetrievedFromMemory(chats, currentChatIndex);
   }
 
   @override
   Map<String, dynamic>? toJson(ChatCompletionState state) {
     return {
-      'settings': state.chatCompletionSettings.toJson(),
-      'messages': messageListToJson(state.messages),
+      'chats': state.chats.map((chat) => chat.toJson()).toList(),
+      'currentChatIndex': state.currentChatIndex
     };
   }
 
   @override
   void onError(Object error, StackTrace stackTrace) {
+    print("error in chat_completion_cubit conversion:");
     print(error);
     super.onError(error, stackTrace);
   }

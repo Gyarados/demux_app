@@ -1,6 +1,8 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
+import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_widget.dart';
 import 'package:demux_app/app/pages/chat/widgets/settings_widget.dart';
+import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +27,14 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   ChatCompletionCubit chatCompletionCubit = ChatCompletionCubit();
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  List<String> chatList = [
-    "Chat 1",
-    "Chat 2",
-    "Chat 3",
-  ];
+  List<Chat> chats = [];
   int _selectedChatIndex = 0;
+
+  @override
+  void initState() {
+    updateChatsFromState(chatCompletionCubit.state);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +74,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   Widget getChatListIconButton() {
     return IconButton(
         onPressed: () {
-          print("is this being called?");
-          scaffoldKey.currentState!.openEndDrawer(); //<-- SEE HERE
+          scaffoldKey.currentState!.openEndDrawer();
         },
         icon: Icon(
           Icons.chat,
@@ -80,27 +83,55 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   }
 
   Drawer getChatListDrawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          ...getChatListItems(context),
-        ],
-      ),
-    );
+    return Drawer(child: BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
+        builder: (context, state) {
+      updateChatsFromState(state);
+      return Column(children: [
+        Container(
+            width: double.infinity,
+            color: Colors.white,
+            child: TextButton(
+                onPressed: () {
+                  chatCompletionCubit.createNewChat();
+                },
+                child: Text("Create new chat"))),
+        Expanded(
+            child: ListView(
+          reverse: true,
+          padding: EdgeInsets.zero,
+          children: getChatListItems(context),
+        ))
+      ]);
+    }));
+  }
+
+  void updateChatsFromState(ChatCompletionState state) {
+    chats = state.chats;
+    _selectedChatIndex = state.currentChatIndex;
   }
 
   List<ListTile> getChatListItems(BuildContext context) {
-    return chatList.asMap().entries.map((entry) {
+    return chats.asMap().entries.map((entry) {
       int index = entry.key;
-      String chatName = entry.value;
+      String chatName = "New chat";
+      if (entry.value.messages.isNotEmpty) {
+        String firstMessage = entry.value.messages.first.content;
+        chatName = firstMessage;
+      }
       return ListTile(
-        title: Text(chatName),
+        selectedColor: Colors.white,
+        selectedTileColor: Colors.blueGrey,
+        title: Text(
+          chatName,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         selected: _selectedChatIndex == index,
         onTap: () {
           setState(() {
             _selectedChatIndex = index;
           });
+          chatCompletionCubit.selectChat(_selectedChatIndex);
           Navigator.of(context).pop();
         },
       );
