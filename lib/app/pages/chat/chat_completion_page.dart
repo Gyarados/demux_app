@@ -93,6 +93,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
             child: TextButton(
                 onPressed: () {
                   chatCompletionCubit.createNewChat();
+                  setState(() {});
                 },
                 child: Text("Create new chat"))),
         Expanded(
@@ -110,7 +111,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
     _selectedChatIndex = state.currentChatIndex;
   }
 
-  List<ListTile> getChatListItems(BuildContext context) {
+  List<ExpansionTile> getChatListItems(BuildContext context) {
     return chats.asMap().entries.map((entry) {
       int index = entry.key;
       String chatName = "New chat";
@@ -118,22 +119,47 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
         String firstMessage = entry.value.messages.first.content;
         chatName = firstMessage;
       }
-      return ListTile(
-        selectedColor: Colors.white,
-        selectedTileColor: Colors.blueGrey,
-        title: Text(
-          chatName,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+      bool isSelected = _selectedChatIndex == index;
+      return ExpansionTile(
+        collapsedBackgroundColor: isSelected ? Colors.blueGrey : Colors.white,
+        backgroundColor: isSelected ? Colors.blueGrey : Colors.white,
+        children: [
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.red),
+                      onPressed: () {
+                        chatCompletionCubit.deleteChat(index);
+                        setState(() {});
+                      },
+                      child: Text("Delete")),
+                  TextButton(onPressed: () {}, child: Text("Rename")),
+                ],
+              ))
+        ],
+        title: ListTile(
+          selectedColor: Colors.white,
+          selectedTileColor: Colors.blueGrey,
+          // trailing: IconButton(icon: Icon(Icons.close), onPressed: (){},),
+          title: Text(
+            chatName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          selected: isSelected,
+          onTap: () {
+            setState(() {
+              _selectedChatIndex = index;
+            });
+            chatCompletionCubit.selectChat(_selectedChatIndex);
+            Navigator.of(context).pop();
+          },
         ),
-        selected: _selectedChatIndex == index,
-        onTap: () {
-          setState(() {
-            _selectedChatIndex = index;
-          });
-          chatCompletionCubit.selectChat(_selectedChatIndex);
-          Navigator.of(context).pop();
-        },
       );
     }).toList();
   }

@@ -104,8 +104,8 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     emit(ChatCompletionMessagesSaved(state.chats, state.currentChatIndex));
   }
 
-  void deleteChat() {
-    state.chats.removeAt(state.currentChatIndex);
+  void deleteChat([int? chatIndex]) {
+    state.chats.removeAt(chatIndex ?? state.currentChatIndex);
     emit(ChatCompletionMessagesSaved(state.chats, state.currentChatIndex));
   }
 
