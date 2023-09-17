@@ -44,7 +44,8 @@ dependencies:
   path_provider: ^2.0.15
   permission_handler: ^10.4.3
   url_launcher: ^6.1.12
-
+  uuid: ^3.0.4
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

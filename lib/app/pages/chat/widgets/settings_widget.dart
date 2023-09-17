@@ -43,7 +43,6 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   bool sendEmptyMessage = false;
   late ChatCompletionCubit chatCompletionCubit;
 
-  int currentChatIndex = 0;
   Chat currentChat = Chat.initial();
   late ChatCompletionSettings chatCompletionSettings =
       currentChat.chatCompletionSettings;
@@ -88,8 +87,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   }
 
   void updateSettingsFromState(ChatCompletionState state) {
-    currentChatIndex = state.currentChatIndex;
-    currentChat = state.chats[currentChatIndex];
+    currentChat = state.currentChat;
     chatCompletionSettings = currentChat.chatCompletionSettings;
     selectedModel = chatCompletionSettings.model;
     systemPromptController.text = chatCompletionSettings.systemPrompt ?? "";
@@ -186,9 +184,9 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
       TextButton(
         style: TextButton.styleFrom(
             foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Delete chat'),
+        child: Text('Clear chat messages'),
         onPressed: () {
-          chatCompletionCubit.deleteChat();
+          chatCompletionCubit.clearChat();
         },
       ),
     ];

@@ -28,7 +28,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   List<Chat> chats = [];
-  int _selectedChatIndex = 0;
+  Chat currentChat = Chat.initial();
 
   @override
   void initState() {
@@ -39,36 +39,39 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => chatCompletionCubit,
-      child: Scaffold(
-          key: scaffoldKey,
-          endDrawer: Builder(builder: (context) => getChatListDrawer(context)),
-          body: DefaultTabController(
-              length: 2,
-              child: Column(children: [
-                Container(
-                    color: Colors.blueGrey,
-                    child: Row(children: [
-                      Expanded(
-                          child: TabBar(
-                        tabs: [
-                          Tab(
-                            text: "Chat",
-                          ),
-                          Tab(
-                            text: "Settings",
-                          )
-                        ],
-                      )),
-                      getChatListIconButton()
-                    ])),
-                Expanded(
-                    child: TabBarView(children: [
-                  ChatWidget(),
-                  ChatSettingsWidget(),
-                ])),
-              ]))),
-    );
+        create: (context) => chatCompletionCubit,
+        child: Scaffold(
+            key: scaffoldKey,
+            endDrawer: BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
+                builder: (context, state) {
+              updateChatsFromState(state);
+              return getChatListDrawer(context);
+            }),
+            body: DefaultTabController(
+                length: 2,
+                child: Column(children: [
+                  Container(
+                      color: Colors.blueGrey,
+                      child: Row(children: [
+                        Expanded(
+                            child: TabBar(
+                          tabs: [
+                            Tab(
+                              text: "Chat",
+                            ),
+                            Tab(
+                              text: "Settings",
+                            )
+                          ],
+                        )),
+                        getChatListIconButton()
+                      ])),
+                  Expanded(
+                      child: TabBarView(children: [
+                    ChatWidget(),
+                    ChatSettingsWidget(),
+                  ])),
+                ]))));
   }
 
   Widget getChatListIconButton() {
@@ -83,12 +86,9 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   }
 
   Drawer getChatListDrawer(BuildContext context) {
-    return Drawer(child: BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
-        builder: (context, state) {
-      updateChatsFromState(state);
-      return Column(children: [
+    return Drawer(
+      child: Column(children: [
         Container(
-            width: double.infinity,
             color: Colors.white,
             child: TextButton(
                 onPressed: () {
@@ -96,71 +96,104 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   setState(() {});
                 },
                 child: Text("Create new chat"))),
+        // Expanded(
+        //     child: ListView.builder(
+        //   padding: EdgeInsets.zero,
+        //   itemCount: chats.length,
+        //   itemBuilder: getChatListItem,
+        // )),
         Expanded(
-            child: ListView(
-          reverse: true,
-          padding: EdgeInsets.zero,
-          children: getChatListItems(context),
+            child: SingleChildScrollView(
+          child: Column(
+            children:
+                chats.map((chat) => getChatListItem(context, chat)).toList(),
+          ),
         ))
-      ]);
-    }));
+      ]),
+    );
   }
 
   void updateChatsFromState(ChatCompletionState state) {
     chats = state.chats;
-    _selectedChatIndex = state.currentChatIndex;
+    currentChat = state.currentChat;
+    // print(chats);
+    // print(currentChat);
   }
 
-  List<ExpansionTile> getChatListItems(BuildContext context) {
-    return chats.asMap().entries.map((entry) {
-      int index = entry.key;
-      String chatName = "New chat";
-      if (entry.value.messages.isNotEmpty) {
-        String firstMessage = entry.value.messages.first.content;
-        chatName = firstMessage;
-      }
-      bool isSelected = _selectedChatIndex == index;
-      return ExpansionTile(
-        collapsedBackgroundColor: isSelected ? Colors.blueGrey : Colors.white,
-        backgroundColor: isSelected ? Colors.blueGrey : Colors.white,
-        children: [
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                      style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.red),
-                      onPressed: () {
-                        chatCompletionCubit.deleteChat(index);
-                        setState(() {});
-                      },
-                      child: Text("Delete")),
-                  TextButton(onPressed: () {}, child: Text("Rename")),
-                ],
-              ))
-        ],
-        title: ListTile(
-          selectedColor: Colors.white,
-          selectedTileColor: Colors.blueGrey,
-          // trailing: IconButton(icon: Icon(Icons.close), onPressed: (){},),
-          title: Text(
-            chatName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          selected: isSelected,
-          onTap: () {
-            setState(() {
-              _selectedChatIndex = index;
-            });
-            chatCompletionCubit.selectChat(_selectedChatIndex);
-            Navigator.of(context).pop();
-          },
+  Widget getChatListItem(BuildContext context, Chat chat) {
+    bool isSelected = chat == currentChat;
+    print("chat: $chat");
+    print("currentChat: $currentChat");
+    print("isSelected: $isSelected");
+    GlobalKey key = GlobalKey();
+    return ExpansionTile(
+      key: key,
+      
+            collapsedTextColor: isSelected ? Colors.white : Colors.black,
+      collapsedIconColor: isSelected ? Colors.white : Colors.black,
+      collapsedBackgroundColor: isSelected ? Colors.blueGrey : Colors.white,
+
+      textColor: isSelected ? Colors.white : Colors.black,
+      iconColor: isSelected ? Colors.white : Colors.black,
+      backgroundColor: isSelected ? Colors.blueGrey : Colors.white,
+
+      tilePadding: EdgeInsets.only(right: 8),
+
+      children: [
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.red),
+                    onPressed: () {
+                      chatCompletionCubit.deleteChat(chat);
+                      // setState(() {});
+                    },
+                    child: Text("Delete")),
+                TextButton(onPressed: () {}, child: Text("Rename")),
+              ],
+            ))
+      ],
+      // title: GestureDetector(
+      //     onTap: () {
+      //       chatCompletionCubit.selectChat(chat);
+      //       setState(() {});
+
+      //       // Navigator.of(context).pop();
+      //     },
+      //     child: Text(
+      //       chat.name,
+      //       maxLines: 1,
+      //       overflow: TextOverflow.ellipsis,
+      //     )),
+      // subtitle: Text(
+      //   chat.uuid,
+      //   maxLines: 1,
+      //   overflow: TextOverflow.ellipsis,
+      // ),
+      title: ListTile(
+        selectedColor: Colors.white,
+        selectedTileColor: Colors.blueGrey,
+        title: Text(
+          chat.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-      );
-    }).toList();
+        subtitle: Text(
+          chat.uuid,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        selected: isSelected,
+        onTap: isSelected ? null:() {
+          chatCompletionCubit.selectChat(chat);
+          // Navigator.of(context).pop();
+        },
+      ),
+    );
   }
 }

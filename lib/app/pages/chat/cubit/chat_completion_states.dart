@@ -4,59 +4,59 @@ import 'package:demux_app/data/models/chat.dart';
 
 sealed class ChatCompletionState {
   final List<Chat> chats;
-  final int currentChatIndex;
+  final Chat currentChat;
   ChatCompletionState(
     this.chats,
-    this.currentChatIndex,
+    this.currentChat,
   );
 }
 
 class ChatCompletionLoading extends ChatCompletionState {
   ChatCompletionLoading(
     super.chats,
-    super.currentChatIndex,
+    super.currentChat,
   );
 }
 
 class ChatCompletionSettingsSaved extends ChatCompletionState {
   ChatCompletionSettingsSaved(
     super.chats,
-    super.currentChatIndex,
+    super.currentChat,
   );
 }
 
 class ChatCompletionSettingsChanged extends ChatCompletionState {
   ChatCompletionSettingsChanged(
     super.chats,
-    super.currentChatIndex,
+    super.currentChat,
   );
 }
 
 class ChatCompletionMessagesSaved extends ChatCompletionState {
   ChatCompletionMessagesSaved(
     super.chats,
-    super.currentChatIndex,
+    super.currentChat,
   );
 }
 
 class ChatCompletionChatSelected extends ChatCompletionState {
   ChatCompletionChatSelected(
     super.chats,
-    super.currentChatIndex,
+    super.currentChat,
   );
 }
 
 class ChatCompletionInitial extends ChatCompletionState {
   ChatCompletionInitial(
     super.chats,
-    super.currentChatIndex,
+    super.currentChat,
   );
 }
 
 class ChatCompletionRetrievedFromMemory extends ChatCompletionState {
   ChatCompletionRetrievedFromMemory(
     super.chats,
-    super.currentChatIndex,
+    super.currentChat,
   );
 }
 
@@ -64,7 +64,7 @@ class ChatCompletionReturned extends ChatCompletionState {
   final StreamController? streamController;
   ChatCompletionReturned(
     super.chats,
-    super.currentChatIndex, {
+    super.currentChat, {
     this.streamController,
   });
 }

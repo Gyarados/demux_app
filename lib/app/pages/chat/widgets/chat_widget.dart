@@ -30,7 +30,6 @@ class _ChatWidgetState extends State<ChatWidget> {
   bool needsScroll = false;
   bool isScrollAtTop = true;
   bool isScrollAtBottom = true;
-  int currentChatIndex = 0;
   Chat currentChat = Chat.initial();
   late ChatCompletionSettings chatCompletionSettings =
       currentChat.chatCompletionSettings;
@@ -84,8 +83,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         getStreamedResponse();
       }
     }, builder: (context, state) {
-      currentChatIndex = state.currentChatIndex;
-      currentChat = state.chats[currentChatIndex];
+      currentChat = state.currentChat;
       chatCompletionSettings = currentChat.chatCompletionSettings;
       systemPromptsAreVisible = chatCompletionSettings.systemPromptsAreVisible!;
       messages = currentChat.messages;
