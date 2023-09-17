@@ -1,5 +1,4 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
-import 'package:demux_app/app/utils/random_string.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/domain/openai_repository.dart';
@@ -20,6 +19,12 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     Chat chat = state.currentChat;
 
     emit(ChatCompletionLoading(state.chats, chat));
+
+    if (chat.messages.isEmpty){
+      chat.name = userMessageContent;
+      // emit(ChatCompletionChatSelected(state.chats, chat));
+    }
+
     String systemPrompt = chat.chatCompletionSettings.systemPrompt ?? "";
     if (systemPrompt.isNotEmpty) {
       Message systemMessage = Message("system", systemPrompt);
@@ -116,15 +121,16 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
         state.chats.insert(0, newChat);
         currentChat = newChat;
         state.chats.remove(chatToDelete);
+        emit(ChatCompletionChatSelected(state.chats, currentChat));
       } else {
         state.chats.remove(chatToDelete);
         currentChat = state.chats.first;
+        emit(ChatCompletionChatSelected(state.chats, currentChat));
       }
     } else {
       state.chats.remove(chatToDelete);
+      emit(ChatCompletionChatDeleted(state.chats, currentChat));
     }
-
-    emit(ChatCompletionChatSelected(state.chats, currentChat));
   }
 
   void selectChat(
@@ -137,7 +143,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     Chat newChat = Chat.initial();
     state.chats.insert(0, newChat);
     // state.chats.add(newChat);
-    emit(ChatCompletionChatSelected(state.chats, state.currentChat));
+    emit(ChatCompletionChatCreated(state.chats, state.currentChat));
   }
 
   @override

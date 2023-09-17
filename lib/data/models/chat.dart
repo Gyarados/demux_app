@@ -45,6 +45,6 @@ class Chat {
 
   @override
   String toString() {
-    return 'Chat(name: $name, uuid: $uuid)';
+    return 'Chat(name: $name, uuid: $uuid, n_messages: ${messages.length})';
   }
 }

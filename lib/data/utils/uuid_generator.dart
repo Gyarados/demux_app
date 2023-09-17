@@ -4,7 +4,7 @@ class UUIDGenerator {
   static final _uuid = Uuid();
 
   // Static method to generate a v4 UUID
-   static  String generateV4() {
+  static String generateV4() {
     return _uuid.v4();
   }
 

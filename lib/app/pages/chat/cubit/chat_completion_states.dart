@@ -46,6 +46,20 @@ class ChatCompletionChatSelected extends ChatCompletionState {
   );
 }
 
+class ChatCompletionChatCreated extends ChatCompletionState {
+  ChatCompletionChatCreated(
+    super.chats,
+    super.currentChat,
+  );
+}
+
+class ChatCompletionChatDeleted extends ChatCompletionState {
+  ChatCompletionChatDeleted(
+    super.chats,
+    super.currentChat,
+  );
+}
+
 class ChatCompletionInitial extends ChatCompletionState {
   ChatCompletionInitial(
     super.chats,

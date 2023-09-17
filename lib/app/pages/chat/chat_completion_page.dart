@@ -42,11 +42,16 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
         create: (context) => chatCompletionCubit,
         child: Scaffold(
             key: scaffoldKey,
-            endDrawer: BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
-                builder: (context, state) {
-              updateChatsFromState(state);
-              return getChatListDrawer(context);
-            }),
+            endDrawer: BlocListener<ChatCompletionCubit, ChatCompletionState>(
+              listenWhen: (previous, current) =>
+                  !(previous is ChatCompletionMessagesSaved &&
+                      current is ChatCompletionMessagesSaved),
+              listener: (context, state) {
+                print("drawer listener called: $state");
+                updateChatsFromState(state);
+              },
+              child: getChatListDrawer(context),
+            ),
             body: DefaultTabController(
                 length: 2,
                 child: Column(children: [
@@ -86,16 +91,20 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   }
 
   Drawer getChatListDrawer(BuildContext context) {
+    // chats.forEach(
+    //     (chat) => print("$chat ${chat == currentChat ? '- selected' : ''}"));
     return Drawer(
       child: Column(children: [
         Container(
-            color: Colors.white,
-            child: TextButton(
-                onPressed: () {
-                  chatCompletionCubit.createNewChat();
-                  setState(() {});
-                },
-                child: Text("Create new chat"))),
+          color: Colors.white,
+          child: Center(
+              child: TextButton(
+                  onPressed: () {
+                    chatCompletionCubit.createNewChat();
+                    setState(() {});
+                  },
+                  child: Text("Create new chat"))),
+        ),
         // Expanded(
         //     child: ListView.builder(
         //   padding: EdgeInsets.zero,
@@ -114,22 +123,22 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   }
 
   void updateChatsFromState(ChatCompletionState state) {
-    chats = state.chats;
-    currentChat = state.currentChat;
-    // print(chats);
-    // print(currentChat);
+    setState(() {
+      chats = state.chats;
+      currentChat = state.currentChat;
+    });
+    // chats = state.chats;
+    // currentChat = state.currentChat;
   }
 
   Widget getChatListItem(BuildContext context, Chat chat) {
     bool isSelected = chat == currentChat;
-    print("chat: $chat");
-    print("currentChat: $currentChat");
-    print("isSelected: $isSelected");
-    GlobalKey key = GlobalKey();
+    GlobalKey expansionTileKey = GlobalKey();
+    GlobalKey listTileKey = GlobalKey();
     return ExpansionTile(
-      key: key,
-      
-            collapsedTextColor: isSelected ? Colors.white : Colors.black,
+      key: expansionTileKey,
+
+      collapsedTextColor: isSelected ? Colors.white : Colors.black,
       collapsedIconColor: isSelected ? Colors.white : Colors.black,
       collapsedBackgroundColor: isSelected ? Colors.blueGrey : Colors.white,
 
@@ -158,24 +167,8 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
               ],
             ))
       ],
-      // title: GestureDetector(
-      //     onTap: () {
-      //       chatCompletionCubit.selectChat(chat);
-      //       setState(() {});
-
-      //       // Navigator.of(context).pop();
-      //     },
-      //     child: Text(
-      //       chat.name,
-      //       maxLines: 1,
-      //       overflow: TextOverflow.ellipsis,
-      //     )),
-      // subtitle: Text(
-      //   chat.uuid,
-      //   maxLines: 1,
-      //   overflow: TextOverflow.ellipsis,
-      // ),
       title: ListTile(
+        key: listTileKey,
         selectedColor: Colors.white,
         selectedTileColor: Colors.blueGrey,
         title: Text(
@@ -189,10 +182,12 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
           overflow: TextOverflow.ellipsis,
         ),
         selected: isSelected,
-        onTap: isSelected ? null:() {
-          chatCompletionCubit.selectChat(chat);
-          // Navigator.of(context).pop();
-        },
+        onTap: isSelected
+            ? null
+            : () {
+                chatCompletionCubit.selectChat(chat);
+                Navigator.of(context).pop();
+              },
       ),
     );
   }

@@ -15,7 +15,8 @@ class ChatSettingsWidget extends StatefulWidget {
   State<ChatSettingsWidget> createState() => _ChatSettingsWidgetState();
 }
 
-class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
+class _ChatSettingsWidgetState extends State<ChatSettingsWidget>
+    with AutomaticKeepAliveClientMixin {
   final systemPromptController = TextEditingController();
   final temperatureController = TextEditingController();
   final topPController = TextEditingController();
@@ -78,7 +79,8 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
       builder: (context, state) {
-        if (state is ChatCompletionRetrievedFromMemory || state is ChatCompletionChatSelected) {
+        if (state is ChatCompletionRetrievedFromMemory ||
+            state is ChatCompletionChatSelected) {
           updateSettingsFromState(state);
         }
         return getAPISettingsV3();
@@ -284,4 +286,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
       )),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

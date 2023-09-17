@@ -41,9 +41,11 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   @override
   void initState() {
+    streamController?.close();
     chatCompletionCubit = BlocProvider.of(context);
     scrollController.addListener(scrollListener);
     messagePromptFocusNode.addListener(messagePromptListener);
+    needsScroll = true;
     super.initState();
   }
 
@@ -52,6 +54,7 @@ class _ChatWidgetState extends State<ChatWidget> {
     scrollController.removeListener(scrollListener);
     scrollController.dispose();
     userMessageController.dispose();
+    streamController?.close();
     super.dispose();
   }
 
@@ -76,9 +79,12 @@ class _ChatWidgetState extends State<ChatWidget> {
 
     return BlocConsumer<ChatCompletionCubit, ChatCompletionState>(
         listener: (context, state) {
+      if (state is ChatCompletionChatSelected) {
+        loading = false;
+        stopGenerating();
+      }
       if (state is ChatCompletionReturned) {
         loading = true;
-
         streamController = state.streamController;
         getStreamedResponse();
       }
@@ -117,7 +123,7 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   void stopGenerating() {
     setState(() {
-      streamController!.close();
+      streamController?.close();
     });
   }
 
@@ -144,7 +150,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         setState(() {
           loading = false;
         });
-        chatCompletionCubit.saveCurrentMessages(messages);
+        // chatCompletionCubit.saveCurrentMessages(messages);
       });
     } catch (e) {
       showSnackbar(e.toString(), context,
