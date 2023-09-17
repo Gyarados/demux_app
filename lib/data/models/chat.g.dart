@@ -14,6 +14,7 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
           json['chat_completion_settings'] as Map<String, dynamic>),
       uuid: json['uuid'] as String?,
       name: json['name'] as String? ?? "New chat",
+      lastUpdated: DateTime.parse(json['last_updated'] as String),
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
@@ -21,4 +22,5 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'chat_completion_settings': instance.chatCompletionSettings.toJson(),
       'uuid': instance.uuid,
       'name': instance.name,
+      'last_updated': instance.lastUpdated.toIso8601String(),
     };

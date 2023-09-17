@@ -15,8 +15,7 @@ class ChatSettingsWidget extends StatefulWidget {
   State<ChatSettingsWidget> createState() => _ChatSettingsWidgetState();
 }
 
-class _ChatSettingsWidgetState extends State<ChatSettingsWidget>
-    with AutomaticKeepAliveClientMixin {
+class _ChatSettingsWidgetState extends State<ChatSettingsWidget>{
   final systemPromptController = TextEditingController();
   final temperatureController = TextEditingController();
   final topPController = TextEditingController();
@@ -286,7 +285,4 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget>
       )),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

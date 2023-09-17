@@ -15,13 +15,16 @@ class Chat {
   @JsonKey(includeIfNull: true) // Ensures that uuid is always included
   final String uuid;
   String name;
+  DateTime lastUpdated;
 
   Chat(
       {required this.messages,
       required this.chatCompletionSettings,
       String? uuid,
-      this.name = "New chat"})
+      this.name = "New chat",
+      required this.lastUpdated})
       : uuid = uuid ?? UUIDGenerator.newUUID;
+        
 
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
 
@@ -31,6 +34,7 @@ class Chat {
     return Chat(
       chatCompletionSettings: ChatCompletionSettings.initial(),
       messages: [],
+      lastUpdated: DateTime.now()
     );
   }
 

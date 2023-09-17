@@ -20,9 +20,8 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
 
     emit(ChatCompletionLoading(state.chats, chat));
 
-    if (chat.messages.isEmpty){
+    if (chat.messages.isEmpty) {
       chat.name = userMessageContent;
-      // emit(ChatCompletionChatSelected(state.chats, chat));
     }
 
     String systemPrompt = chat.chatCompletionSettings.systemPrompt ?? "";
@@ -122,14 +121,42 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
         currentChat = newChat;
         state.chats.remove(chatToDelete);
         emit(ChatCompletionChatSelected(state.chats, currentChat));
+        return;
       } else {
         state.chats.remove(chatToDelete);
         currentChat = state.chats.first;
         emit(ChatCompletionChatSelected(state.chats, currentChat));
+        return;
       }
     } else {
       state.chats.remove(chatToDelete);
       emit(ChatCompletionChatDeleted(state.chats, currentChat));
+      return;
+    }
+  }
+
+  void deleteMultipleChats(List<Chat> chatsToDelete) {
+    Chat currentChat = state.currentChat;
+    print(state.chats);
+    print(chatsToDelete);
+    if (chatsToDelete.contains(currentChat)) {
+      if (state.chats.length == chatsToDelete.length) {
+        Chat newChat = Chat.initial();
+        state.chats.insert(0, newChat);
+        currentChat = newChat;
+        state.chats.removeWhere((element) => chatsToDelete.contains(element));
+        emit(ChatCompletionChatSelected(state.chats, currentChat));
+        return;
+      } else {
+        state.chats.removeWhere((element) => chatsToDelete.contains(element));
+        currentChat = state.chats.first;
+        emit(ChatCompletionChatSelected(state.chats, currentChat));
+        return;
+      }
+    } else {
+      state.chats.removeWhere((element) => chatsToDelete.contains(element));
+      emit(ChatCompletionChatDeleted(state.chats, currentChat));
+      return;
     }
   }
 
