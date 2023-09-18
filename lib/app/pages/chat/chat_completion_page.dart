@@ -33,6 +33,9 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
 
   bool _showCheckbox = false;
 
+  TextEditingController chatRenameController = TextEditingController();
+  Chat? chatBeingRenamed;
+
   @override
   void initState() {
     updateChatsFromState(chatCompletionCubit.state);
@@ -61,6 +64,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   _showCheckbox = false;
                   selectedChats.clear();
                 });
+                finishEditingChatName();
               }
             },
             body: DefaultTabController(
@@ -211,7 +215,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        "Last updated ${chat.lastUpdated.toLocal().toString()}",
+        chat.lastUpdated.toLocal().timeAgo(),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -234,13 +238,15 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
         key: listTileKey,
         selectedColor: Colors.white,
         selectedTileColor: Colors.blueGrey,
-        title: Text(
-          chat.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: chatBeingRenamed == chat
+            ? getChatRenameField(chat)
+            : Text(
+                chat.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
         subtitle: Text(
-          "Last updated ${chat.lastUpdated.toLocal().toString()}",
+          chat.lastUpdated.toLocal().timeAgo(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -266,10 +272,44 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                       chatCompletionCubit.deleteChat(chat);
                     },
                     child: Text("Delete")),
-                TextButton(onPressed: () {}, child: Text("Rename")),
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        chatRenameController.text = chat.name;
+                        chatBeingRenamed = chat;
+                      });
+                    },
+                    child: Text("Rename")),
               ],
             ))
       ],
+    );
+  }
+
+  void finishEditingChatName() {
+    setState(() {
+      chatRenameController.text = "";
+      chatBeingRenamed = null;
+    });
+  }
+
+  Widget getChatRenameField(Chat chat) {
+    return TextField(
+      controller: chatRenameController,
+      maxLength: 100,
+      maxLines: 1,
+      textCapitalization: TextCapitalization.sentences,
+      onEditingComplete: () {
+        chatCompletionCubit.renameChat(chat, chatRenameController.text);
+        setState(() {
+          chatRenameController.text = "";
+          chatBeingRenamed = null;
+        });
+      },
+      cursorColor: currentChat == chat ? Colors.white : Colors.black,
+      style: TextStyle(
+        color: currentChat == chat ? Colors.white : Colors.black,
+      ),
     );
   }
 }

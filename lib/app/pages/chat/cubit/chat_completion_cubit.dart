@@ -1,6 +1,7 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/message.dart';
+import 'package:demux_app/data/utils/custom_datetime.dart';
 import 'package:demux_app/domain/openai_repository.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -20,9 +21,11 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
 
     emit(ChatCompletionLoading(state.chats, chat));
 
-    if (chat.messages.isEmpty) {
+    if (chat.messages.isEmpty && chat.name == "New chat") {
       chat.name = userMessageContent;
     }
+
+    chat.lastUpdated = RelativeDateTime.now();
 
     String systemPrompt = chat.chatCompletionSettings.systemPrompt ?? "";
     if (systemPrompt.isNotEmpty) {
@@ -164,6 +167,13 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     Chat chat,
   ) {
     emit(ChatCompletionChatSelected(state.chats, chat));
+  }
+
+  void renameChat(
+    Chat chat, String newName,
+  ) {
+    chat.name = newName;
+    emit(ChatCompletionChatSelected(state.chats, state.currentChat));
   }
 
   void createNewChat() {

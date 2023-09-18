@@ -45,6 +45,7 @@ dependencies:
   permission_handler: ^10.4.3
   url_launcher: ^6.1.12
   uuid: ^3.0.4
+  intl: ^0.18.1
   
 dev_dependencies:
   flutter_test:

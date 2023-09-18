@@ -1,5 +1,6 @@
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
+import 'package:demux_app/data/utils/custom_datetime.dart';
 import 'package:demux_app/data/utils/uuid_generator.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -15,7 +16,7 @@ class Chat {
   @JsonKey(includeIfNull: true) // Ensures that uuid is always included
   final String uuid;
   String name;
-  DateTime lastUpdated;
+  RelativeDateTime lastUpdated;
 
   Chat(
       {required this.messages,
@@ -34,7 +35,7 @@ class Chat {
     return Chat(
       chatCompletionSettings: ChatCompletionSettings.initial(),
       messages: [],
-      lastUpdated: DateTime.now()
+      lastUpdated: RelativeDateTime.now()
     );
   }
 
