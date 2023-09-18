@@ -59,6 +59,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
               child: getChatListDrawer(context),
             ),
             onEndDrawerChanged: (isOpened) {
+              setState(() {});
               if (!isOpened) {
                 setState(() {
                   _showCheckbox = false;
@@ -112,21 +113,53 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
       child: Column(children: [
         Container(
           color: Colors.white,
-          child: Center(
-              child: _showCheckbox
-                  ? TextButton(
-                      style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.red),
-                      onPressed: () {
-                        chatCompletionCubit.deleteMultipleChats(selectedChats);
-                        setState(() {
-                          selectedChats.clear();
-                          _showCheckbox = false;
-                        });
-                      },
-                      child: Text("Delete"))
-                  : TextButton(
+          child: _showCheckbox
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                      Expanded(
+                          child: Center(
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.red),
+                                onPressed: () {
+                                  chatCompletionCubit
+                                      .deleteMultipleChats(selectedChats);
+                                  setState(() {
+                                    selectedChats.clear();
+                                    _showCheckbox = false;
+                                  });
+                                },
+                                child: Text("Delete")),
+                            TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedChats.clear();
+                                    _showCheckbox = false;
+                                  });
+                                },
+                                child: Text("Cancel")),
+                          ]))),
+                      Checkbox(
+                          value: selectedChats.length == chats.length,
+                          onChanged: (value) {
+                            setState(() {
+                              if (value!) {
+                                selectedChats.clear();
+                                selectedChats.addAll(chats);
+                              } else {
+                                selectedChats.clear();
+                              }
+                            });
+                          }),
+                    ])
+              : Center(
+                  child: TextButton(
                       onPressed: () {
                         chatCompletionCubit.createNewChat();
                         setState(() {});

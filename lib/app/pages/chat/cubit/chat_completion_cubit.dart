@@ -170,7 +170,8 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   }
 
   void renameChat(
-    Chat chat, String newName,
+    Chat chat,
+    String newName,
   ) {
     chat.name = newName;
     emit(ChatCompletionChatSelected(state.chats, state.currentChat));
