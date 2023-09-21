@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:http/http.dart' as http;
 
-abstract class ApiServiceBase {
+abstract class ApiRepositoryBase {
   final Uri baseUrl;
 
-  ApiServiceBase(String baseUrl) : baseUrl = Uri.parse(baseUrl);
+  ApiRepositoryBase(String baseUrl) : baseUrl = Uri.parse(baseUrl);
 
   Future<http.Response> get(
     String endpoint,

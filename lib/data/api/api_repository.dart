@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:demux_app/data/api/abstract_api_service.dart';
+import 'package:demux_app/data/api/base_api_repository.dart';
 import 'package:http/http.dart' as http;
 
-class ApiService extends ApiServiceBase {
+class ApiRepository extends ApiRepositoryBase {
   static final _client = http.Client();
 
-  ApiService(super.baseUrl);
+  ApiRepository(super.baseUrl);
 
   @override
   Future<http.Response> get(

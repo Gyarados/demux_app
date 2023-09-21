@@ -2,20 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:demux_app/data/api/abstract_api_service.dart';
-import 'package:demux_app/data/api/api_service.dart';
-import 'package:demux_app/data/api/mocked_api_service.dart';
+import 'package:demux_app/data/api/base_api_repository.dart';
+import 'package:demux_app/data/api/api_repository.dart';
+import 'package:demux_app/data/api/mocked_api_repository.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:http/http.dart' as http;
 
-class OpenAiRepository {
-  ApiServiceBase apiService = USE_MOCK_API_SERVICE
-      ? MockedApiService(OPENAI_API_URL)
-      : ApiService(OPENAI_API_URL);
+class OpenAiService {
+  ApiRepositoryBase apiService = USE_MOCK_API_SERVICE
+      ? MockedApiRepository(OPENAI_API_URL)
+      : ApiRepository(OPENAI_API_URL);
 
-  OpenAiRepository();
+  OpenAiService();
 
   List<String> getImageUrlListFromResponse(http.Response response) {
     Map<String, dynamic> responseJson = jsonDecode(response.body);

@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:demux_app/data/api/abstract_api_service.dart';
+import 'package:demux_app/data/api/base_api_repository.dart';
 import 'package:http/http.dart' as http;
 
-class MockedApiService extends ApiServiceBase {
+class MockedApiRepository extends ApiRepositoryBase {
   Map<String, String> mockedImageUrls = {
     '1024x1024': 'https://i.imgur.com/0tkMZOt.png',
     '512x512': 'https://i.imgur.com/UDUgasP.png',
     '256x256': 'https://i.imgur.com/tBKMUlu_ERROR.png',
   };
 
-  MockedApiService(super.baseUrl);
+  MockedApiRepository(super.baseUrl);
 
   http.Response mockImageResults(Map<String, dynamic> body) {
     int quantity = body["n"] as int;

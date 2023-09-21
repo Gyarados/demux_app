@@ -3,6 +3,7 @@ import 'package:demux_app/app/pages/chat/chat_completion_page.dart';
 import 'package:demux_app/app/pages/images/image_edit_page.dart';
 import 'package:demux_app/app/pages/images/image_generation_page.dart';
 import 'package:demux_app/app/pages/images/image_variation_page.dart';
+import 'package:demux_app/app/pages/settings/app_settings_page.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,11 +18,12 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   int _selectedDrawerIndex = 0;
 
-  static List<OpenAIBasePage> pages = <OpenAIBasePage>[
+  static List<OpenAIBasePage> pages = [
     ChatCompletionPage(),
     ImageGenerationPage(),
     ImageEditPage(),
-    ImageVariationPage()
+    ImageVariationPage(),
+    AppSettingsPage()
   ];
 
   void _onDrawerItemTapped(int index) {
@@ -36,39 +38,43 @@ class _AppState extends State<App> {
 
   AppBar getAppBar(String titleText, BuildContext context) {
     return AppBar(
-      actions: [
-        IconButton(
-            onPressed: () async {
-              Uri apiReferenceUri = Uri.parse(getCurrentPage().apiReferenceUrl);
-              try {
-                if (await canLaunchUrl(apiReferenceUri)) {
-                  await launchUrl(apiReferenceUri,
-                      mode: LaunchMode.externalApplication);
-                } else {
-                  throw 'Could not launch $apiReferenceUri';
-                }
-              } catch (e) {
-                showSnackbar(e.toString(), context,
-                    criticality: MessageCriticality.error);
-              }
-            },
-            icon: Icon(
-              Icons.help_outline,
-              color: Colors.white,
-            ))
-      ],
+      actions: getCurrentPage().apiReferenceUrl != null
+          ? [
+              IconButton(
+                  onPressed: () async {
+                    Uri apiReferenceUri =
+                        Uri.parse(getCurrentPage().apiReferenceUrl!);
+                    try {
+                      if (await canLaunchUrl(apiReferenceUri)) {
+                        await launchUrl(apiReferenceUri,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch $apiReferenceUri';
+                      }
+                    } catch (e) {
+                      showSnackbar(e.toString(), context,
+                          criticality: MessageCriticality.error);
+                    }
+                  },
+                  icon: Icon(
+                    Icons.help_outline,
+                    color: Colors.white,
+                  ))
+            ]
+          : null,
       title: RichText(
         text: TextSpan(
           style: DefaultTextStyle.of(context).style,
           children: <TextSpan>[
             TextSpan(
-              text: '${getCurrentPage().pageName}\n', // \n creates a new line
+              text: getCurrentPage().pageName, // \n creates a new line
               style: TextStyle(fontSize: 18),
             ),
-            TextSpan(
-              text: getCurrentPage().pageEndpoint,
-              style: TextStyle(fontSize: 12),
-            ),
+            if (getCurrentPage().pageEndpoint != null)
+              TextSpan(
+                text: '\n${getCurrentPage().pageEndpoint}',
+                style: TextStyle(fontSize: 12),
+              ),
           ],
         ),
       ),
@@ -122,9 +128,7 @@ class _AppState extends State<App> {
       home: Scaffold(
         appBar: getAppBar("Demux", context),
         drawer: Builder(builder: (context) => getDrawer(context)),
-        body: Container(
-          color: Colors.blueGrey[700],
-          child: getCurrentPage()),
+        body: Container(color: Colors.blueGrey[700], child: getCurrentPage()),
       ),
     );
   }

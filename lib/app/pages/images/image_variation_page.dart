@@ -7,7 +7,7 @@ import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
-import 'package:demux_app/domain/openai_repository.dart';
+import 'package:demux_app/domain/openai_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -39,7 +39,7 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
   List<String> imageUrls = [];
 
   VariationImageResultsCubit imageResultsCubit = VariationImageResultsCubit();
-  final repository = OpenAiRepository();
+  final openAiService = OpenAiService();
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +127,7 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
     }
 
     try {
-      imageUrls = await repository.getImageVariations(
+      imageUrls = await openAiService.getImageVariations(
         image: selectedImage!,
         quantity: quantity,
         size: selectedImageSize,

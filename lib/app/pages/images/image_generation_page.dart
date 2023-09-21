@@ -4,7 +4,7 @@ import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
-import 'package:demux_app/domain/openai_repository.dart';
+import 'package:demux_app/domain/openai_service.dart';
 import 'package:flutter/material.dart';
 
 class ImageGenerationPage extends OpenAIBasePage {
@@ -33,7 +33,7 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
   List<String> imageUrls = [];
 
   GenerationImageResultsCubit imageResultsCubit = GenerationImageResultsCubit();
-  final repository = OpenAiRepository();
+  final openAiService = OpenAiService();
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
     }
 
     try {
-      imageUrls = await repository.getGeneratedImages(
+      imageUrls = await openAiService.getGeneratedImages(
           prompt: description, quantity: quantity, size: selectedImageSize);
 
       setState(() {});
