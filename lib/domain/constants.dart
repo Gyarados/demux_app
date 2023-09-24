@@ -1,7 +1,7 @@
 const String OPENAI_API_KEY = "";
 const String OPENAI_API_URL = "https://api.openai.com/";
 
-const bool USE_MOCK_API_SERVICE = true;
+const bool USE_MOCK_API_SERVICE = false;
 
 const String OPENAI_CHAT_COMPLETION_ENDPOINT = "/v1/chat/completions";
 const String OPENAI_CHAT_COMPLETION_REFERENCE =
