@@ -4,8 +4,11 @@ import 'package:demux_app/app/pages/images/image_edit_page.dart';
 import 'package:demux_app/app/pages/images/image_generation_page.dart';
 import 'package:demux_app/app/pages/images/image_variation_page.dart';
 import 'package:demux_app/app/pages/settings/app_settings_page.dart';
+import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
+import 'package:demux_app/data/models/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class App extends StatefulWidget {
@@ -16,6 +19,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final AppSettingsCubit appSettingsCubit = AppSettingsCubit();
   int _selectedDrawerIndex = 0;
 
   static List<OpenAIBasePage> pages = [
@@ -114,9 +118,14 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return BlocProvider(
+      create: (BuildContext context) => appSettingsCubit,
+      child: BlocBuilder<AppSettingsCubit, AppSettings>(
+      bloc: appSettingsCubit,
+      builder:(context, state) => MaterialApp(
       title: 'Demux',
       theme: ThemeData(
+          // brightness: state.isDarkMode ? Brightness.dark : Brightness.light,
           primarySwatch: Colors.blueGrey,
           primaryColor: Colors.blueGrey,
           textButtonTheme: TextButtonThemeData(
@@ -130,6 +139,6 @@ class _AppState extends State<App> {
         drawer: Builder(builder: (context) => getDrawer(context)),
         body: Container(color: Colors.blueGrey[700], child: getCurrentPage()),
       ),
-    );
+    )));
   }
 }

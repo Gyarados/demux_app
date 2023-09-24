@@ -20,10 +20,12 @@ class AppSettingsPage extends OpenAIBasePage {
 
 class _AppSettingsPageState extends State<AppSettingsPage> {
   late AppSettingsCubit appSettingsCubit;
+  final TextEditingController apiKeyController = TextEditingController();
 
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
+    apiKeyController.text = appSettingsCubit.getApiKey();
     super.initState();
   }
 
@@ -36,6 +38,14 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              TextField(
+                controller: apiKeyController,
+                decoration: InputDecoration(labelText: "OpenAI API Key"),
+                onChanged: (value) {
+                  appSettingsCubit.updateApiKey(value);
+                },
+              ),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -56,13 +66,6 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                 max: 30,
                 onChanged: (value) {
                   appSettingsCubit.updateFontSize(value);
-                },
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(labelText: "OpenAI API Key"),
-                onChanged: (value) {
-                  appSettingsCubit.updateApiKey(value);
                 },
               ),
             ],

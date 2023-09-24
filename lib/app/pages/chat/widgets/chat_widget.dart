@@ -42,7 +42,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   @override
   void initState() {
     streamController?.close();
-    chatCompletionCubit = BlocProvider.of(context);
+    chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
     scrollController.addListener(scrollListener);
     messagePromptFocusNode.addListener(messagePromptListener);
     needsScroll = true;
@@ -146,6 +146,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         setState(() {
           loading = false;
         });
+        showSnackbar(err.toString(), context, criticality: MessageCriticality.error);
       }, onDone: () {
         setState(() {
           loading = false;

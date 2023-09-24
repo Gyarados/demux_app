@@ -11,11 +11,13 @@ import 'package:demux_app/domain/constants.dart';
 import 'package:http/http.dart' as http;
 
 class OpenAiService {
+  String? apiKey;
+
   ApiRepositoryBase apiService = USE_MOCK_API_SERVICE
       ? MockedApiRepository(OPENAI_API_URL)
       : ApiRepository(OPENAI_API_URL);
 
-  OpenAiService();
+  OpenAiService({this.apiKey});
 
   List<String> getImageUrlListFromResponse(http.Response response) {
     Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -38,7 +40,7 @@ class OpenAiService {
 
   Map<String, String> getHeaders() {
     return {
-      "Authorization": "Bearer $OPENAI_API_KEY",
+      "Authorization": "Bearer ${apiKey ?? OPENAI_API_KEY}",
       "Content-Type": "application/json; charset=UTF-8",
     };
   }
@@ -136,7 +138,7 @@ class OpenAiService {
       getHeaders(),
       body,
     );
-
+    print(getHeaders());
     final streamController = StreamController<String>();
 
     streamedResponseFuture.then((streamedResponse) {
@@ -147,6 +149,17 @@ class OpenAiService {
       late StreamSubscription<dynamic> subscription;
       subscription = stream.listen((event) {
         String eventStr = event;
+        print(eventStr);
+        print(eventStr);
+        try {
+          Map<String, dynamic> eventObj = jsonDecode(eventStr);
+          if (eventObj.containsKey("error")) {
+            streamController.addError(eventObj);
+          }
+        } catch (e) {
+          // print(e);
+        }
+
         if (eventStr.contains("data")) {
           String? data = dataMapper(eventStr);
           if (data != null && !streamController.isClosed) {

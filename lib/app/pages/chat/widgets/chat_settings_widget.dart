@@ -61,7 +61,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget>{
 
   @override
   void initState() {
-    chatCompletionCubit = BlocProvider.of(context);
+    chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
     updateSettingsFromState(chatCompletionCubit.state);
     systemPromptFocusNode.addListener(systemPromptListener);
     super.initState();

@@ -1,4 +1,5 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/data/utils/custom_datetime.dart';
@@ -6,14 +7,19 @@ import 'package:demux_app/domain/openai_service.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
-  final openAiService = OpenAiService();
+  final AppSettingsCubit? appSettingsCubit;
+  final openAiService;
 
-  ChatCompletionCubit._(List<Chat> chats, Chat chat)
+  ChatCompletionCubit._(List<Chat> chats, Chat chat, this.openAiService,
+      {this.appSettingsCubit})
       : super(ChatCompletionInitial(chats, chat));
 
-  factory ChatCompletionCubit() {
+  factory ChatCompletionCubit(AppSettingsCubit appSettingsCubit) {
     final chat = Chat.initial();
-    return ChatCompletionCubit._([chat], chat);
+    OpenAiService openAiService =
+        OpenAiService(apiKey: appSettingsCubit.getApiKey());
+    return ChatCompletionCubit._([chat], chat, openAiService,
+        appSettingsCubit: appSettingsCubit);
   }
 
   void getChatCompletion(String userMessageContent) {

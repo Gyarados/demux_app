@@ -1,7 +1,8 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_widget.dart';
-import 'package:demux_app/app/pages/chat/widgets/settings_widget.dart';
+import 'package:demux_app/app/pages/chat/widgets/chat_settings_widget.dart';
+import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/base_openai_api_page.dart';
@@ -24,7 +25,9 @@ class ChatCompletionPage extends OpenAIBasePage {
 
 class _ChatCompletionPageState extends State<ChatCompletionPage>
     with SingleTickerProviderStateMixin {
-  ChatCompletionCubit chatCompletionCubit = ChatCompletionCubit();
+
+  late AppSettingsCubit appSettingsCubit;
+  late ChatCompletionCubit chatCompletionCubit;
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   List<Chat> chats = [];
@@ -38,6 +41,8 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
 
   @override
   void initState() {
+    appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
+    chatCompletionCubit = ChatCompletionCubit(appSettingsCubit);
     updateChatsFromState(chatCompletionCubit.state);
     super.initState();
   }
@@ -53,7 +58,6 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   !(previous is ChatCompletionMessagesSaved &&
                       current is ChatCompletionMessagesSaved),
               listener: (context, state) {
-                print("drawer listener called: $state");
                 updateChatsFromState(state);
               },
               child: getChatListDrawer(context),
