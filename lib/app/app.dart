@@ -118,9 +118,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => appSettingsCubit,
-      child: BlocBuilder<AppSettingsCubit, AppSettings>(
+    return BlocBuilder<AppSettingsCubit, AppSettings>(
       bloc: appSettingsCubit,
       builder:(context, state) => MaterialApp(
       title: 'Demux',
@@ -139,6 +137,6 @@ class _AppState extends State<App> {
         drawer: Builder(builder: (context) => getDrawer(context)),
         body: Container(color: Colors.blueGrey[700], child: getCurrentPage()),
       ),
-    )));
+    ));
   }
 }

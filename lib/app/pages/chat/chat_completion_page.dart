@@ -25,7 +25,6 @@ class ChatCompletionPage extends OpenAIBasePage {
 
 class _ChatCompletionPageState extends State<ChatCompletionPage>
     with SingleTickerProviderStateMixin {
-
   late AppSettingsCubit appSettingsCubit;
   late ChatCompletionCubit chatCompletionCubit;
 
@@ -42,61 +41,60 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
-    chatCompletionCubit = ChatCompletionCubit(appSettingsCubit);
+    chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
+    chatCompletionCubit.setApiKey(appSettingsCubit.getApiKey());
     updateChatsFromState(chatCompletionCubit.state);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => chatCompletionCubit,
-        child: Scaffold(
-            key: scaffoldKey,
-            endDrawer: BlocListener<ChatCompletionCubit, ChatCompletionState>(
-              listenWhen: (previous, current) =>
-                  !(previous is ChatCompletionMessagesSaved &&
-                      current is ChatCompletionMessagesSaved),
-              listener: (context, state) {
-                updateChatsFromState(state);
-              },
-              child: getChatListDrawer(context),
-            ),
-            onEndDrawerChanged: (isOpened) {
-              setState(() {});
-              if (!isOpened) {
-                setState(() {
-                  _showCheckbox = false;
-                  selectedChats.clear();
-                });
-                finishEditingChatName();
-              }
-            },
-            body: DefaultTabController(
-                length: 2,
-                child: Column(children: [
-                  Container(
-                      color: Colors.blueGrey,
-                      child: Row(children: [
-                        Expanded(
-                            child: TabBar(
-                          tabs: [
-                            Tab(
-                              text: "Chat",
-                            ),
-                            Tab(
-                              text: "Settings",
-                            )
-                          ],
-                        )),
-                        getChatListIconButton()
-                      ])),
-                  Expanded(
-                      child: TabBarView(children: [
-                    ChatWidget(),
-                    ChatSettingsWidget(),
+    return Scaffold(
+        key: scaffoldKey,
+        endDrawer: BlocListener<ChatCompletionCubit, ChatCompletionState>(
+          listenWhen: (previous, current) =>
+              !(previous is ChatCompletionMessagesSaved &&
+                  current is ChatCompletionMessagesSaved),
+          listener: (context, state) {
+            updateChatsFromState(state);
+          },
+          child: getChatListDrawer(context),
+        ),
+        onEndDrawerChanged: (isOpened) {
+          setState(() {});
+          if (!isOpened) {
+            setState(() {
+              _showCheckbox = false;
+              selectedChats.clear();
+            });
+            finishEditingChatName();
+          }
+        },
+        body: DefaultTabController(
+            length: 2,
+            child: Column(children: [
+              Container(
+                  color: Colors.blueGrey,
+                  child: Row(children: [
+                    Expanded(
+                        child: TabBar(
+                      tabs: [
+                        Tab(
+                          text: "Chat",
+                        ),
+                        Tab(
+                          text: "Settings",
+                        )
+                      ],
+                    )),
+                    getChatListIconButton()
                   ])),
-                ]))));
+              Expanded(
+                  child: TabBarView(children: [
+                ChatWidget(),
+                ChatSettingsWidget(),
+              ])),
+            ])));
   }
 
   Widget getChatListIconButton() {

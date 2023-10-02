@@ -405,6 +405,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                 launchUrl(Uri.parse(url!));
               },
               styleSheet: MarkdownStyleSheet(
+                  textScaleFactor: 1,
                   code: TextStyle(
                     color: Colors.blueGrey.shade100,
                     backgroundColor: Colors.grey.shade800,

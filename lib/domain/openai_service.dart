@@ -149,8 +149,6 @@ class OpenAiService {
       late StreamSubscription<dynamic> subscription;
       subscription = stream.listen((event) {
         String eventStr = event;
-        print(eventStr);
-        print(eventStr);
         try {
           Map<String, dynamic> eventObj = jsonDecode(eventStr);
           if (eventObj.containsKey("error")) {

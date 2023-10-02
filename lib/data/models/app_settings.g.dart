@@ -7,14 +7,14 @@ part of 'app_settings.dart';
 // **************************************************************************
 
 AppSettings _$AppSettingsFromJson(Map<String, dynamic> json) => AppSettings(
-      json['isDarkMode'] as bool,
-      (json['fontSize'] as num).toDouble(),
-      json['apiKey'] as String,
+      isDarkMode: json['isDarkMode'] as bool? ?? false,
+      textScaleFactor: (json['textScaleFactor'] as num?)?.toDouble() ?? 1,
+      apiKey: json['apiKey'] as String? ?? '',
     );
 
 Map<String, dynamic> _$AppSettingsToJson(AppSettings instance) =>
     <String, dynamic>{
       'isDarkMode': instance.isDarkMode,
-      'fontSize': instance.fontSize,
+      'textScaleFactor': instance.textScaleFactor,
       'apiKey': instance.apiKey,
     };

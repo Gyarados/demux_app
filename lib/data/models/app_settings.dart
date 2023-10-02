@@ -5,10 +5,10 @@ part 'app_settings.g.dart';
 @JsonSerializable()
 class AppSettings {
   bool isDarkMode;
-  double fontSize;
+  double textScaleFactor;
   String apiKey;
 
-  AppSettings(this.isDarkMode, this.fontSize, this.apiKey);
+  AppSettings({this.isDarkMode = false, this.textScaleFactor = 1, this.apiKey = ''});
 
   factory AppSettings.fromJson(Map<String, dynamic> json) =>
       _$AppSettingsFromJson(json);
@@ -21,5 +21,7 @@ List<Map<String, dynamic>> appSettingsListToJson(List<AppSettings> settings) {
 }
 
 List<AppSettings> jsonToAppSettingsList(List<dynamic> settingsJson) {
-  return settingsJson.map((settingJson) => AppSettings.fromJson(settingJson)).toList();
+  return settingsJson
+      .map((settingJson) => AppSettings.fromJson(settingJson))
+      .toList();
 }
