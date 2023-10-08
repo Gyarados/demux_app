@@ -12,7 +12,7 @@ AppBar getAppBar(
         ? [
             IconButton(
                 onPressed: () async {
-                  Uri apiReferenceUri = Uri.parse(apiReferenceUrl!);
+                  Uri apiReferenceUri = Uri.parse(apiReferenceUrl);
                   try {
                     if (await canLaunchUrl(apiReferenceUri)) {
                       await launchUrl(apiReferenceUri,

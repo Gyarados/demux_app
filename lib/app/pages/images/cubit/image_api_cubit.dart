@@ -7,27 +7,32 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 class ImageApiCubit extends HydratedCubit<ImageApiState> {
   final OpenAiService openAiService = OpenAiService();
 
-  ImageApiCubit() : super(ImageApiRequested());
+  ImageApiCubit() : super(ImageApiRequested([]));
 
   void setApiKey(String apiKey) {
     openAiService.apiKey = apiKey;
   }
 
-  void generateImage(
-    String prompt,
-    int quantity,
-    String size,
-  ) async {
+  Future<void> getGeneratedImages({
+    required String prompt,
+    required int quantity,
+    required String size,
+  }) async {
     List<String> imageUrls = await openAiService.getGeneratedImages(
       prompt: prompt,
       quantity: quantity,
       size: size,
     );
-    emit(ImageApiRequested());
+    emit(ImageApiRequested(imageUrls));
   }
 
-  void editImage(String prompt, int quantity, String size, Uint8List image,
-      Uint8List mask) async {
+  Future<void> getImageEdits({
+    required String prompt,
+    required int quantity,
+    required String size,
+    required Uint8List image,
+    required Uint8List mask,
+  }) async {
     List<String> imageUrls = await openAiService.getEditedImages(
       prompt: prompt,
       quantity: quantity,
@@ -35,29 +40,32 @@ class ImageApiCubit extends HydratedCubit<ImageApiState> {
       image: image,
       mask: mask,
     );
-    emit(ImageApiRequested());
+    emit(ImageApiRequested(imageUrls));
   }
 
-  void getImageVariations(
-    int quantity,
-    String size,
-    Uint8List image,
-  ) async {
+  Future<void> getImageVariations({
+    required int quantity,
+    required String size,
+    required Uint8List image,
+  }) async {
     List<String> imageUrls = await openAiService.getImageVariations(
       quantity: quantity,
       size: size,
       image: image,
     );
-    emit(ImageApiRequested());
+    emit(ImageApiRequested(imageUrls));
   }
 
   @override
   ImageApiState fromJson(Map<String, dynamic> json) {
-    return ImageApiRequested();
+    return ImageApiRequested(json['results'] as List<String>);
   }
 
   @override
   Map<String, dynamic>? toJson(ImageApiState state) {
+    if (state is ImageApiRequested) {
+      return {'results': state.urls};
+    }
     return null;
   }
 }

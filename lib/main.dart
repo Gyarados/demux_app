@@ -1,5 +1,4 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_cubit.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +24,18 @@ void main() async {
       BlocProvider<ChatCompletionCubit>(
         create: (BuildContext context) => ChatCompletionCubit(),
       ),
-      BlocProvider<ImageResultsCubit>(
-        create: (BuildContext context) => ImageResultsCubit(),
-      ),
-      BlocProvider<EditImageResultsCubit>(
-        create: (BuildContext context) => EditImageResultsCubit(),
-      ),
-      BlocProvider<VariationImageResultsCubit>(
-        create: (BuildContext context) => VariationImageResultsCubit(),
-      ),
-      BlocProvider<GenerationImageResultsCubit>(
-        create: (BuildContext context) => GenerationImageResultsCubit(),
-      ),
+      // BlocProvider<ImageResultsCubit>(
+      //   create: (BuildContext context) => ImageResultsCubit(),
+      // ),
+      // BlocProvider<EditImageResultsCubit>(
+      //   create: (BuildContext context) => EditImageResultsCubit(),
+      // ),
+      // BlocProvider<VariationImageResultsCubit>(
+      //   create: (BuildContext context) => VariationImageResultsCubit(),
+      // ),
+      // BlocProvider<GenerationImageResultsCubit>(
+      //   create: (BuildContext context) => GenerationImageResultsCubit(),
+      // ),
     ],
     child: const App(),
   ));

@@ -1,11 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:demux_app/app/pages/images/cubit/image_api_cubit.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
+import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
-import 'package:demux_app/domain/openai_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class ImageGenerationPage extends StatefulWidget {
@@ -26,8 +27,15 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
 
   List<String> imageUrls = [];
 
-  GenerationImageResultsCubit imageResultsCubit = GenerationImageResultsCubit();
-  final openAiService = OpenAiService();
+  GenerationImageApiCubit imageResultsCubit = GenerationImageApiCubit();
+  late AppSettingsCubit appSettingsCubit;
+
+  @override
+  void initState() {
+    appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
+    imageResultsCubit.setApiKey(appSettingsCubit.getApiKey());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +88,13 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
     }
 
     try {
-      imageUrls = await openAiService.getGeneratedImages(
-          prompt: description, quantity: quantity, size: selectedImageSize);
+      await imageResultsCubit.getGeneratedImages(
+        prompt: description,
+        quantity: quantity,
+        size: selectedImageSize,
+      );
 
       setState(() {});
-
-      imageResultsCubit.showImageResults(imageUrls);
     } catch (e) {
       showSnackbar(e.toString(), context,
           criticality: MessageCriticality.error);

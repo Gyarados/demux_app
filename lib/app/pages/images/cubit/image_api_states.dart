@@ -1,7 +1,8 @@
 sealed class ImageApiState {
-  ImageApiState();
+  final List<String> urls;
+  ImageApiState(this.urls);
 }
 
 class ImageApiRequested extends ImageApiState {
-  ImageApiRequested();
+  ImageApiRequested(super.urls);
 }

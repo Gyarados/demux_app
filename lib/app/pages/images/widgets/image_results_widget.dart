@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_states.dart';
+import 'package:demux_app/app/pages/images/cubit/image_api_cubit.dart';
+import 'package:demux_app/app/pages/images/cubit/image_api_states.dart';
 import 'package:demux_app/domain/storage_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:demux_app/app/pages/images/widgets/downloadable_image.dart';
@@ -49,8 +49,8 @@ void showDownloadsSnackbar(BuildContext context, Directory directory) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-Widget getImageResultsWidget(ImageResultsCubit cubit) {
-  return BlocBuilder<ImageResultsCubit, ImageResultsState>(
+Widget getImageResultsWidget(ImageApiCubit cubit) {
+  return BlocBuilder<ImageApiCubit, ImageApiState>(
     bloc: cubit,
     builder: (context, state) {
       List<DownloadableImage> downloadableImages = getImages(state.urls);

@@ -1,15 +1,16 @@
 import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:demux_app/app/pages/images/cubit/image_api_cubit.dart';
+import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/images/utils/image_processing.dart';
 import 'package:demux_app/app/pages/images/widgets/edit_area_painter.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
-import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
+import 'package:demux_app/app/pages/images/widgets/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
-import 'package:demux_app/domain/openai_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 @RoutePage()
@@ -35,8 +36,15 @@ class _ImageEditPageState extends State<ImageEditPage> {
 
   List<String> imageUrls = [];
 
-  EditImageResultsCubit imageResultsCubit = EditImageResultsCubit();
-  final openAiService = OpenAiService();
+  EditImageApiCubit imageResultsCubit = EditImageApiCubit();
+  late AppSettingsCubit appSettingsCubit;
+
+  @override
+  void initState() {
+    appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
+    imageResultsCubit.setApiKey(appSettingsCubit.getApiKey());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +145,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
     setState(() {});
 
     try {
-      imageUrls = await openAiService.getEditedImages(
+      await imageResultsCubit.getImageEdits(
         image: selectedImage!,
         mask: mask!,
         prompt: description,
@@ -146,8 +154,6 @@ class _ImageEditPageState extends State<ImageEditPage> {
       );
 
       setState(() {});
-
-      imageResultsCubit.showImageResults(imageUrls);
     } catch (e) {
       showSnackbar(e.toString(), context,
           criticality: MessageCriticality.error);
