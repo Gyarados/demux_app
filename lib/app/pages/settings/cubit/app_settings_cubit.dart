@@ -31,8 +31,13 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
     emit(newState);
   }
 
-  void resetSettings() {
-    final newState = AppSettings();
+  void resetTextScaleFactor() {
+    final newState = AppSettings(apiKey: state.apiKey);
+    emit(newState);
+  }
+
+  void resetOpenAIAPIKey() {
+    final newState = AppSettings(textScaleFactor: state.textScaleFactor);
     emit(newState);
   }
 

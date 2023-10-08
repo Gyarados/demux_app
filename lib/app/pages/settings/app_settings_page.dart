@@ -35,12 +35,25 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                controller: apiKeyController,
-                decoration: InputDecoration(labelText: "OpenAI API Key"),
-                onChanged: (value) {
-                  appSettingsCubit.updateApiKey(value);
-                },
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      obscureText: true,
+                      controller: apiKeyController,
+                      decoration: InputDecoration(labelText: "OpenAI API Key"),
+                      onChanged: (value) {
+                        appSettingsCubit.updateApiKey(value);
+                      },
+                    ),
+                  ),
+                  if (apiKeyController.text.isNotEmpty) IconButton(
+                      onPressed: () {
+                        apiKeyController.clear();
+                        appSettingsCubit.resetOpenAIAPIKey();
+                      },
+                      icon: Icon(Icons.close))
+                ],
               ),
               // SizedBox(height: 16),
               // Row(
@@ -56,28 +69,34 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
               //   ],
               // ),
               SizedBox(height: 16),
-              Text("Font Size: ${settings.textScaleFactor.toStringAsFixed(2)}"),
-              Slider(
-                value: settings.textScaleFactor,
-                min: 0.5,
-                max: 3,
-                onChanged: (value) {
-                  appSettingsCubit.updateTextScaleFactor(value);
-                },
+              Text(
+                  "Text Scale Factor: ${settings.textScaleFactor.toStringAsFixed(2)}"),
+              Row(
+                children: [
+                  Expanded(
+                      child: Slider(
+                    value: settings.textScaleFactor,
+                    min: 0.5,
+                    max: 3,
+                    onChanged: (value) {
+                      appSettingsCubit.updateTextScaleFactor(value);
+                    },
+                  )),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.red),
+                    child: Text('Reset'),
+                    onPressed: () {
+                      appSettingsCubit.resetTextScaleFactor();
+                      setState(() {
+                        apiKeyController.text = appSettingsCubit.getApiKey();
+                      });
+                    },
+                  )
+                ],
               ),
               SizedBox(height: 16),
-              Center(
-                  child: TextButton(
-                style: TextButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.red),
-                child: Text('Reset'),
-                onPressed: () {
-                  appSettingsCubit.resetSettings();
-                  setState(() {
-                    apiKeyController.text = appSettingsCubit.getApiKey();
-                  });
-                },
-              )),
               Expanded(
                   child: ListView(
                 children: [
