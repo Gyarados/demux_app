@@ -15,7 +15,7 @@ class ChatSettingsWidget extends StatefulWidget {
   State<ChatSettingsWidget> createState() => _ChatSettingsWidgetState();
 }
 
-class _ChatSettingsWidgetState extends State<ChatSettingsWidget>{
+class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   final systemPromptController = TextEditingController();
   final temperatureController = TextEditingController();
   final topPController = TextEditingController();

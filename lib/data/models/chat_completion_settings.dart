@@ -26,17 +26,16 @@ class ChatCompletionSettings {
   bool? systemPromptsAreVisible = true;
   bool? sendEmptyMessage = false;
 
-  ChatCompletionSettings({
-    required this.model,
-    this.temperature,
-    this.topP,
-    this.n,
-    this.stop,
-    this.maxTokens,
-    this.presencePenalty,
-    this.frequencyPenalty,
-    this.logitBias
-  });
+  ChatCompletionSettings(
+      {required this.model,
+      this.temperature,
+      this.topP,
+      this.n,
+      this.stop,
+      this.maxTokens,
+      this.presencePenalty,
+      this.frequencyPenalty,
+      this.logitBias});
 
   factory ChatCompletionSettings.fromJson(Map<String, dynamic> json) =>
       _$ChatCompletionSettingsFromJson(json);

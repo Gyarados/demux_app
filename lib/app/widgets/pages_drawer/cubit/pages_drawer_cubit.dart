@@ -18,11 +18,11 @@ class PagesDrawerCubit extends HydratedCubit<PageRoutes> {
     emit(route);
   }
 
-  PageRoutes getCurrentPage(){
+  PageRoutes getCurrentPage() {
     return state;
   }
 
-  bool isPageFromOpenAi(PageRoutes page){
+  bool isPageFromOpenAi(PageRoutes page) {
     return openAiPages.contains(page);
   }
 

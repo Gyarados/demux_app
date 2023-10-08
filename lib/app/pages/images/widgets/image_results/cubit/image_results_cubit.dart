@@ -1,11 +1,10 @@
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_states.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-
 class ImageResultsCubit extends HydratedCubit<ImageResultsState> {
   ImageResultsCubit() : super(ImageResultsReturned([]));
 
-  void showImageResults(List<String> urls){
+  void showImageResults(List<String> urls) {
     emit(ImageResultsReturned(urls));
   }
 
@@ -23,6 +22,8 @@ class ImageResultsCubit extends HydratedCubit<ImageResultsState> {
   }
 }
 
-class GenerationImageResultsCubit extends ImageResultsCubit{}
-class VariationImageResultsCubit extends ImageResultsCubit{}
-class EditImageResultsCubit extends ImageResultsCubit{}
+class GenerationImageResultsCubit extends ImageResultsCubit {}
+
+class VariationImageResultsCubit extends ImageResultsCubit {}
+
+class EditImageResultsCubit extends ImageResultsCubit {}

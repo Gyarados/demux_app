@@ -146,7 +146,8 @@ class _ChatWidgetState extends State<ChatWidget> {
         setState(() {
           loading = false;
         });
-        showSnackbar(err.toString(), context, criticality: MessageCriticality.error);
+        showSnackbar(err.toString(), context,
+            criticality: MessageCriticality.error);
       }, onDone: () {
         setState(() {
           loading = false;

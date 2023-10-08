@@ -218,11 +218,11 @@ Widget getImageEditAPISettings({
       ),
     if (selectedImage != null)
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child:SelectableAreaImage(
-        editAreaPainter,
-        removeSelectedImage,
-      )),
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: SelectableAreaImage(
+            editAreaPainter,
+            removeSelectedImage,
+          )),
     getSendButton(
         text: sendButtonText,
         sendButtonOnPressed: sendButtonOnPressed,
@@ -265,12 +265,12 @@ Widget getImageVariationAPISettings({
       ),
     if (selectedImage != null)
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child:SelectedImageWidget(
-        selectedImage: selectedImage,
-        loadingResults: loadingResults,
-        closeButtonOnPressed: closeButtonOnPressed,
-      )),
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: SelectedImageWidget(
+            selectedImage: selectedImage,
+            loadingResults: loadingResults,
+            closeButtonOnPressed: closeButtonOnPressed,
+          )),
     getSendButton(
         text: sendButtonText,
         sendButtonOnPressed: sendButtonOnPressed,

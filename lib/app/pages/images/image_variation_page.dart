@@ -13,7 +13,6 @@ import 'package:image_picker/image_picker.dart';
 
 @RoutePage()
 class ImageVariationPage extends StatefulWidget {
-
   ImageVariationPage();
 
   @override

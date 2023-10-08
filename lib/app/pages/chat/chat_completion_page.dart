@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class ChatCompletionPage extends StatefulWidget {
-
   ChatCompletionPage();
 
   @override

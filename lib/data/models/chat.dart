@@ -25,7 +25,6 @@ class Chat {
       this.name = "New chat",
       required this.lastUpdated})
       : uuid = uuid ?? UUIDGenerator.newUUID;
-        
 
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
 
@@ -33,10 +32,9 @@ class Chat {
 
   factory Chat.initial() {
     return Chat(
-      chatCompletionSettings: ChatCompletionSettings.initial(),
-      messages: [],
-      lastUpdated: RelativeDateTime.now()
-    );
+        chatCompletionSettings: ChatCompletionSettings.initial(),
+        messages: [],
+        lastUpdated: RelativeDateTime.now());
   }
 
   @override

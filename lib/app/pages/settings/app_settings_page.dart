@@ -8,7 +8,6 @@ import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
 
 @RoutePage()
 class AppSettingsPage extends StatefulWidget {
-
   AppSettingsPage();
 
   @override

@@ -24,7 +24,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     );
   }
 
-  void setApiKey(String apiKey){
+  void setApiKey(String apiKey) {
     openAiService.apiKey = apiKey;
   }
 

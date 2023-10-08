@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 
 @RoutePage()
 class ImageGenerationPage extends StatefulWidget {
-
   ImageGenerationPage();
 
   @override

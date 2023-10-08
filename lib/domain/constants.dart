@@ -19,7 +19,6 @@ const List<String> OPENAI_CHAT_COMPLETION_MODEL_LIST = [
 const String OPENAI_CHAT_COMPLETION_DEFAULT_MODEL = "gpt-3.5-turbo";
 const double OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE = 0.5;
 
-
 const String OPENAI_IMAGE_GENERATION_ENDPOINT = "/v1/images/generations";
 const String OPENAI_IMAGE_GENERATION_REFERENCE =
     "https://platform.openai.com/docs/api-reference/images/create";

@@ -8,7 +8,8 @@ class AppSettings {
   double textScaleFactor;
   String apiKey;
 
-  AppSettings({this.isDarkMode = false, this.textScaleFactor = 1, this.apiKey = ''});
+  AppSettings(
+      {this.isDarkMode = false, this.textScaleFactor = 1, this.apiKey = ''});
 
   factory AppSettings.fromJson(Map<String, dynamic> json) =>
       _$AppSettingsFromJson(json);

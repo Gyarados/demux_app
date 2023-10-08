@@ -16,7 +16,8 @@ class RangeInputFormatter extends TextInputFormatter {
   }
 }
 
-Widget getTemperatureInputWidget(TextEditingController temperatureController, bool loading, Function(String) onTemperatureChanged) {
+Widget getTemperatureInputWidget(TextEditingController temperatureController,
+    bool loading, Function(String) onTemperatureChanged) {
   return TextField(
     inputFormatters: [
       RangeInputFormatter(),

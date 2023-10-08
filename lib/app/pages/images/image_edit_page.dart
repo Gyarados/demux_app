@@ -14,7 +14,6 @@ import 'package:image_picker/image_picker.dart';
 
 @RoutePage()
 class ImageEditPage extends StatefulWidget {
-
   ImageEditPage();
 
   @override
@@ -149,7 +148,6 @@ class _ImageEditPageState extends State<ImageEditPage> {
       setState(() {});
 
       imageResultsCubit.showImageResults(imageUrls);
-
     } catch (e) {
       showSnackbar(e.toString(), context,
           criticality: MessageCriticality.error);

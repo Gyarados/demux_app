@@ -82,7 +82,7 @@ Widget getImageResultsWidget(ImageResultsCubit cubit) {
 
                             Directory directory =
                                 await downloadableImages.first.getDirectory();
-                            
+
                             showDownloadsSnackbar(context, directory);
                           }
                         : null,
