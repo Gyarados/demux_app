@@ -1,6 +1,7 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
+import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -15,6 +16,9 @@ void main() async {
 
   runApp(MultiBlocProvider(
     providers: [
+      BlocProvider<PagesDrawerCubit>(
+        create: (BuildContext context) => PagesDrawerCubit(),
+      ),
       BlocProvider<AppSettingsCubit>(
         create: (BuildContext context) => AppSettingsCubit(),
       ),

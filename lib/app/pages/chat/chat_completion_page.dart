@@ -1,23 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_widget.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_settings_widget.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/data/models/chat.dart';
-import 'package:demux_app/domain/constants.dart';
-import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatCompletionPage extends OpenAIBasePage {
-  @override
-  final String pageName = "Chat Completion";
-  @override
-  final String pageEndpoint = OPENAI_CHAT_COMPLETION_ENDPOINT;
-  @override
-  final String apiReferenceUrl = OPENAI_CHAT_COMPLETION_REFERENCE;
+@RoutePage()
+class ChatCompletionPage extends StatefulWidget {
 
-  ChatCompletionPage({super.key});
+  ChatCompletionPage();
 
   @override
   State<ChatCompletionPage> createState() => _ChatCompletionPageState();
@@ -186,6 +180,8 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   }
 
   void updateChatsFromState(ChatCompletionState state) {
+    print(state);
+    print(state.chats);
     setState(() {
       chats = state.chats;
       currentChat = state.currentChat;

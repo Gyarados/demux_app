@@ -49,4 +49,10 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
   Map<String, dynamic>? toJson(AppSettings state) {
     return state.toJson();
   }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    print(error);
+    super.onError(error, stackTrace);
+  }
 }

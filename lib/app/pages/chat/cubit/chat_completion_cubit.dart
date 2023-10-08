@@ -152,8 +152,6 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
 
   void deleteMultipleChats(List<Chat> chatsToDelete) {
     Chat currentChat = state.currentChat;
-    print(state.chats);
-    print(chatsToDelete);
     if (chatsToDelete.contains(currentChat)) {
       if (state.chats.length == chatsToDelete.length) {
         Chat newChat = Chat.initial();

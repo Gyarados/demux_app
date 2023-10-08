@@ -1,4 +1,4 @@
-import 'package:demux_app/app/pages/base_openai_api_page.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_widget.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/data/models/app_settings.dart';
@@ -6,15 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
 
-class AppSettingsPage extends OpenAIBasePage {
-  @override
-  final String pageName = "App Settings";
-  @override
-  final String? pageEndpoint = null;
-  @override
-  final String? apiReferenceUrl = null;
+@RoutePage()
+class AppSettingsPage extends StatefulWidget {
 
-  AppSettingsPage({super.key});
+  AppSettingsPage();
 
   @override
   State<AppSettingsPage> createState() => _AppSettingsPageState();
@@ -27,6 +22,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
+    apiKeyController.text = appSettingsCubit.getApiKey();
     super.initState();
   }
 

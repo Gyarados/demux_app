@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:demux_app/domain/constants.dart';
-import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/pages/images/utils/image_processing.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
@@ -11,15 +11,10 @@ import 'package:demux_app/domain/openai_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageVariationPage extends OpenAIBasePage {
-  @override
-  final String pageName = "Image Variation";
-  @override
-  final String pageEndpoint = OPENAI_IMAGE_VARIATION_ENDPOINT;
-  @override
-  final String apiReferenceUrl = OPENAI_IMAGE_VARIATION_REFERENCE;
+@RoutePage()
+class ImageVariationPage extends StatefulWidget {
 
-  ImageVariationPage({super.key});
+  ImageVariationPage();
 
   @override
   State<ImageVariationPage> createState() => _ImageVariationPageState();

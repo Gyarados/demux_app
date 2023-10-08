@@ -1,5 +1,5 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:demux_app/domain/constants.dart';
-import 'package:demux_app/app/pages/base_openai_api_page.dart';
 import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/cubit/image_results_cubit.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results/image_results_widget.dart';
@@ -7,15 +7,10 @@ import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:demux_app/domain/openai_service.dart';
 import 'package:flutter/material.dart';
 
-class ImageGenerationPage extends OpenAIBasePage {
-  @override
-  final String pageName = "Image Generation";
-  @override
-  final String pageEndpoint = OPENAI_IMAGE_GENERATION_ENDPOINT;
-  @override
-  final String apiReferenceUrl = OPENAI_IMAGE_GENERATION_REFERENCE;
+@RoutePage()
+class ImageGenerationPage extends StatefulWidget {
 
-  ImageGenerationPage({super.key});
+  ImageGenerationPage();
 
   @override
   State<ImageGenerationPage> createState() => _ImageGenerationPageState();
