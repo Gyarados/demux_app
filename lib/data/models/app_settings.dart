@@ -7,9 +7,14 @@ class AppSettings {
   bool isDarkMode;
   double textScaleFactor;
   String apiKey;
+  bool showIntroductionMessages;
 
-  AppSettings(
-      {this.isDarkMode = false, this.textScaleFactor = 1, this.apiKey = ''});
+  AppSettings({
+    this.isDarkMode = false,
+    this.textScaleFactor = 1,
+    this.apiKey = '',
+    this.showIntroductionMessages = true,
+  });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) =>
       _$AppSettingsFromJson(json);

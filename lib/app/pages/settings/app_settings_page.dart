@@ -17,11 +17,13 @@ class AppSettingsPage extends StatefulWidget {
 class _AppSettingsPageState extends State<AppSettingsPage> {
   late AppSettingsCubit appSettingsCubit;
   final TextEditingController apiKeyController = TextEditingController();
+  bool showIntroMessages = true;
 
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
     apiKeyController.text = appSettingsCubit.getApiKey();
+    showIntroMessages = appSettingsCubit.showIntroductionMessages();
     super.initState();
   }
 
@@ -35,68 +37,106 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      obscureText: true,
-                      controller: apiKeyController,
-                      decoration: InputDecoration(labelText: "OpenAI API Key"),
-                      onChanged: (value) {
-                        appSettingsCubit.updateApiKey(value);
-                      },
+              Container(
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        obscureText: true,
+                        controller: apiKeyController,
+                        decoration:
+                            InputDecoration(labelText: "OpenAI API Key"),
+                        onChanged: (value) {
+                          appSettingsCubit.updateApiKey(value);
+                        },
+                      ),
                     ),
-                  ),
-                  if (apiKeyController.text.isNotEmpty) IconButton(
-                      onPressed: () {
-                        apiKeyController.clear();
-                        appSettingsCubit.resetOpenAIAPIKey();
-                      },
-                      icon: Icon(Icons.close))
-                ],
+                    if (apiKeyController.text.isNotEmpty)
+                      IconButton(
+                          onPressed: () {
+                            apiKeyController.clear();
+                            appSettingsCubit.resetOpenAIAPIKey();
+                          },
+                          icon: Icon(Icons.close))
+                  ],
+                ),
               ),
-              // SizedBox(height: 16),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Text("Dark Mode"),
-              //     Switch(
-              //       value: settings.isDarkMode,
-              //       onChanged: (value) {
-              //         appSettingsCubit.updateDarkMode(value);
-              //       },
-              //     ),
-              //   ],
-              // ),
+
               SizedBox(height: 16),
-              Text(
-                  "Text Scale Factor: ${settings.textScaleFactor.toStringAsFixed(2)}"),
-              Row(
-                children: [
-                  Expanded(
-                      child: Slider(
-                    value: settings.textScaleFactor,
-                    min: 0.5,
-                    max: 3,
-                    onChanged: (value) {
-                      appSettingsCubit.updateTextScaleFactor(value);
-                    },
-                  )),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.red),
-                    child: Text('Reset'),
-                    onPressed: () {
-                      appSettingsCubit.resetTextScaleFactor();
-                      setState(() {
-                        apiKeyController.text = appSettingsCubit.getApiKey();
-                      });
-                    },
-                  )
-                ],
+
+              Container(
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: CheckboxListTile(
+                  contentPadding: EdgeInsets.all(0),
+                  title: Text("Show introduction messages"),
+                  value: showIntroMessages,
+                  onChanged: (newValue) {
+                    setState(() {
+                      showIntroMessages = newValue!;
+                      appSettingsCubit.toggleShowIntroductionMessages(newValue);
+                    });
+                  },
+                ),
               ),
+
               SizedBox(height: 16),
+
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        "Text Scale Factor: ${settings.textScaleFactor.toStringAsFixed(2)}"),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Slider(
+                          value: settings.textScaleFactor,
+                          min: 0.5,
+                          max: 3,
+                          onChanged: (value) {
+                            appSettingsCubit.updateTextScaleFactor(value);
+                          },
+                        )),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.red),
+                          child: Text('Reset'),
+                          onPressed: () {
+                            appSettingsCubit.resetTextScaleFactor();
+                            setState(() {
+                              apiKeyController.text =
+                                  appSettingsCubit.getApiKey();
+                            });
+                          },
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 16),
+
               Expanded(
                   child: ListView(
                 children: [

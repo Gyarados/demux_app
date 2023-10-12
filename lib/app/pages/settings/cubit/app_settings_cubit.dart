@@ -9,6 +9,7 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
       isDarkMode: isDarkMode,
       textScaleFactor: state.textScaleFactor,
       apiKey: state.apiKey,
+      showIntroductionMessages: state.showIntroductionMessages,
     );
     emit(newState);
   }
@@ -18,6 +19,7 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
       isDarkMode: state.isDarkMode,
       textScaleFactor: textScaleFactor,
       apiKey: state.apiKey,
+      showIntroductionMessages: state.showIntroductionMessages,
     );
     emit(newState);
   }
@@ -27,22 +29,50 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
       isDarkMode: state.isDarkMode,
       textScaleFactor: state.textScaleFactor,
       apiKey: apiKey,
+      showIntroductionMessages: state.showIntroductionMessages,
     );
     emit(newState);
   }
 
   void resetTextScaleFactor() {
-    final newState = AppSettings(apiKey: state.apiKey);
+    final newState = AppSettings(
+      apiKey: state.apiKey,
+      showIntroductionMessages: state.showIntroductionMessages,
+    );
     emit(newState);
   }
 
   void resetOpenAIAPIKey() {
-    final newState = AppSettings(textScaleFactor: state.textScaleFactor);
+    final newState = AppSettings(
+      textScaleFactor: state.textScaleFactor,
+      showIntroductionMessages: state.showIntroductionMessages,
+    );
     emit(newState);
+  }
+
+  void toggleShowIntroductionMessages(bool value) {
+    final newState = AppSettings(
+      apiKey: state.apiKey,
+      textScaleFactor: state.textScaleFactor,
+      showIntroductionMessages: value,
+    );
+    emit(newState);
+  }
+
+  bool showIntroductionMessages() {
+    return(state.showIntroductionMessages);
   }
 
   String getApiKey() {
     return state.apiKey;
+  }
+
+  bool apiKeyExists() {
+    return state.apiKey.isNotEmpty;
+  }
+
+  bool apiKeyIsMissing() {
+    return state.apiKey.isEmpty;
   }
 
   @override
