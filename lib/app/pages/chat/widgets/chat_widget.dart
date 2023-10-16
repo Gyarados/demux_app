@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
@@ -37,12 +38,14 @@ class _ChatWidgetState extends State<ChatWidget> {
   bool loading = false;
   bool systemPromptsAreVisible = true;
   late ChatCompletionCubit chatCompletionCubit;
+  late AppSettingsCubit appSettingsCubit;
   StreamController? streamController;
 
   @override
   void initState() {
     streamController?.close();
     chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
+    appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
     scrollController.addListener(scrollListener);
     messagePromptFocusNode.addListener(messagePromptListener);
     needsScroll = true;
@@ -411,7 +414,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                       launchUrl(Uri.parse(url!));
                     },
                     styleSheet: MarkdownStyleSheet(
-                        textScaleFactor: 1,
+                        textScaleFactor: appSettingsCubit.getTextScaleFactor(),
                         code: TextStyle(
                           color: Colors.blueGrey.shade900,
                           backgroundColor: Colors.transparent

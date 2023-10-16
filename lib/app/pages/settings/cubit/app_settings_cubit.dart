@@ -75,6 +75,10 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
     return state.apiKey.isEmpty;
   }
 
+  double getTextScaleFactor(){
+    return state.textScaleFactor;
+  }
+
   @override
   AppSettings? fromJson(Map<String, dynamic> json) {
     return AppSettings.fromJson(json);
