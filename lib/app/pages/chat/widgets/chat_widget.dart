@@ -400,21 +400,27 @@ class _ChatWidgetState extends State<ChatWidget> {
       title: messageBeingEdited == index
           ? getEditingMessageWidget(index)
           : SelectionArea(
-              child: MarkdownBody(
-              data: messages[index].content,
-              onTapLink: (text, url, title) {
-                launchUrl(Uri.parse(url!));
-              },
-              styleSheet: MarkdownStyleSheet(
-                  textScaleFactor: 1,
-                  code: TextStyle(
-                    color: Colors.blueGrey.shade100,
-                    backgroundColor: Colors.grey.shade800,
-                  ),
-                  codeblockDecoration: BoxDecoration(
-                      color: Colors.grey.shade800,
-                      borderRadius: BorderRadius.circular(5))),
-            )),
+              child: Theme(
+                  data: ThemeData(
+                      textSelectionTheme: const TextSelectionThemeData(
+                    selectionColor: Colors.blueGrey,
+                  )),
+                  child: MarkdownBody(
+                    data: messages[index].content,
+                    onTapLink: (text, url, title) {
+                      launchUrl(Uri.parse(url!));
+                    },
+                    styleSheet: MarkdownStyleSheet(
+                        textScaleFactor: 1,
+                        code: TextStyle(
+                          color: Colors.blueGrey.shade900,
+                          backgroundColor: Colors.transparent
+                        ),
+                        codeblockDecoration: BoxDecoration(
+                          color: Colors.blueGrey.shade100,
+                          borderRadius: BorderRadius.circular(5),
+                        )),
+                  ))),
     );
   }
 }

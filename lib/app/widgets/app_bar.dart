@@ -36,12 +36,12 @@ AppBar getAppBar(
         children: <TextSpan>[
           TextSpan(
             text: pageName, // \n creates a new line
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 18, color: Colors.white),
           ),
           if (pageEndpoint != null)
             TextSpan(
               text: '\n$pageEndpoint',
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 12, color: Colors.white),
             ),
         ],
       ),

@@ -131,11 +131,6 @@ class DownloadableImage extends StatelessWidget {
                 ));
           }, errorBuilder:
               (BuildContext context, Object exception, StackTrace? stackTrace) {
-            // FlutterError.onError = (FlutterErrorDetails details) {
-            //   if (details.library == 'image resource service') {
-            //     return;
-            //   }
-            // };
             return Padding(
                 padding: EdgeInsets.all(16),
                 child: Center(
