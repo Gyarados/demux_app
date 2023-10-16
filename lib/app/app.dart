@@ -11,6 +11,7 @@ import 'package:demux_app/app/widgets/pages_drawer/pages_drawer.dart';
 import 'package:demux_app/data/models/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -72,6 +73,7 @@ class _AppState extends State<App> {
         builder: (context, appSettingsState) => MaterialApp(
               title: 'Demux',
               theme: ThemeData(
+                  textTheme: GoogleFonts.manropeTextTheme(),
                   // brightness: state.isDarkMode ? Brightness.dark : Brightness.light,
                   primarySwatch: Colors.blueGrey,
                   primaryColor: Colors.blueGrey,

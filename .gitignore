@@ -10,7 +10,7 @@
 .svn/
 migrate_working_dir/
 *.txt
-icons
+/icons/
 
 # IntelliJ related
 *.iml
@@ -35,7 +35,6 @@ icons
 /build/
 
 # Web related
-lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
