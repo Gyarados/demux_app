@@ -5,7 +5,7 @@ name: Website Deploy
       - "main"
 
 env:
-  FLUTTER_VERSION: "3.10.6"
+  FLUTTER_VERSION: "3.13.0"
   AWS_REGION: "sa-east-1"
   S3_BUCKET_NAME: "demux-web-frontend"
   AMPLIFY_APP_ID: "d324ud9ks9dzb0"
