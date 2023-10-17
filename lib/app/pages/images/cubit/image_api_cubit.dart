@@ -58,13 +58,19 @@ class ImageApiCubit extends HydratedCubit<ImageApiState> {
 
   @override
   ImageApiState fromJson(Map<String, dynamic> json) {
-    return ImageApiRequested(json['results'] as List<String>);
+    return ImageApiRequested(
+      json['results'] as List<String>,
+      prompt: json['prompt'] as String?,
+    );
   }
 
   @override
   Map<String, dynamic>? toJson(ImageApiState state) {
     if (state is ImageApiRequested) {
-      return {'results': state.urls};
+      return {
+        'results': state.urls,
+        'prompt': state.prompt,
+      };
     }
     return null;
   }
