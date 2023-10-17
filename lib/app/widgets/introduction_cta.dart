@@ -1,3 +1,4 @@
+import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_states.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ class IntrodutionCTAWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     PagesDrawerCubit pagesDrawerCubit =
         BlocProvider.of<PagesDrawerCubit>(context);
+    AppSettingsCubit appSettingsCubit =
+        BlocProvider.of<AppSettingsCubit>(context);
     return Container(
       color: Colors.black54,
       child: Stack(
@@ -19,7 +22,7 @@ class IntrodutionCTAWidget extends StatelessWidget {
             child: IconButton(
               icon: Icon(Icons.close, color: Colors.white),
               onPressed: () {
-                // Implement your close action here
+                appSettingsCubit.toggleShowIntroductionMessages(false);
               },
             ),
           ),

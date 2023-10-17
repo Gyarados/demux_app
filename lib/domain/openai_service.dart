@@ -138,7 +138,6 @@ class OpenAiService {
       getHeaders(),
       body,
     );
-    print(getHeaders());
     final streamController = StreamController<String>();
 
     streamedResponseFuture.then((streamedResponse) {

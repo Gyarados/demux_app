@@ -188,8 +188,6 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   }
 
   void updateChatsFromState(ChatCompletionState state) {
-    print(state);
-    print(state.chats);
     setState(() {
       chats = state.chats;
       currentChat = state.currentChat;
