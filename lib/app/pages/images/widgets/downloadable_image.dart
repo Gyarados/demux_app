@@ -149,7 +149,7 @@ class DownloadableImage extends StatelessWidget {
                       Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: Text(
-                            'Failed to load image from URL. Either the URL has expired or internet connection failed.',
+                            'Failed to load image from URL',
                             style: TextStyle(
                               color: Colors.grey.shade500,
                               fontSize: 12,

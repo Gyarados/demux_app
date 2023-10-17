@@ -23,7 +23,7 @@ class ImageApiCubit extends HydratedCubit<ImageApiState> {
       quantity: quantity,
       size: size,
     );
-    emit(ImageApiRequested(imageUrls));
+    emit(ImageApiRequested(imageUrls, prompt: prompt));
   }
 
   Future<void> getImageEdits({
@@ -40,7 +40,7 @@ class ImageApiCubit extends HydratedCubit<ImageApiState> {
       image: image,
       mask: mask,
     );
-    emit(ImageApiRequested(imageUrls));
+    emit(ImageApiRequested(imageUrls, prompt: prompt));
   }
 
   Future<void> getImageVariations({
