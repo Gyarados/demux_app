@@ -35,3 +35,5 @@ const List<String> OPENAI_IMAGE_SIZE_LIST = [
   "512x512",
   "1024x1024",
 ];
+
+const String APP_VERSION = "0.0.1 (Alpha)";

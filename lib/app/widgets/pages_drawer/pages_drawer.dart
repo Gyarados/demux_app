@@ -1,7 +1,10 @@
+import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_states.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PagesDrawer extends StatefulWidget {
   const PagesDrawer({super.key});
@@ -107,17 +110,52 @@ class _PagesDrawerState extends State<PagesDrawer> {
           //   title: Text("Google API (Soon)"),
           // )
         ]),
-        ListTile(
-          leading: Icon(Icons.settings),
-          selectedTileColor: Colors.blueGrey,
-          selectedColor: Colors.white,
-          title: Text(PageRoutes.appSettings.pageName),
-          selected: pagesDrawerCubit.getCurrentPage() == PageRoutes.appSettings,
-          onTap: () {
-            pagesDrawerCubit.navigateTo(PageRoutes.appSettings);
-            Navigator.of(context).pop();
-          },
-        ),
+        Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          ListTile(
+            leading: Icon(Icons.settings),
+            selectedTileColor: Colors.blueGrey,
+            selectedColor: Colors.white,
+            title: Text(PageRoutes.appSettings.pageName),
+            selected:
+                pagesDrawerCubit.getCurrentPage() == PageRoutes.appSettings,
+            onTap: () {
+              pagesDrawerCubit.navigateTo(PageRoutes.appSettings);
+              Navigator.of(context).pop();
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.all(0),
+            dense: true,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(APP_VERSION),
+                Text("•"),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.black),
+                  child: Text("Desiderá Dev"),
+                  onPressed: () async {
+                    Uri uri = Uri.parse("https://www.desidera.dev");
+                    try {
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch $uri';
+                      }
+                    } catch (e) {
+                      showSnackbar(e.toString(), context,
+                          criticality: MessageCriticality.error);
+                    }
+                  },
+                )
+              ],
+            ),
+            onTap: null,
+          ),
+        ]),
       ]),
     );
   }
