@@ -43,7 +43,7 @@ class _PagesDrawerState extends State<PagesDrawer> {
             child: Image(image: AssetImage('assets/app_icon.png')),
           ),
           ExpansionTile(
-            title: Text("OpenAI"),
+            title: Text("OpenAI API"),
             initiallyExpanded: pagesDrawerCubit
                 .isPageFromOpenAi(pagesDrawerCubit.getCurrentPage()),
             children: [
@@ -100,12 +100,12 @@ class _PagesDrawerState extends State<PagesDrawer> {
           ListTile(
             title: Text("Claude API (Soon)"),
           ),
-          ListTile(
-            title: Text("Llama API (Soon)"),
-          ),
-          ListTile(
-            title: Text("Google API (Soon)"),
-          )
+          // ListTile(
+          //   title: Text("Llama API (Soon)"),
+          // ),
+          // ListTile(
+          //   title: Text("Google API (Soon)"),
+          // )
         ]),
         ListTile(
           leading: Icon(Icons.settings),
