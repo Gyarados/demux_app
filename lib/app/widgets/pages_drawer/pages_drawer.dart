@@ -135,7 +135,7 @@ class _PagesDrawerState extends State<PagesDrawer> {
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       foregroundColor: Colors.black),
-                  child: Text("Desiderá Dev"),
+                  child: Text("About us"),
                   onPressed: () async {
                     Uri uri = Uri.parse("https://www.desidera.dev");
                     try {
