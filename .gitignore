@@ -49,3 +49,6 @@ app.*.map.json
 
 # FVM
 .fvm/flutter_sdk
+
+# GCP
+demux-app-*.json
