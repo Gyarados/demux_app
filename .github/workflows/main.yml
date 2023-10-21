@@ -25,7 +25,7 @@ jobs:
       
       - name: Decode upload keystore
         run: |
-          echo -n ${{ secrets.UPLOAD_KEYSTORE_B64 }} | base64 --decode > /upload-keystore.jks
+          echo -n ${{ secrets.UPLOAD_KEYSTORE_B64 }} | base64 --decode > android/app/upload-keystore.jks
 
       - name: Configure key properties
         run: |
