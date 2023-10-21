@@ -13,8 +13,8 @@ env:
   S3_BUCKET_URL: "https://demux-web-frontend.s3.sa-east-1.amazonaws.com/"
 
 jobs:
-  build_web_files:
-    name: Build Flutter Web 
+  deploy_android:
+    name: Deploy Android 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,31 +23,62 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
       
-      - name: Get Packages
+      - name: Decode upload keystore
         run: |
-          flutter pub get
+          echo -n ${{ secrets.UPLOAD_KEYSTORE_B64 }} | base64 --decode > ~/upload-keystore.jks
 
-      - name: Build Web Application
+      - name: Configure key properties
         run: |
-          flutter build web --release
-        
-      - name: Zip files
+          cd android
+          cp key.properties.ci key.properties
+          sed -i 's/store-password-ci/${{ secrets.STORE_PASSWORD }}/' 'key.properties'
+          sed -i 's/key-password-ci/${{ secrets.KEY_PASSWORD }}/' 'key.properties'
+
+      - name: Build signed bundle
         run: |
-          mkdir build/zipped_build
-          cd build/web
-          zip -q -r ../zipped_build/demux_web_app . 
-        
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+          flutter build appbundle
+
+      - name: Archive bundle
+        uses: actions/upload-artifact@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          name: android-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
 
-      - name: Upload to S3
-        run: |
-          aws s3 cp build/zipped_build/demux_web_app.zip s3://${{ env.S3_BUCKET_NAME }}/demux_web_app.zip
+  # deploy_web:
+  #   name: Deploy Web 
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: Deploy to Amplify
-        run: |
-          aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.AMPLIFY_BRANCH_NAME }} --source-url "s3://${{ env.S3_BUCKET_NAME }}/demux_web_app.zip"
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: ${{ env.FLUTTER_VERSION }}
+      
+  #     - name: Get Packages
+  #       run: |
+  #         flutter pub get
+
+  #     - name: Build Web Application
+  #       run: |
+  #         flutter build web --release
+        
+  #     - name: Zip files
+  #       run: |
+  #         mkdir build/zipped_build
+  #         cd build/web
+  #         zip -q -r ../zipped_build/demux_web_app . 
+        
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ${{ env.AWS_REGION }}
+
+  #     - name: Upload to S3
+  #       run: |
+  #         aws s3 cp build/zipped_build/demux_web_app.zip s3://${{ env.S3_BUCKET_NAME }}/demux_web_app.zip
+
+  #     - name: Deploy to Amplify
+  #       run: |
+  #         aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.AMPLIFY_BRANCH_NAME }} --source-url "s3://${{ env.S3_BUCKET_NAME }}/demux_web_app.zip"
