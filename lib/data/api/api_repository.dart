@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:demux_app/data/api/base_api_repository.dart';
 import 'package:http/http.dart' as http;
+import 'package:demux_app/data/api/http_client/http_client.dart';
 
 class ApiRepository extends ApiRepositoryBase {
   static final _client = http.Client();
@@ -52,8 +53,9 @@ class ApiRepository extends ApiRepositoryBase {
     );
     request.headers.addAll(headers);
     request.body = jsonEncode(body);
-    Future<http.StreamedResponse> streamedResponseFuture =
-        _client.send(request);
+
+    var client = HttpClient();
+    Future<http.StreamedResponse> streamedResponseFuture = client.send(request);
     return streamedResponseFuture;
   }
 

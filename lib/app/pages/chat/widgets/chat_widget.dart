@@ -130,6 +130,12 @@ class _ChatWidgetState extends State<ChatWidget> {
     });
   }
 
+  void typeEllipsisWhileWaiting() {
+    setState(() {
+      messages.last.content = "...";
+    });
+  }
+
   void getStreamedResponse() async {
     try {
       setState(() {
@@ -137,6 +143,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         loading = true;
       });
       String assistantMessageContent = "";
+      typeEllipsisWhileWaiting();
       streamController!.stream.listen((event) {
         assistantMessageContent += event;
         setState(() {
@@ -416,9 +423,8 @@ class _ChatWidgetState extends State<ChatWidget> {
                     styleSheet: MarkdownStyleSheet(
                         textScaleFactor: appSettingsCubit.getTextScaleFactor(),
                         code: TextStyle(
-                          color: Colors.blueGrey.shade900,
-                          backgroundColor: Colors.transparent
-                        ),
+                            color: Colors.blueGrey.shade900,
+                            backgroundColor: Colors.transparent),
                         codeblockDecoration: BoxDecoration(
                           color: Colors.blueGrey.shade100,
                           borderRadius: BorderRadius.circular(5),
