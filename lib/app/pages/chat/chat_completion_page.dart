@@ -72,6 +72,11 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   child: Row(children: [
                     Expanded(
                         child: TabBar(
+                          indicatorPadding: EdgeInsets.all(3),
+                          dividerColor: Colors.blueGrey,
+                          labelColor: Colors.white,
+                          indicatorColor: Colors.white,
+                          unselectedLabelColor: Colors.white,
                       tabs: [
                         Tab(
                           text: "Chat",

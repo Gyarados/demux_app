@@ -47,5 +47,8 @@ AppBar getAppBar(
       ),
     ),
     toolbarHeight: 45,
+    backgroundColor: Colors.blueGrey,
+    shadowColor: Colors.black,
+    elevation: 3,
   );
 }

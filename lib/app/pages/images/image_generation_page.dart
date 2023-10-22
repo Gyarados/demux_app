@@ -44,7 +44,7 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
         getImageGenerationAPISettings(
           loadingResults: loading,
           selectedImageSize: selectedImageSize,
-          sendButtonText: "Get generations!",
+          sendButtonText: "Get generated images!",
           imageQuantityController: imageQuantityController,
           descriptionController: descriptionController,
           imageSizeOnChanged: imageSizeOnChanged,

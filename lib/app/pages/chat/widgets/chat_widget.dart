@@ -114,6 +114,8 @@ class _ChatWidgetState extends State<ChatWidget> {
         : Container(
             margin: EdgeInsets.only(bottom: 50),
             child: FloatingActionButton(
+              backgroundColor: Colors.blueGrey,
+              foregroundColor: Colors.white,
                 onPressed: () {
                   setState(() {
                     jumpToEnd();

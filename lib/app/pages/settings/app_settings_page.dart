@@ -109,6 +109,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                       children: [
                         Expanded(
                             child: Slider(
+                              activeColor: Colors.blueGrey,
                           value: settings.textScaleFactor,
                           min: 0.5,
                           max: 3,

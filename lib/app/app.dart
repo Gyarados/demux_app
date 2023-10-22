@@ -81,7 +81,15 @@ class _AppState extends State<App> {
                       style: TextButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.blueGrey,
-                          disabledBackgroundColor: Colors.grey.shade400))),
+                          disabledBackgroundColor: Colors.grey.shade400)),
+                  checkboxTheme: CheckboxThemeData(
+                      fillColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.selected)) {
+                      return Colors.blueGrey;
+                    } else {
+                      return Colors.transparent;
+                    }
+                  }))),
               debugShowCheckedModeBanner: false,
               home: BlocBuilder<PagesDrawerCubit, PageRoutes>(
                 builder: (context, pageRoute) => Scaffold(

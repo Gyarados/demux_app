@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/images/widgets/edit_area_painter.dart';
@@ -103,6 +104,8 @@ Widget getGalleryCameraImagePicker({
                   child: Padding(
                       padding: EdgeInsets.only(top: 0, right: 16, left: 16),
                       child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueGrey),
                         onPressed: loadingResults || loadingSelectedImage
                             ? null
                             : galleryOnPressed,
@@ -115,10 +118,12 @@ Widget getGalleryCameraImagePicker({
                           style: TextStyle(color: Colors.white),
                         ),
                       ))),
-              Expanded(
+              if(!kIsWeb) Expanded(
                   child: Padding(
                       padding: EdgeInsets.only(top: 0, right: 16, left: 16),
                       child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueGrey),
                         onPressed: loadingResults || loadingSelectedImage
                             ? null
                             : cameraOnPressed,
@@ -172,7 +177,7 @@ Widget getSendButton(
                         text,
                         style: TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          // fontWeight: FontWeight.bold,
                         ),
                       )),
           )));
