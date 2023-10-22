@@ -350,7 +350,7 @@ class _ChatWidgetState extends State<ChatWidget> {
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
-      horizontalTitleGap: 0,
+      // horizontalTitleGap: 0,
       tileColor: getMessageColor(messages[index].role),
       leading: GestureDetector(
           onTapDown: (details) => loading
@@ -400,13 +400,15 @@ class _ChatWidgetState extends State<ChatWidget> {
           child: Column(children: [
             Expanded(
                 child: Icon(
-              getMessageIcon(messages[index].role),
+              getMessageIcon(messages[index].role,
+              ),
+              color: Colors.blueGrey
             )),
-            Expanded(
-                child: Icon(
-              Icons.more_horiz,
-              color: Colors.black,
-            ))
+            // Expanded(
+            //     child: Icon(
+            //   Icons.more_horiz,
+            //   color: Colors.black,
+            // ))
           ])),
       titleAlignment: ListTileTitleAlignment.top,
       title: messageBeingEdited == index
