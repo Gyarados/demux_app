@@ -6,6 +6,7 @@ name: Website Deploy
 
 env:
   FLUTTER_VERSION: "3.16.0-0.3.pre"
+  FLUTTER_CHANNEL: "beta"
   AWS_REGION: "sa-east-1"
   S3_BUCKET_NAME: "demux-web-frontend"
   AMPLIFY_APP_ID: "d324ud9ks9dzb0"
@@ -13,37 +14,6 @@ env:
   S3_BUCKET_URL: "https://demux-web-frontend.s3.sa-east-1.amazonaws.com/"
 
 jobs:
-  deploy_android:
-    name: Deploy Android 
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-      
-      - name: Decode upload keystore
-        run: |
-          echo -n ${{ secrets.UPLOAD_KEYSTORE_B64 }} | base64 --decode > android/app/upload-keystore.jks
-
-      - name: Configure key properties
-        run: |
-          cd android
-          cp key.properties.ci key.properties
-          sed -i 's/store-password-ci/${{ secrets.STORE_PASSWORD }}/' 'key.properties'
-          sed -i 's/key-password-ci/${{ secrets.KEY_PASSWORD }}/' 'key.properties'
-
-      - name: Build signed bundle
-        run: |
-          flutter build appbundle
-
-      - name: Archive bundle
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-bundle
-          path: build/app/outputs/bundle/release/app-release.aab
-
   deploy_web:
     name: Deploy Web 
     runs-on: ubuntu-latest
@@ -53,6 +23,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
       
       - name: Get Packages
         run: |
@@ -82,3 +53,35 @@ jobs:
       - name: Deploy to Amplify
         run: |
           aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.AMPLIFY_BRANCH_NAME }} --source-url "s3://${{ env.S3_BUCKET_NAME }}/demux_web_app.zip"
+
+  deploy_android:
+    name: Deploy Android 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+                
+      - name: Decode upload keystore
+        run: |
+          echo -n ${{ secrets.UPLOAD_KEYSTORE_B64 }} | base64 --decode > android/app/upload-keystore.jks
+
+      - name: Configure key properties
+        run: |
+          cd android
+          cp key.properties.ci key.properties
+          sed -i 's/store-password-ci/${{ secrets.STORE_PASSWORD }}/' 'key.properties'
+          sed -i 's/key-password-ci/${{ secrets.KEY_PASSWORD }}/' 'key.properties'
+
+      - name: Build signed bundle
+        run: |
+          flutter build appbundle
+
+      - name: Archive bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
