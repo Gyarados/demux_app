@@ -114,8 +114,8 @@ class _ChatWidgetState extends State<ChatWidget> {
         : Container(
             margin: EdgeInsets.only(bottom: 50),
             child: FloatingActionButton(
-              backgroundColor: Colors.blueGrey,
-              foregroundColor: Colors.white,
+                backgroundColor: Colors.blueGrey,
+                foregroundColor: Colors.white,
                 onPressed: () {
                   setState(() {
                     jumpToEnd();
@@ -365,45 +365,46 @@ class _ChatWidgetState extends State<ChatWidget> {
                   ),
                   items: [
                       PopupMenuItem(
-                        child: TextButton(
-                          child: Text('Copy'),
-                          onPressed: () {
-                            Navigator.pop(context);
+                          onTap: () {
                             copyMessage(context, messages[index].content);
                           },
-                        ),
-                      ),
+                          padding: EdgeInsets.all(0),
+                          child: Center(
+                              child: Text(
+                            "Copy",
+                            textAlign: TextAlign.center,
+                          ))),
                       PopupMenuItem(
-                        child: TextButton(
-                          child: Text('Edit'),
-                          onPressed: () {
-                            Navigator.pop(context);
+                          onTap: () {
                             startEditingMessage(context, index);
                           },
-                        ),
-                      ),
+                          padding: EdgeInsets.all(0),
+                          child: Center(
+                              child: Text(
+                            "Edit",
+                            textAlign: TextAlign.center,
+                          ))),
                       PopupMenuItem(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.red),
-                          child: Text('Delete'),
-                          onPressed: () {
-                            Navigator.pop(context);
+                          onTap: () {
                             setState(() {
                               messages.removeAt(index);
                             });
                           },
-                        ),
-                      ),
+                          padding: EdgeInsets.all(0),
+                          child: Center(
+                              child: Text(
+                            "Delete",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.red),
+                          ))),
                     ]),
           child: Column(children: [
             Expanded(
                 child: Icon(
-              getMessageIcon(messages[index].role,
-              ),
-              color: Colors.blueGrey
-            )),
+                    getMessageIcon(
+                      messages[index].role,
+                    ),
+                    color: Colors.blueGrey)),
             // Expanded(
             //     child: Icon(
             //   Icons.more_horiz,
@@ -414,26 +415,21 @@ class _ChatWidgetState extends State<ChatWidget> {
       title: messageBeingEdited == index
           ? getEditingMessageWidget(index)
           : SelectionArea(
-              child: Theme(
-                  data: ThemeData(
-                      textSelectionTheme: const TextSelectionThemeData(
-                    selectionColor: Colors.blueGrey,
+              child: MarkdownBody(
+              data: messages[index].content,
+              onTapLink: (text, url, title) {
+                launchUrl(Uri.parse(url!));
+              },
+              styleSheet: MarkdownStyleSheet(
+                  textScaleFactor: appSettingsCubit.getTextScaleFactor(),
+                  code: TextStyle(
+                      color: Colors.blueGrey.shade900,
+                      backgroundColor: Colors.transparent),
+                  codeblockDecoration: BoxDecoration(
+                    color: Colors.blueGrey.shade100,
+                    borderRadius: BorderRadius.circular(5),
                   )),
-                  child: MarkdownBody(
-                    data: messages[index].content,
-                    onTapLink: (text, url, title) {
-                      launchUrl(Uri.parse(url!));
-                    },
-                    styleSheet: MarkdownStyleSheet(
-                        textScaleFactor: appSettingsCubit.getTextScaleFactor(),
-                        code: TextStyle(
-                            color: Colors.blueGrey.shade900,
-                            backgroundColor: Colors.transparent),
-                        codeblockDecoration: BoxDecoration(
-                          color: Colors.blueGrey.shade100,
-                          borderRadius: BorderRadius.circular(5),
-                        )),
-                  ))),
+            )),
     );
   }
 }

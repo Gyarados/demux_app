@@ -8,6 +8,7 @@ AppBar getAppBar(
     String? pageEndpoint,
     String? apiReferenceUrl}) {
   return AppBar(
+    iconTheme: IconThemeData(color: Colors.white),
     actions: apiReferenceUrl != null
         ? [
             IconButton(

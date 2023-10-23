@@ -13,6 +13,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+Widget buildRunnableApp({
+  required bool isWeb,
+  required double webAppWidth,
+  required Widget app,
+}) {
+  if (!isWeb) {
+    return app;
+  }
+
+  return Container(
+    color: Colors.blueGrey.shade100, // change this to your desired color
+    child: Center(
+      child: ClipRect(
+        child: SizedBox(
+          width: webAppWidth,
+          child: app,
+        ),
+      ),
+    ),
+  );
+}
+
+
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
@@ -73,10 +96,15 @@ class _AppState extends State<App> {
         builder: (context, appSettingsState) => MaterialApp(
               title: 'Demux',
               theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
                   textTheme: GoogleFonts.manropeTextTheme(),
                   // brightness: state.isDarkMode ? Brightness.dark : Brightness.light,
                   primarySwatch: Colors.blueGrey,
                   primaryColor: Colors.blueGrey,
+                  // hintColor: Colors.blueGrey,
+                  // focusColor: Colors.blueGrey,
+                  // indicatorColor: Colors.blueGrey,
+                  // scaffoldBackgroundColor: Colors.white,
                   textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
                           foregroundColor: Colors.white,

@@ -14,9 +14,10 @@ void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: kIsWeb
-      ? HydratedStorage.webStorageDirectory
-      : await getTemporaryDirectory(),);
+    storageDirectory: kIsWeb
+        ? HydratedStorage.webStorageDirectory
+        : await getTemporaryDirectory(),
+  );
 
   runApp(MultiBlocProvider(
     providers: [
@@ -42,6 +43,10 @@ void main() async {
       //   create: (BuildContext context) => GenerationImageResultsCubit(),
       // ),
     ],
-    child: const App(),
+    child: buildRunnableApp(
+      isWeb: kIsWeb,
+      webAppWidth: 1800,
+      app: const App(),
+    ),
   ));
 }

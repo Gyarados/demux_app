@@ -169,18 +169,19 @@ This is a simplified explanation, but it covers the basic idea. Would you like t
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
-      horizontalTitleGap: 0,
+      // horizontalTitleGap: 0,
       tileColor: getMessageColor(role),
       leading: Column(children: [
         Expanded(
             child: Icon(
           getMessageIcon(role),
+          color: Colors.blueGrey,
         )),
-        Expanded(
-            child: Icon(
-          Icons.more_horiz,
-          color: Colors.black,
-        ))
+        // Expanded(
+        //     child: Icon(
+        //   Icons.more_horiz,
+        //   color: Colors.black,
+        // ))
       ]),
       titleAlignment: ListTileTitleAlignment.top,
       title: SelectionArea(
