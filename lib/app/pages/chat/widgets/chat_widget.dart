@@ -319,8 +319,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         if (index == messages.length) {
           return loading || messages.isEmpty
               ? const SizedBox.shrink()
-              : Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 150),
+              : Center(
                   child: TextButton(
                       onPressed: sendContinueMessage, child: Text("Continue")));
         }
