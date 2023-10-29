@@ -72,11 +72,11 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   child: Row(children: [
                     Expanded(
                         child: TabBar(
-                          indicatorPadding: EdgeInsets.all(3),
-                          dividerColor: Colors.blueGrey,
-                          labelColor: Colors.white,
-                          indicatorColor: Colors.white,
-                          unselectedLabelColor: Colors.white,
+                      indicatorPadding: EdgeInsets.all(3),
+                      dividerColor: Colors.blueGrey,
+                      labelColor: Colors.white,
+                      indicatorColor: Colors.white,
+                      unselectedLabelColor: Colors.white,
                       tabs: [
                         Tab(
                           text: "Chat",
@@ -89,7 +89,9 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                     getChatListIconButton()
                   ])),
               Expanded(
-                  child: TabBarView(children: [
+                  child: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
                 Stack(
                   children: [
                     ChatWidget(),

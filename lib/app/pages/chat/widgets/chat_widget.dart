@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/chat/utils/copy_text.dart';
+import 'package:demux_app/app/pages/chat/utils/syntax_highlighter.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:demux_app/data/models/chat.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatWidget extends StatefulWidget {
@@ -285,16 +288,6 @@ class _ChatWidgetState extends State<ChatWidget> {
     );
   }
 
-  Future<void> copyMessage(BuildContext context, String message) async {
-    try {
-      await Clipboard.setData(ClipboardData(text: message));
-      showSnackbar('Message copied to your clipboard!', context);
-    } catch (e) {
-      showSnackbar('Failed to copy message', context,
-          criticality: MessageCriticality.error);
-    }
-  }
-
   void startEditingMessage(BuildContext context, int index) {
     setState(() {
       messageBeingEdited = index;
@@ -376,6 +369,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                       PopupMenuItem(
                           onTap: () {
                             startEditingMessage(context, index);
+                              chatCompletionCubit.saveCurrentMessages(messages);
                           },
                           padding: EdgeInsets.all(0),
                           child: Center(
@@ -387,6 +381,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                           onTap: () {
                             setState(() {
                               messages.removeAt(index);
+                              chatCompletionCubit.saveCurrentMessages(messages);
                             });
                           },
                           padding: EdgeInsets.all(0),
@@ -414,21 +409,30 @@ class _ChatWidgetState extends State<ChatWidget> {
       title: messageBeingEdited == index
           ? getEditingMessageWidget(index)
           : SelectionArea(
-              child: MarkdownBody(
-              data: messages[index].content,
-              onTapLink: (text, url, title) {
-                launchUrl(Uri.parse(url!));
+              onSelectionChanged: (selectedContent) {
+                print(md.markdownToHtml(messages[index].content));
               },
-              styleSheet: MarkdownStyleSheet(
+              child: MarkdownBody(
+                data: messages[index].content,
+                onTapText: () {},
+                onTapLink: (text, url, title) {
+                  launchUrl(Uri.parse(url!));
+                },
+                softLineBreak: false,
+                fitContent: false,
+                shrinkWrap: true,
+                builders: {
+                  'code': InlineCodeElementBuilder(
+                    textScaleFactor: appSettingsCubit.getTextScaleFactor(),
+                  ),
+                  // 'pre': CodeBlockElementBuilder(
+                  //   textScaleFactor: appSettingsCubit.getTextScaleFactor(),
+                  // ),
+                },
+                styleSheet: MarkdownStyleSheet(
                   textScaleFactor: appSettingsCubit.getTextScaleFactor(),
-                  code: TextStyle(
-                      color: Colors.blueGrey.shade900,
-                      backgroundColor: Colors.transparent),
-                  codeblockDecoration: BoxDecoration(
-                    color: Colors.blueGrey.shade100,
-                    borderRadius: BorderRadius.circular(5),
-                  )),
-            )),
+                ),
+              )),
     );
   }
 }

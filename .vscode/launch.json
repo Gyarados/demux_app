@@ -20,7 +20,7 @@
             "deviceId": "chrome",
             "request": "launch",
             "type": "dart",
-            "toolArgs": ["--web-port=8080", "--web-renderer=canvaskit"]
+            "toolArgs": ["--web-port=8081", "--web-renderer=canvaskit"]
         },
         {
             "name": "Chrome Browser HTML",
