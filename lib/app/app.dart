@@ -23,7 +23,7 @@ Widget buildRunnableApp({
   }
 
   return Container(
-    color: Colors.blueGrey.shade100, // change this to your desired color
+    color: Colors.blueGrey.shade200,
     child: Center(
       child: ClipRect(
         child: SizedBox(
@@ -97,7 +97,7 @@ class _AppState extends State<App> {
               title: 'Demux',
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-                  textTheme: GoogleFonts.manropeTextTheme(),
+                  textTheme: GoogleFonts.poppinsTextTheme(),
                   // brightness: state.isDarkMode ? Brightness.dark : Brightness.light,
                   primarySwatch: Colors.blueGrey,
                   primaryColor: Colors.blueGrey,

@@ -107,7 +107,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
       Row(
         children: [
           Expanded(
-            flex: 4,
+            flex: 8,
             child: DropdownButtonFormField(
               decoration: InputDecoration(
                 labelText: 'Model',
@@ -131,7 +131,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
             ),
           ),
           Expanded(
-            flex: 1,
+            flex: 3,
             child: getTemperatureInputWidget(
                 temperatureController, loading, onTemperatureChanged),
           ),

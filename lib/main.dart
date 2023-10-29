@@ -45,7 +45,7 @@ void main() async {
     ],
     child: buildRunnableApp(
       isWeb: kIsWeb,
-      webAppWidth: 1800,
+      webAppWidth: 1600,
       app: const App(),
     ),
   ));

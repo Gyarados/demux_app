@@ -1,6 +1,6 @@
 import 'package:demux_app/app/pages/chat/utils/copy_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlighter/themes/atom-one-light.dart';
+import 'package:flutter_highlighter/themes/atom-one-dark.dart';
 import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:google_fonts/google_fonts.dart';
@@ -30,6 +30,7 @@ class SelectableHighlightView extends StatelessWidget {
   /// Specify text styles such as font family and font size
   final TextStyle? textStyle;
   final double textScaleFactor;
+  final bool isCodeBlock;
 
   SelectableHighlightView(
     String input, {
@@ -39,6 +40,7 @@ class SelectableHighlightView extends StatelessWidget {
     this.textStyle,
     int tabSize = 8, // TODO: https://github.com/flutter/flutter/issues/50087
     required this.textScaleFactor,
+    required this.isCodeBlock,
   }) : source = input.replaceAll('\t', ' ' * tabSize);
 
   List<TextSpan> _convert(List<Node> nodes) {
@@ -93,7 +95,11 @@ class SelectableHighlightView extends StatelessWidget {
     }
 
     return Container(
-      color: theme[_rootKey]?.backgroundColor ?? _defaultBackgroundColor,
+      decoration: BoxDecoration(
+          color: theme[_rootKey]?.backgroundColor ?? _defaultBackgroundColor,
+          borderRadius: isCodeBlock
+              ? BorderRadius.vertical(bottom: Radius.circular(10))
+              : BorderRadius.circular(10)),
       padding: padding,
       child: Text.rich(
         softWrap: false,
@@ -107,20 +113,22 @@ class SelectableHighlightView extends StatelessWidget {
   }
 }
 
-
 class CodeElementBuilder extends MarkdownElementBuilder {
   double textScaleFactor;
+
+  Map<String, TextStyle> syntaxTheme = atomOneDarkTheme;
 
   CodeElementBuilder({required this.textScaleFactor});
 
   Widget getSelectableHighlightView(md.Element element,
-      {String language = ''}) {
+      {String language = '', bool isCodeBlock = false}) {
     return SelectableHighlightView(
       element.textContent,
       language: language,
-      theme: atomOneLightTheme,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      theme: syntaxTheme,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       textScaleFactor: textScaleFactor,
+      isCodeBlock: isCodeBlock,
       textStyle: GoogleFonts.jetBrainsMono(
         backgroundColor: Colors.transparent,
       ),
@@ -135,11 +143,14 @@ class CodeElementBuilder extends MarkdownElementBuilder {
     TextStyle? parentStyle,
   ) {
     var language = '';
-    if (element.attributes['class'] != null) {
+
+    bool isCodeBlock = element.attributes['class'] != null;
+
+    if (isCodeBlock) {
       String lg = element.attributes['class'] as String;
       language = lg.substring(9);
       var scrollController = ScrollController();
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Container(
           decoration: BoxDecoration(
               color: Colors.blueGrey.shade100,
@@ -157,28 +168,38 @@ class CodeElementBuilder extends MarkdownElementBuilder {
             iconColor: Colors.black,
           ),
         ),
-        Scrollbar(
-          controller: scrollController,
-          interactive: true,
-          thumbVisibility: true,
-          trackVisibility: true,
-          thickness: 8,
-          radius: Radius.circular(20),
-          scrollbarOrientation: ScrollbarOrientation.bottom,
-          child: SingleChildScrollView(
+        Container(
+            decoration: BoxDecoration(
+                color: syntaxTheme['root']?.backgroundColor,
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(10))),
+            child: Scrollbar(
               controller: scrollController,
-              physics: ScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              child: getSelectableHighlightView(
-                element,
-                language: language,
-              )),
-        ),
+              interactive: true,
+              thumbVisibility: true,
+              trackVisibility: true,
+              thickness: 8,
+              radius: Radius.circular(20),
+              scrollbarOrientation: ScrollbarOrientation.bottom,
+              child: SingleChildScrollView(
+                  controller: scrollController,
+                  physics: ScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  child: getSelectableHighlightView(
+                    element,
+                    language: language,
+                    isCodeBlock: isCodeBlock,
+                  )),
+            )),
       ]);
+    } else {
+      return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          child: getSelectableHighlightView(
+            element,
+            language: language,
+            isCodeBlock: isCodeBlock,
+          ));
     }
-    return getSelectableHighlightView(
-      element,
-      language: language,
-    );
   }
 }
