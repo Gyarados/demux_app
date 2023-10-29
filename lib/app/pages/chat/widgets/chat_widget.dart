@@ -10,10 +10,8 @@ import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
-import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatWidget extends StatefulWidget {
@@ -409,9 +407,6 @@ class _ChatWidgetState extends State<ChatWidget> {
       title: messageBeingEdited == index
           ? getEditingMessageWidget(index)
           : SelectionArea(
-              onSelectionChanged: (selectedContent) {
-                print(md.markdownToHtml(messages[index].content));
-              },
               child: MarkdownBody(
                 data: messages[index].content,
                 onTapText: () {},
@@ -422,12 +417,9 @@ class _ChatWidgetState extends State<ChatWidget> {
                 fitContent: false,
                 shrinkWrap: true,
                 builders: {
-                  'code': InlineCodeElementBuilder(
+                  'code': CodeElementBuilder(
                     textScaleFactor: appSettingsCubit.getTextScaleFactor(),
                   ),
-                  // 'pre': CodeBlockElementBuilder(
-                  //   textScaleFactor: appSettingsCubit.getTextScaleFactor(),
-                  // ),
                 },
                 styleSheet: MarkdownStyleSheet(
                   textScaleFactor: appSettingsCubit.getTextScaleFactor(),

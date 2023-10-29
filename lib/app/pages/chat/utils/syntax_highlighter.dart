@@ -70,7 +70,6 @@ class SelectableHighlightView extends StatelessWidget {
     for (var node in nodes) {
       _traverse(node);
     }
-    // if (spans.length > 1) spans.removeLast();
     return spans;
   }
 
@@ -108,62 +107,11 @@ class SelectableHighlightView extends StatelessWidget {
   }
 }
 
-class CodeBlockElementBuilder extends MarkdownElementBuilder {
+
+class CodeElementBuilder extends MarkdownElementBuilder {
   double textScaleFactor;
 
-  CodeBlockElementBuilder({required this.textScaleFactor});
-
-  @override
-  Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    var language = '';
-    print("element.tag = ${element.tag}");
-    print("element.attributes = ${element.attributes}");
-
-    if (element.attributes['class'] != null) {
-      String lg = element.attributes['class'] as String;
-      language = lg.substring(9);
-    }
-
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            color: Colors.blueGrey,
-            child: ListTile(
-              title: Text(language),
-              trailing: Icon(Icons.copy),
-              dense: true,
-              tileColor: Colors.green,
-            ),
-          ),
-          Scrollbar(
-              trackVisibility: true,
-              thickness: 8, //width of scrollbar
-              radius: Radius.circular(20), //corner radius of scrollbar
-              scrollbarOrientation: ScrollbarOrientation.bottom,
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SelectableHighlightView(
-                    element.textContent,
-                    language: language,
-                    theme: atomOneLightTheme,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    textScaleFactor: textScaleFactor,
-                    textStyle: GoogleFonts.jetBrainsMono(
-                      backgroundColor: Colors.transparent,
-                    ),
-                  )))
-        ]));
-  }
-}
-
-class InlineCodeElementBuilder extends MarkdownElementBuilder {
-  double textScaleFactor;
-
-  InlineCodeElementBuilder({required this.textScaleFactor});
+  CodeElementBuilder({required this.textScaleFactor});
 
   Widget getSelectableHighlightView(md.Element element,
       {String language = ''}) {
