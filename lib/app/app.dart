@@ -78,20 +78,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp.router(
-    //   title: 'Demux',
-    //   theme: ThemeData(
-    //       // brightness: state.isDarkMode ? Brightness.dark : Brightness.light,
-    //       primarySwatch: Colors.blueGrey,
-    //       primaryColor: Colors.blueGrey,
-    //       textButtonTheme: TextButtonThemeData(
-    //           style: TextButton.styleFrom(
-    //               foregroundColor: Colors.white,
-    //               backgroundColor: Colors.blueGrey,
-    //               disabledBackgroundColor: Colors.grey.shade400))),
-    //   debugShowCheckedModeBanner: false,
-    //   routerConfig: appRouter.config(),
-    // );
     return BlocBuilder<AppSettingsCubit, AppSettings>(
         builder: (context, appSettingsState) => MaterialApp(
               title: 'Demux',
@@ -105,6 +91,8 @@ class _AppState extends State<App> {
                   // focusColor: Colors.blueGrey,
                   // indicatorColor: Colors.blueGrey,
                   // scaffoldBackgroundColor: Colors.white,
+                  scrollbarTheme: ScrollbarThemeData(thumbColor: MaterialStateColor.resolveWith((states) => Colors.blueGrey.shade300),
+                  trackColor: MaterialStateColor.resolveWith((states) => Colors.transparent)),
                   textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
                           foregroundColor: Colors.white,
