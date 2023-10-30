@@ -60,7 +60,7 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
   }
 
   bool showIntroductionMessages() {
-    return(state.showIntroductionMessages);
+    return (state.showIntroductionMessages);
   }
 
   String getApiKey() {
@@ -75,7 +75,7 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
     return state.apiKey.isEmpty;
   }
 
-  double getTextScaleFactor(){
+  double getTextScaleFactor() {
     return state.textScaleFactor;
   }
 

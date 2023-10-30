@@ -35,7 +35,6 @@ Widget buildRunnableApp({
   );
 }
 
-
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
@@ -82,7 +81,7 @@ class _AppState extends State<App> {
         builder: (context, appSettingsState) => MaterialApp(
               title: 'Demux',
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+                  colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
                   textTheme: GoogleFonts.poppinsTextTheme(),
                   // brightness: state.isDarkMode ? Brightness.dark : Brightness.light,
                   primarySwatch: Colors.blueGrey,
@@ -91,8 +90,11 @@ class _AppState extends State<App> {
                   // focusColor: Colors.blueGrey,
                   // indicatorColor: Colors.blueGrey,
                   // scaffoldBackgroundColor: Colors.white,
-                  scrollbarTheme: ScrollbarThemeData(thumbColor: MaterialStateColor.resolveWith((states) => Colors.blueGrey.shade300),
-                  trackColor: MaterialStateColor.resolveWith((states) => Colors.transparent)),
+                  scrollbarTheme: ScrollbarThemeData(
+                      thumbColor: MaterialStateColor.resolveWith(
+                          (states) => Colors.blueGrey.shade300),
+                      trackColor: MaterialStateColor.resolveWith(
+                          (states) => Colors.transparent)),
                   textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
                           foregroundColor: Colors.white,

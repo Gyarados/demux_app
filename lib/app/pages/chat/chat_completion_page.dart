@@ -90,19 +90,19 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   ])),
               Expanded(
                   child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                Stack(
-                  children: [
-                    ChatWidget(),
-                    if (appSettingsCubit.showIntroductionMessages() &&
-                        appSettingsCubit.apiKeyIsMissing())
-                      IntrodutionCTAWidget(),
-                  ],
-                ),
-                // ChatWidget(),
-                ChatSettingsWidget(),
-              ])),
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                    Stack(
+                      children: [
+                        ChatWidget(),
+                        if (appSettingsCubit.showIntroductionMessages() &&
+                            appSettingsCubit.apiKeyIsMissing())
+                          IntrodutionCTAWidget(),
+                      ],
+                    ),
+                    // ChatWidget(),
+                    ChatSettingsWidget(),
+                  ])),
             ])));
   }
 

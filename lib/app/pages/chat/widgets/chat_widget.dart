@@ -340,90 +340,93 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   Widget chatMessageWidget(int index) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      child: Container(
-        decoration: BoxDecoration(
-            color: getMessageColor(messages[index].role),
-            borderRadius: BorderRadius.circular(10)),
-        child: ListTile(
-          dense: false,
-          contentPadding: EdgeInsets.only(left: 12, top: 0, bottom: 8, right: 12),
-          horizontalTitleGap: 0,
-          // tileColor: getMessageColor(messages[index].role),
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Icon(
-                getMessageIcon(
-                  messages[index].role,
-                ),
-                size: 35,
-                color: Colors.blueGrey),
-            MenuAnchor(
-              menuChildren: <Widget>[
-                MenuItemButton(
-                  child: Text("Copy"),
-                  onPressed: () {
-                    copyMessage(context, messages[index].content);
-                  },
-                ),
-                MenuItemButton(
-                  onPressed: () {
-                    startEditingMessage(context, index);
-                    chatCompletionCubit.saveCurrentMessages(messages);
-                  },
-                  child: Text("Edit"),
-                ),
-                MenuItemButton(
-                  onPressed: () {
-                    setState(() {
-                      messages.removeAt(index);
-                      chatCompletionCubit.saveCurrentMessages(messages);
-                    });
-                  },
-                  child: Text(
-                    "Delete",
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-              ],
-              builder: (BuildContext context, MenuController controller,
-                  Widget? child) {
-                return IconButton(
-                  onPressed: () {
-                    if (controller.isOpen) {
-                      controller.close();
-                    } else {
-                      controller.open();
-                    }
-                  },
-                  icon: Icon(Icons.more_vert),
-                );
-              },
-            ),
-          ]),
-          titleAlignment: ListTileTitleAlignment.top,
-          subtitle: messageBeingEdited == index
-              ? getEditingMessageWidget(index)
-              : SelectionArea(
-                  child: MarkdownBody(
-                  data: messages[index].content,
-                  onTapText: () {},
-                  onTapLink: (text, url, title) {
-                    launchUrl(Uri.parse(url!));
-                  },
-                  softLineBreak: false,
-                  fitContent: false,
-                  shrinkWrap: true,
-                  builders: {
-                    'code': CodeElementBuilder(
-                      textScaleFactor: appSettingsCubit.getTextScaleFactor(),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        child: Container(
+            decoration: BoxDecoration(
+                color: getMessageColor(messages[index].role),
+                borderRadius: BorderRadius.circular(10)),
+            child: ListTile(
+              dense: false,
+              contentPadding:
+                  EdgeInsets.only(left: 12, top: 0, bottom: 8, right: 12),
+              horizontalTitleGap: 0,
+              // tileColor: getMessageColor(messages[index].role),
+              title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                        getMessageIcon(
+                          messages[index].role,
+                        ),
+                        size: 35,
+                        color: Colors.blueGrey),
+                    MenuAnchor(
+                      menuChildren: <Widget>[
+                        MenuItemButton(
+                          child: Text("Copy"),
+                          onPressed: () {
+                            copyMessage(context, messages[index].content);
+                          },
+                        ),
+                        MenuItemButton(
+                          onPressed: () {
+                            startEditingMessage(context, index);
+                            chatCompletionCubit.saveCurrentMessages(messages);
+                          },
+                          child: Text("Edit"),
+                        ),
+                        MenuItemButton(
+                          onPressed: () {
+                            setState(() {
+                              messages.removeAt(index);
+                              chatCompletionCubit.saveCurrentMessages(messages);
+                            });
+                          },
+                          child: Text(
+                            "Delete",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                      builder: (BuildContext context, MenuController controller,
+                          Widget? child) {
+                        return IconButton(
+                          onPressed: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                          icon: Icon(Icons.more_vert),
+                        );
+                      },
                     ),
-                  },
-                  styleSheet: MarkdownStyleSheet(
-                    textScaleFactor: appSettingsCubit.getTextScaleFactor(),
-                  ),
-                )),
-        )));
+                  ]),
+              titleAlignment: ListTileTitleAlignment.top,
+              subtitle: messageBeingEdited == index
+                  ? getEditingMessageWidget(index)
+                  : SelectionArea(
+                      child: MarkdownBody(
+                      data: messages[index].content,
+                      onTapText: () {},
+                      onTapLink: (text, url, title) {
+                        launchUrl(Uri.parse(url!));
+                      },
+                      softLineBreak: false,
+                      fitContent: false,
+                      shrinkWrap: true,
+                      builders: {
+                        'code': CodeElementBuilder(
+                          textScaleFactor:
+                              appSettingsCubit.getTextScaleFactor(),
+                        ),
+                      },
+                      styleSheet: MarkdownStyleSheet(
+                        textScaleFactor: appSettingsCubit.getTextScaleFactor(),
+                      ),
+                    )),
+            )));
   }
 }
 

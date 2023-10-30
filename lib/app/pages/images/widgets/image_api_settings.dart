@@ -118,24 +118,25 @@ Widget getGalleryCameraImagePicker({
                           style: TextStyle(color: Colors.white),
                         ),
                       ))),
-              if(!kIsWeb) Expanded(
-                  child: Padding(
-                      padding: EdgeInsets.only(top: 0, right: 16, left: 16),
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueGrey),
-                        onPressed: loadingResults || loadingSelectedImage
-                            ? null
-                            : cameraOnPressed,
-                        icon: Icon(
-                          Icons.camera_alt,
-                          color: Colors.white,
-                        ),
-                        label: Text(
-                          "Camera",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ))),
+              if (!kIsWeb)
+                Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.only(top: 0, right: 16, left: 16),
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueGrey),
+                          onPressed: loadingResults || loadingSelectedImage
+                              ? null
+                              : cameraOnPressed,
+                          icon: Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                          ),
+                          label: Text(
+                            "Camera",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ))),
             ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

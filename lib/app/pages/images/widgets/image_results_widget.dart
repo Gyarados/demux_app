@@ -60,9 +60,10 @@ Widget getImageResultsWidget(ImageApiCubit cubit) {
           children: [
             if (state.prompt != null)
               Padding(
-              padding: EdgeInsets.all(10),
-                child: Text(state.prompt!,
-                  style: TextStyle(fontSize: 16, color: Colors.grey.shade200))),
+                  padding: EdgeInsets.all(10),
+                  child: Text(state.prompt!,
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.grey.shade200))),
             Padding(
               padding: EdgeInsets.all(10),
               child: Row(

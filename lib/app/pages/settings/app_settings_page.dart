@@ -69,9 +69,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   ],
                 ),
               ),
-
               SizedBox(height: 16),
-
               Container(
                 padding: EdgeInsets.only(
                   left: 16,
@@ -92,9 +90,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   },
                 ),
               ),
-
               SizedBox(height: 16),
-
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -109,7 +105,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                       children: [
                         Expanded(
                             child: Slider(
-                              activeColor: Colors.blueGrey,
+                          activeColor: Colors.blueGrey,
                           value: settings.textScaleFactor,
                           min: 0.5,
                           max: 3,
@@ -135,9 +131,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   ],
                 ),
               ),
-
               SizedBox(height: 16),
-
               Expanded(
                   child: ListView(
                 children: [
