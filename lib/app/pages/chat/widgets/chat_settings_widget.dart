@@ -152,36 +152,49 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           contentPadding: EdgeInsets.symmetric(vertical: 16),
         ),
       ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Show system prompts'),
-          Checkbox(
-            value: systemPromptsAreVisible,
-            onChanged: (newValue) {
-              setState(() {
-                systemPromptsAreVisible = newValue!;
-              });
-              chatCompletionCubit.saveShowSystemPrompt(systemPromptsAreVisible);
-            },
-          ),
-        ],
+      SizedBox(height: 16,),
+      Container(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+        ),
+        decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: CheckboxListTile(
+          contentPadding: EdgeInsets.all(0),
+          title: Text('Show system prompts'),
+          value: systemPromptsAreVisible,
+          onChanged: (newValue) {
+            setState(() {
+              systemPromptsAreVisible = newValue!;
+            });
+            chatCompletionCubit.saveShowSystemPrompt(systemPromptsAreVisible);
+          },
+        ),
       ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Send empty message'),
-          Checkbox(
-            value: sendEmptyMessage,
-            onChanged: (newValue) {
-              setState(() {
-                sendEmptyMessage = newValue!;
-              });
-              chatCompletionCubit.saveSendEmptyMessage(sendEmptyMessage);
-            },
-          ),
-        ],
+      SizedBox(height: 16,),
+      Container(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+        ),
+        decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: CheckboxListTile(
+          contentPadding: EdgeInsets.all(0),
+          title: Text("Send empty message"),
+          value: sendEmptyMessage,
+          onChanged: (newValue) {
+            setState(() {
+              sendEmptyMessage = newValue!;
+            });
+            chatCompletionCubit.saveSendEmptyMessage(sendEmptyMessage);
+          },
+        ),
       ),
+      SizedBox(height: 16,),
       TextButton(
         style: TextButton.styleFrom(
             foregroundColor: Colors.white, backgroundColor: Colors.red),

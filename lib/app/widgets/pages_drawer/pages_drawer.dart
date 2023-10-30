@@ -4,6 +4,7 @@ import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_states.dar
 import 'package:demux_app/domain/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PagesDrawer extends StatefulWidget {
@@ -15,10 +16,18 @@ class PagesDrawer extends StatefulWidget {
 
 class _PagesDrawerState extends State<PagesDrawer> {
   late PagesDrawerCubit pagesDrawerCubit;
+  String appVersion = '...';
 
   @override
   void initState() {
     pagesDrawerCubit = BlocProvider.of<PagesDrawerCubit>(context);
+    PackageInfo.fromPlatform().then((packageInfo) {
+      setState(() {
+        appVersion = packageInfo.version;
+      });
+    }).catchError((error, stackTrace) {
+      print("Error: $error");
+    });
     super.initState();
   }
 
@@ -129,7 +138,7 @@ class _PagesDrawerState extends State<PagesDrawer> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(APP_VERSION),
+                Text(appVersion),
                 Text("•"),
                 TextButton(
                   style: TextButton.styleFrom(
