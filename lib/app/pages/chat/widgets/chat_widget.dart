@@ -65,7 +65,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   messagePromptListener() {
     if (messagePromptFocusNode.hasFocus) {
       setState(() {
-        messagePromptMaxLines = 5;
+        messagePromptMaxLines = 10;
       });
     } else {
       setState(() {
@@ -100,10 +100,11 @@ class _ChatWidgetState extends State<ChatWidget> {
       return Scaffold(
         backgroundColor: Colors.blueGrey.shade200,
         floatingActionButton: getFloatingActionButton(),
-        body: Column(
+        body: Stack(
           children: [
-            Expanded(child: getChatMessages()),
-            getMessageControls(),
+            getChatMessages(),
+            Align(
+                alignment: Alignment.bottomCenter, child: getMessageControls()),
           ],
         ),
       );
@@ -192,36 +193,49 @@ class _ChatWidgetState extends State<ChatWidget> {
   }
 
   Widget getMessageControls() {
-    return Container(
-      padding: EdgeInsets.all(0.0),
-      decoration: BoxDecoration(
-          color: Colors.grey[200],
-          border: Border.all(color: Colors.blueGrey[200]!)),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-              enabled: !loading,
-              controller: userMessageController,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                hintText: "Message",
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+    return Padding(
+        padding: EdgeInsets.all(8),
+        child: Container(
+          padding: EdgeInsets.all(0.0),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 4,
+                  blurRadius: 5,
+                  offset: Offset(0, 0),
+                ),
+              ],
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
               ),
-              focusNode: messagePromptFocusNode,
-              maxLines: messagePromptMaxLines,
-              minLines: 1,
-              textCapitalization: TextCapitalization.sentences,
-            ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(
+                  enabled: !loading,
+                  controller: userMessageController,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    hintText: "Message",
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(4),
+                  ),
+                  focusNode: messagePromptFocusNode,
+                  maxLines: messagePromptMaxLines,
+                  minLines: 1,
+                  textCapitalization: TextCapitalization.sentences,
+                ),
+              ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.all(0),
+                icon: loading ? Icon(Icons.stop) : Icon(Icons.send),
+                onPressed: loading ? stopGenerating : sendMessage,
+              ),
+            ],
           ),
-          IconButton(
-            icon: loading ? Icon(Icons.stop) : Icon(Icons.send),
-            onPressed: loading ? stopGenerating : sendMessage,
-          ),
-        ],
-      ),
-    );
+        ));
   }
 
   void animateToEnd() async {
@@ -312,9 +326,15 @@ class _ChatWidgetState extends State<ChatWidget> {
         if (index == messages.length) {
           return loading || messages.isEmpty
               ? const SizedBox.shrink()
-              : Center(
-                  child: TextButton(
-                      onPressed: sendContinueMessage, child: Text("Continue")));
+              : Column(children: [
+                  Center(
+                      child: TextButton(
+                          onPressed: sendContinueMessage,
+                          child: Text("Continue"))),
+                  SizedBox(
+                    height: 56,
+                  )
+                ]);
         }
 
         if (!systemPromptsAreVisible && messages[index].role == "system") {
@@ -352,76 +372,78 @@ class _ChatWidgetState extends State<ChatWidget> {
               horizontalTitleGap: 0,
               // tileColor: getMessageColor(messages[index].role),
               title: Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child:Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.blueGrey.shade50,
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.all(6),
-                      child: Row(children: [
-                        Icon(
-                            getMessageIcon(
-                              messages[index].role,
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blueGrey.shade50,
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: EdgeInsets.all(6),
+                          child: Row(children: [
+                            Icon(
+                                getMessageIcon(
+                                  messages[index].role,
+                                ),
+                                size: 30,
+                                color: Colors.blueGrey),
+                            if (messages[index].modelUsed != null)
+                              SizedBox(
+                                width: 8,
+                              ),
+                            if (messages[index].modelUsed != null)
+                              Text(
+                                messages[index].modelUsed!,
+                                style: TextStyle(fontSize: 14),
+                              )
+                          ]),
+                        ),
+                        MenuAnchor(
+                          menuChildren: <Widget>[
+                            MenuItemButton(
+                              child: Text("Copy"),
+                              onPressed: () {
+                                copyMessage(context, messages[index].content);
+                              },
                             ),
-                            size: 30,
-                            color: Colors.blueGrey),
-                        if (messages[index].modelUsed != null)
-                          SizedBox(
-                            width: 8,
-                          ),
-                        if (messages[index].modelUsed != null)
-                          Text(
-                            messages[index].modelUsed!,
-                            style: TextStyle(fontSize: 14),
-                          )
-                      ]),
-                    ),
-                    MenuAnchor(
-                      menuChildren: <Widget>[
-                        MenuItemButton(
-                          child: Text("Copy"),
-                          onPressed: () {
-                            copyMessage(context, messages[index].content);
+                            MenuItemButton(
+                              onPressed: () {
+                                startEditingMessage(context, index);
+                                chatCompletionCubit
+                                    .saveCurrentMessages(messages);
+                              },
+                              child: Text("Edit"),
+                            ),
+                            MenuItemButton(
+                              onPressed: () {
+                                setState(() {
+                                  messages.removeAt(index);
+                                  chatCompletionCubit
+                                      .saveCurrentMessages(messages);
+                                });
+                              },
+                              child: Text(
+                                "Delete",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                          builder: (BuildContext context,
+                              MenuController controller, Widget? child) {
+                            return IconButton(
+                              onPressed: () {
+                                if (controller.isOpen) {
+                                  controller.close();
+                                } else {
+                                  controller.open();
+                                }
+                              },
+                              icon: Icon(Icons.more_vert),
+                            );
                           },
                         ),
-                        MenuItemButton(
-                          onPressed: () {
-                            startEditingMessage(context, index);
-                            chatCompletionCubit.saveCurrentMessages(messages);
-                          },
-                          child: Text("Edit"),
-                        ),
-                        MenuItemButton(
-                          onPressed: () {
-                            setState(() {
-                              messages.removeAt(index);
-                              chatCompletionCubit.saveCurrentMessages(messages);
-                            });
-                          },
-                          child: Text(
-                            "Delete",
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                      builder: (BuildContext context, MenuController controller,
-                          Widget? child) {
-                        return IconButton(
-                          onPressed: () {
-                            if (controller.isOpen) {
-                              controller.close();
-                            } else {
-                              controller.open();
-                            }
-                          },
-                          icon: Icon(Icons.more_vert),
-                        );
-                      },
-                    ),
-                  ])),
+                      ])),
               titleAlignment: ListTileTitleAlignment.top,
               subtitle: messageBeingEdited == index
                   ? getEditingMessageWidget(index)
