@@ -62,11 +62,9 @@ jobs:
       - name: Create and push tags
         run: |
           git tag "v${version_number}"
-          git push origin "v${version_number}"
-          git push --delete origin latest
+          git push origin :refs/tags/latest
           git tag latest
-          git push origin latest
-          
+          git push origin --tag
 
   deploy_web:
     name: Deploy Web 
