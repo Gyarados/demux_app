@@ -59,10 +59,14 @@ jobs:
         run: |
           git push origin HEAD:main
 
-      - name: Create and push tag
+      - name: Create and push tags
         run: |
-          git tag "v${version_number}+${build_number}"
-          git push origin "v${version_number}+${build_number}"
+          git tag "v${version_number}"
+          git push origin "v${version_number}"
+          git push --delete origin latest
+          git tag latest
+          git push origin latest
+          
 
   deploy_web:
     name: Deploy Web 
