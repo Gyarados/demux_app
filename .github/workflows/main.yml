@@ -18,6 +18,8 @@ jobs:
   update_version:
     name: Update Version
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
