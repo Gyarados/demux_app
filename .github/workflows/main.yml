@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up yq
         uses: mikefarah/yq@master
@@ -32,12 +32,13 @@ jobs:
           IFS='+' read -ra ADDR <<< "$version"
           version_number=${ADDR[0]}
           build_number=${ADDR[1]}
-          echo "::set-output name=version_number::$(echo $version_number | awk -F. -v OFS=. '{$NF++; print}')"
-          echo "::set-output name=build_number::$(($build_number + 1))"
+          echo "version_number=$(echo $version_number | awk -F. -v OFS=. '{$NF++; print}')" >> $GITHUB_ENV
+          echo "build_number=$(($build_number + 1))" >> $GITHUB_ENV
 
       - name: Write new version and build number
         run: |
-          yq e ".version = \"${{ steps.version.outputs.version_number }}+${{ steps.version.outputs.build_number }}\"" -i pubspec.yaml
+          yq e ".version = \"${version_number}+${build_number}\"" -i pubspec.yaml
+          cat pubspec.yaml
 
       - name: Commit changes
         run: |
@@ -57,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: update_version
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
@@ -98,7 +99,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: update_version
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
 
   #     - uses: subosito/flutter-action@v2
   #       with:
