@@ -348,18 +348,37 @@ class _ChatWidgetState extends State<ChatWidget> {
             child: ListTile(
               dense: false,
               contentPadding:
-                  EdgeInsets.only(left: 12, top: 0, bottom: 8, right: 12),
+                  EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
               horizontalTitleGap: 0,
               // tileColor: getMessageColor(messages[index].role),
-              title: Row(
+              title: Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child:Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                        getMessageIcon(
-                          messages[index].role,
-                        ),
-                        size: 35,
-                        color: Colors.blueGrey),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.blueGrey.shade50,
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: EdgeInsets.all(6),
+                      child: Row(children: [
+                        Icon(
+                            getMessageIcon(
+                              messages[index].role,
+                            ),
+                            size: 30,
+                            color: Colors.blueGrey),
+                        if (messages[index].modelUsed != null)
+                          SizedBox(
+                            width: 8,
+                          ),
+                        if (messages[index].modelUsed != null)
+                          Text(
+                            messages[index].modelUsed!,
+                            style: TextStyle(fontSize: 14),
+                          )
+                      ]),
+                    ),
                     MenuAnchor(
                       menuChildren: <Widget>[
                         MenuItemButton(
@@ -402,7 +421,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                         );
                       },
                     ),
-                  ]),
+                  ])),
               titleAlignment: ListTileTitleAlignment.top,
               subtitle: messageBeingEdited == index
                   ? getEditingMessageWidget(index)

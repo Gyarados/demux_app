@@ -60,7 +60,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
       chat.messages,
     );
 
-    Message assistantMessage = Message("assistant", "");
+    Message assistantMessage = Message("assistant", "", modelUsed: chat.chatCompletionSettings.model);
     chat.messages.add(assistantMessage);
 
     emit(ChatCompletionReturned(

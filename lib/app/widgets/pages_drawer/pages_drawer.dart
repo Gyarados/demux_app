@@ -1,7 +1,6 @@
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_states.dart';
-import 'package:demux_app/domain/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
