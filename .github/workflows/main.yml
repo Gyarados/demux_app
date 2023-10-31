@@ -49,7 +49,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add pubspec.yaml
-          git commit -m "[skip ci] Update version in pubspec.yaml"
+          git commit -m "[skip ci] Version ${{ steps.version.outputs.version_number }}"
 
       - name: Push changes
         run: |
@@ -57,7 +57,7 @@ jobs:
 
       - name: Create and push tags
         run: |
-          git tag "v${version_number}"
+          git tag "v${{ steps.version.outputs.version_number }}"
           git push origin :refs/tags/latest
           git tag latest
           git push origin --tag
