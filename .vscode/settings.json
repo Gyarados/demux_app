@@ -8,5 +8,6 @@
     "files.watcherExclude": {
       "**/.fvm": true
     },
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "git.pullTags": false
   }
