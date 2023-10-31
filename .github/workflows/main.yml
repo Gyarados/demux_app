@@ -1,8 +1,8 @@
 name: Deploy Demux App
-"on":
+on:
   push:
-    branches:
-      - "main"
+    tags:
+      - 'release'
 
 env:
   FLUTTER_VERSION: "3.16.0-0.3.pre"
@@ -49,18 +49,30 @@ jobs:
           git add pubspec.yaml
           git commit -m "[skip ci] Update version in pubspec.yaml"
 
+      # - name: Push changes
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: ${{ github.ref }}
+
       - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        run: |
+          git push origin
+
+      - name: Create and push tag
+        run: |
+          git tag "v${version_number}+${build_number}"
+          git push origin "v${version_number}+${build_number}"
 
   deploy_web:
     name: Deploy Web 
     runs-on: ubuntu-latest
     needs: update_version
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: subosito/flutter-action@v2
         with:
@@ -101,7 +113,10 @@ jobs:
   #   runs-on: ubuntu-latest
   #   needs: update_version
   #   steps:
-  #     - uses: actions/checkout@v4
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     ref: main
 
   #     - uses: subosito/flutter-action@v2
   #       with:
