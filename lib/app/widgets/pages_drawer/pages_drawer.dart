@@ -109,7 +109,7 @@ class _PagesDrawerState extends State<PagesDrawer> {
             ],
           ),
           ListTile(
-            title: Text("Claude API (Soon)"),
+            title: Text("Anthropic API (Soon)", style: TextStyle(color: Colors.black26),),
           ),
           // ListTile(
           //   title: Text("Llama API (Soon)"),
