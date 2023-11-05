@@ -29,6 +29,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   FocusNode messageEditFocusNode = FocusNode();
   FocusNode messagePromptFocusNode = FocusNode();
   int messagePromptMaxLines = 1;
+  double messagePromptPadding = 0;
   bool needsScroll = false;
   bool isScrollAtTop = true;
   bool isScrollAtBottom = true;
@@ -66,10 +67,12 @@ class _ChatWidgetState extends State<ChatWidget> {
     if (messagePromptFocusNode.hasFocus) {
       setState(() {
         messagePromptMaxLines = 10;
+        messagePromptPadding = 12;
       });
     } else {
       setState(() {
         messagePromptMaxLines = 1;
+        messagePromptPadding = 0;
       });
     }
   }
@@ -99,10 +102,9 @@ class _ChatWidgetState extends State<ChatWidget> {
       messages = currentChat.messages;
       return Scaffold(
         backgroundColor: Colors.blueGrey.shade200,
-        floatingActionButton: getFloatingActionButton(),
         body: Stack(
           children: [
-            getChatMessages(),
+            getChatMessagesV3(),
             Align(
                 alignment: Alignment.bottomCenter, child: getMessageControls()),
           ],
@@ -115,13 +117,13 @@ class _ChatWidgetState extends State<ChatWidget> {
     return isScrollAtBottom
         ? null
         : Container(
-            margin: EdgeInsets.only(bottom: 50),
+            margin: EdgeInsets.only(bottom: 60),
             child: FloatingActionButton(
                 backgroundColor: Colors.blueGrey,
                 foregroundColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    jumpToEnd();
+                    animateToEnd();
                   });
                 },
                 mini: true,
@@ -167,7 +169,6 @@ class _ChatWidgetState extends State<ChatWidget> {
         setState(() {
           loading = false;
         });
-        // chatCompletionCubit.saveCurrentMessages(messages);
       });
     } catch (e) {
       showSnackbar(e.toString(), context,
@@ -195,20 +196,22 @@ class _ChatWidgetState extends State<ChatWidget> {
   Widget getMessageControls() {
     return Padding(
         padding: EdgeInsets.all(8),
-        child: Container(
-          padding: EdgeInsets.all(0.0),
+        child: AnimatedContainer(
+          curve: Curves.bounceInOut,
+          duration: Duration(milliseconds: 200),
+          padding: EdgeInsets.all(messagePromptPadding),
           decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  spreadRadius: 4,
-                  blurRadius: 5,
-                  offset: Offset(0, 0),
-                ),
-              ],
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                spreadRadius: 4,
+                blurRadius: 5,
+                offset: Offset(0, 0),
               ),
+            ],
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Row(
             children: <Widget>[
               Expanded(
@@ -238,10 +241,10 @@ class _ChatWidgetState extends State<ChatWidget> {
         ));
   }
 
-  void animateToEnd() async {
+  void animateToEnd({int milliseconds = 500}) async {
     scrollController.animateTo(
       scrollController.position.maxScrollExtent,
-      duration: Duration(seconds: 1),
+      duration: Duration(milliseconds: milliseconds),
       curve: Curves.easeInOut,
     );
   }
@@ -316,34 +319,53 @@ class _ChatWidgetState extends State<ChatWidget> {
     FocusScope.of(context).unfocus();
   }
 
-  Widget getChatMessages() {
-    return ListView.builder(
-      shrinkWrap: false,
-      padding: EdgeInsets.all(8),
-      controller: scrollController,
-      itemCount: messages.length + 1,
-      itemBuilder: (context, index) {
-        if (index == messages.length) {
-          return loading || messages.isEmpty
-              ? const SizedBox.shrink()
-              : Column(children: [
-                  Center(
-                      child: TextButton(
-                          onPressed: sendContinueMessage,
-                          child: Text("Continue"))),
-                  SizedBox(
-                    height: 56,
-                  )
-                ]);
-        }
+  Widget chatMessagesItemBuilder(BuildContext context, int index) {
+    if (index == messages.length) {
+      return loading || messages.isEmpty
+          ? const SizedBox.shrink()
+          : Center(
+              child: TextButton(
+                onPressed: sendContinueMessage,
+                child: Text("Continue"),
+              ),
+            );
+    }
 
-        if (!systemPromptsAreVisible && messages[index].role == "system") {
-          return const SizedBox.shrink();
-        }
+    if (!systemPromptsAreVisible && messages[index].role == "system") {
+      return const SizedBox.shrink();
+    }
 
-        return chatMessageWidget(index);
-      },
-    );
+    return chatMessageWidget(index);
+  }
+
+  List<Widget> chatMessagesWidgetList(BuildContext context) {
+    List<Widget> messageWidgetList = [];
+    messages.asMap().forEach((index, message) {
+      var messageWidget = chatMessagesItemBuilder(context, index);
+      messageWidgetList.add(messageWidget);
+    });
+    var continueWidget = chatMessagesItemBuilder(context, messages.length);
+    messageWidgetList.add(continueWidget);
+    return messageWidgetList;
+  }
+
+  Widget getChatMessagesV3() {
+    return Scaffold(
+        backgroundColor: Colors.blueGrey.shade200,
+        floatingActionButton: getFloatingActionButton(),
+        body: SingleChildScrollView(
+          physics: ClampingScrollPhysics(),
+          padding: EdgeInsets.all(8),
+          controller: scrollController,
+          child: Column(
+            children: [
+              ...chatMessagesWidgetList(context),
+              Container(
+                height: 90,
+              )
+            ],
+          ),
+        ));
   }
 
   void sendContinueMessage() {
@@ -370,7 +392,6 @@ class _ChatWidgetState extends State<ChatWidget> {
               contentPadding:
                   EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
               horizontalTitleGap: 0,
-              // tileColor: getMessageColor(messages[index].role),
               title: Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: Row(
