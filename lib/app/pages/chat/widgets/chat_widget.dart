@@ -87,8 +87,9 @@ class _ChatWidgetState extends State<ChatWidget> {
     return BlocConsumer<ChatCompletionCubit, ChatCompletionState>(
         listener: (context, state) {
       if (state is ChatCompletionChatSelected) {
-        loading = false;
         stopGenerating();
+        loading = false;
+        needsScroll = true;
       }
       if (state is ChatCompletionReturned) {
         loading = true;
