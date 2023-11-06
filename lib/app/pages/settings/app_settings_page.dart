@@ -98,6 +98,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   max: 3,
                   divisions: 25,
                   defaultValue: 1,
+                  currentValue: settings.textScaleFactor,
                   onChanged: (value) =>
                       appSettingsCubit.updateTextScaleFactor(value),
                   onReset: () => appSettingsCubit.resetTextScaleFactor()),

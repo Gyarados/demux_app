@@ -4,6 +4,7 @@ class DoubleSliderWidget extends StatefulWidget {
   final double min;
   final double max;
   final double defaultValue;
+  final double currentValue;
   final String label;
   final int divisions;
   final Function onChanged;
@@ -14,6 +15,7 @@ class DoubleSliderWidget extends StatefulWidget {
       required this.max,
       required this.divisions,
       required this.defaultValue,
+      required this.currentValue,
       required this.label,
       required this.onChanged,
       required this.onReset});
@@ -23,7 +25,7 @@ class DoubleSliderWidget extends StatefulWidget {
 }
 
 class _DoubleSliderWidgetState extends State<DoubleSliderWidget> {
-  late double _currentValue = widget.defaultValue;
+  late double _currentValue = widget.currentValue;
 
   @override
   void initState() {
