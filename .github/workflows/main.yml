@@ -142,5 +142,5 @@ jobs:
       - name: Archive bundle
         uses: actions/upload-artifact@v3
         with:
-          name: android-bundle
+          name: android-bundle-${{ needs.update_version.outputs.build_number }}
           path: build/app/outputs/bundle/release/app-release-${{ needs.update_version.outputs.build_number }}.aab
