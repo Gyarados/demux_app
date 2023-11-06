@@ -60,7 +60,8 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
       chat.messages,
     );
 
-    Message assistantMessage = Message("assistant", "", modelUsed: chat.chatCompletionSettings.model);
+    Message assistantMessage =
+        Message("assistant", "", modelUsed: chat.chatCompletionSettings.model);
     chat.messages.add(assistantMessage);
 
     emit(ChatCompletionReturned(
@@ -85,6 +86,44 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     Chat chat = state.currentChat;
     chat.chatCompletionSettings.temperature = temperature;
     emit(ChatCompletionSettingsSaved(state.chats, chat));
+  }
+
+  void saveFrequencyPenalty(
+    String value,
+  ) {
+    Chat chat = state.currentChat;
+    if (value.isEmpty) {
+      chat.chatCompletionSettings.frequencyPenalty = null;
+      emit(ChatCompletionSettingsSaved(state.chats, chat));
+    } else {
+      double? frequencyPenalty;
+      try {
+        frequencyPenalty = double.parse(value);
+      } catch (e) {
+        return;
+      }
+      chat.chatCompletionSettings.frequencyPenalty = frequencyPenalty;
+      emit(ChatCompletionSettingsSaved(state.chats, chat));
+    }
+  }
+
+  void savePresencePenalty(
+    String value,
+  ) {
+    Chat chat = state.currentChat;
+    if (value.isEmpty) {
+      chat.chatCompletionSettings.presencePenalty = null;
+      emit(ChatCompletionSettingsSaved(state.chats, chat));
+    } else {
+      double? presencePenalty;
+      try {
+        presencePenalty = double.parse(value);
+      } catch (e) {
+        return;
+      }
+      chat.chatCompletionSettings.presencePenalty = presencePenalty;
+      emit(ChatCompletionSettingsSaved(state.chats, chat));
+    }
   }
 
   void saveSystemPrompt(

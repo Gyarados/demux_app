@@ -1,6 +1,6 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
-import 'package:demux_app/app/pages/chat/widgets/temperature_input_widget.dart';
+import 'package:demux_app/app/pages/chat/widgets/double_input_widget.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/domain/constants.dart';
@@ -59,11 +59,36 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     }
   }
 
+  temperatureListener() {
+    chatCompletionCubit.saveTemperature(temperatureController.text);
+  }
+
+  frequencyPenaltyListener() {
+    chatCompletionCubit.saveFrequencyPenalty(frequencyPenaltyController.text);
+  }
+
+  presencePenaltyListener() {
+    chatCompletionCubit.savePresencePenalty(presencePenaltyController.text);
+  }
+  //   logitBiasListener() {
+  //   chatCompletionCubit.saveLogitBias(logitBiasController.text);
+  // }
+  //   maxTokensListener() {
+  //   chatCompletionCubit.saveMaxTokens(maxTokensController.text);
+  // }
+
   @override
   void initState() {
     chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
     updateSettingsFromState(chatCompletionCubit.state);
     systemPromptFocusNode.addListener(systemPromptListener);
+
+    temperatureController.addListener(temperatureListener);
+    frequencyPenaltyController.addListener(frequencyPenaltyListener);
+    presencePenaltyController.addListener(presencePenaltyListener);
+    // logitBiasController.addListener(logitBiasListener);
+    // maxTokensController.addListener(maxTokensListener);
+
     super.initState();
   }
 
@@ -71,6 +96,8 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   void dispose() {
     systemPromptController.dispose();
     temperatureController.dispose();
+    frequencyPenaltyController.dispose();
+    presencePenaltyController.dispose();
     super.dispose();
   }
 
@@ -93,49 +120,46 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     selectedModel = chatCompletionSettings.model;
     systemPromptController.text = chatCompletionSettings.systemPrompt ?? "";
     temperatureController.text = chatCompletionSettings.temperature.toString();
+
+    frequencyPenaltyController.text = chatCompletionSettings.frequencyPenalty != null? chatCompletionSettings.frequencyPenalty.toString() : "";
+    presencePenaltyController.text = chatCompletionSettings.presencePenalty != null? chatCompletionSettings.presencePenalty.toString() : "";
+
     systemPromptsAreVisible =
         chatCompletionSettings.systemPromptsAreVisible ?? true;
     sendEmptyMessage = chatCompletionSettings.sendEmptyMessage ?? false;
   }
 
-  void onTemperatureChanged(String value) {
-    chatCompletionCubit.saveTemperature(temperatureController.text);
-  }
-
   List<Widget> getSettingsInputWidgets() {
     return [
-      Row(
-        children: [
-          Expanded(
-            flex: 8,
-            child: DropdownButtonFormField(
-              decoration: InputDecoration(
-                labelText: 'Model',
-                contentPadding: EdgeInsets.all(0.0),
-              ),
-              value: selectedModel,
-              onChanged: !loading
-                  ? (String? value) {
-                      setState(() {
-                        selectedModel = value!;
-                      });
-                      chatCompletionCubit.saveSelectedModel(selectedModel);
-                    }
-                  : null,
-              items: modelList.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: getTemperatureInputWidget(
-                temperatureController, loading, onTemperatureChanged),
-          ),
-        ],
+      DropdownButtonFormField(
+        decoration: InputDecoration(
+          labelText: 'Model',
+        ),
+        value: selectedModel,
+        onChanged: !loading
+            ? (String? value) {
+                setState(() {
+                  selectedModel = value!;
+                });
+                chatCompletionCubit.saveSelectedModel(selectedModel);
+              }
+            : null,
+        items: modelList.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+      SizedBox(
+        height: 16,
+      ),
+      DoubleInputWidget(
+        temperatureController,
+        label: "Temperature",
+        min: 0,
+        max: 2,
+        allowNull: false,
       ),
       TextField(
         focusNode: systemPromptFocusNode,
@@ -152,7 +176,43 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           contentPadding: EdgeInsets.symmetric(vertical: 16),
         ),
       ),
-      SizedBox(height: 16,),
+      SizedBox(
+        height: 16,
+      ),
+      Container(
+          decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(10)),
+          child: ExpansionTile(
+            title: Text("Advanced settings"),
+            shape: InputBorder.none,
+            children: [
+              Padding(
+                  padding: EdgeInsets.all(8),
+                  child: DoubleInputWidget(
+                    frequencyPenaltyController,
+                    label: "Frequency penalty",
+                    min: -2,
+                    max: 2,
+                  )),
+              Padding(
+                  padding: EdgeInsets.all(8),
+                  child: DoubleInputWidget(
+                    presencePenaltyController,
+                    label: "Presence penalty",
+                    min: -2,
+                    max: 2,
+                  )),
+              // Text("Logit bias"),
+              // Text("Max tokens"),
+              // Text("N"),
+              // Text("Stop sequences"),
+              // Text("Top P"),
+            ],
+          )),
+      SizedBox(
+        height: 16,
+      ),
       Container(
         padding: EdgeInsets.only(
           left: 16,
@@ -160,7 +220,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
         ),
         decoration: BoxDecoration(
             color: Colors.grey.shade300,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
+            borderRadius: BorderRadius.circular(10)),
         child: CheckboxListTile(
           contentPadding: EdgeInsets.all(0),
           title: Text('Show system prompts'),
@@ -173,7 +233,9 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           },
         ),
       ),
-      SizedBox(height: 16,),
+      SizedBox(
+        height: 16,
+      ),
       Container(
         padding: EdgeInsets.only(
           left: 16,
@@ -181,7 +243,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
         ),
         decoration: BoxDecoration(
             color: Colors.grey.shade300,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
+            borderRadius: BorderRadius.circular(10)),
         child: CheckboxListTile(
           contentPadding: EdgeInsets.all(0),
           title: Text("Send empty message"),
@@ -194,7 +256,9 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           },
         ),
       ),
-      SizedBox(height: 16,),
+      SizedBox(
+        height: 16,
+      ),
       TextButton(
         style: TextButton.styleFrom(
             foregroundColor: Colors.white, backgroundColor: Colors.red),
@@ -204,86 +268,6 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
         },
       ),
     ];
-  }
-
-  Widget getAPISettingsV1() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.grey[200],
-          border: Border.all(color: Colors.blueGrey[200]!)),
-      child: ExpansionTile(
-        controller: settingsExpandController,
-        maintainState: true,
-        tilePadding: EdgeInsets.symmetric(horizontal: 16),
-        childrenPadding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          bottom: 16,
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(Icons.settings),
-            Text(selectedModel),
-            Icon(Icons.thermostat),
-            Text(temperatureController.text),
-          ],
-        ),
-        children: getSettingsInputWidgets(),
-      ),
-    );
-  }
-
-  Widget getAPISettingsV2() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.grey[200],
-          border: Border.all(color: Colors.blueGrey[200]!)),
-      child: Column(children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              settingsExpanded = !settingsExpanded;
-            });
-          },
-          child: Container(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.settings),
-                        Expanded(
-                            child: Text(
-                          selectedModel,
-                          textAlign: TextAlign.center,
-                        )),
-                        Icon(Icons.thermostat),
-                        Expanded(
-                            child: Text(
-                          temperatureController.text,
-                          textAlign: TextAlign.center,
-                        )),
-                      ],
-                    )),
-                    Icon(settingsExpanded
-                        ? Icons.arrow_drop_up
-                        : Icons.arrow_drop_down)
-                  ])),
-        ),
-        AnimatedContainer(
-          duration: Duration(milliseconds: 250),
-          padding: EdgeInsets.only(left: 16, right: 16),
-          height: settingsExpanded ? 200 : 0,
-          child: SingleChildScrollView(
-              child: Column(children: getSettingsInputWidgets())),
-        ),
-      ]),
-    );
   }
 
   Widget getAPISettingsV3() {

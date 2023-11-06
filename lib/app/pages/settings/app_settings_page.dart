@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_widget.dart';
+import 'package:demux_app/app/pages/chat/widgets/double_slider_widget.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/data/models/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -91,46 +92,15 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                 ),
               ),
               SizedBox(height: 16),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        "Text Scale Factor: ${settings.textScaleFactor.toStringAsFixed(2)}"),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Slider(
-                          activeColor: Colors.blueGrey,
-                          value: settings.textScaleFactor,
-                          min: 0.5,
-                          max: 3,
-                          onChanged: (value) {
-                            appSettingsCubit.updateTextScaleFactor(value);
-                          },
-                        )),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.red),
-                          child: Text('Reset'),
-                          onPressed: () {
-                            appSettingsCubit.resetTextScaleFactor();
-                            setState(() {
-                              apiKeyController.text =
-                                  appSettingsCubit.getApiKey();
-                            });
-                          },
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              DoubleSliderWidget(
+                  label: "Text Scale Factor",
+                  min: 0.5,
+                  max: 3,
+                  divisions: 25,
+                  defaultValue: 1,
+                  onChanged: (value) =>
+                      appSettingsCubit.updateTextScaleFactor(value),
+                  onReset: () => appSettingsCubit.resetTextScaleFactor()),
               SizedBox(height: 16),
               Expanded(
                   child: ListView(
