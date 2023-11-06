@@ -34,6 +34,7 @@ class _DoubleSliderWidgetState extends State<DoubleSliderWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _currentValue = widget.currentValue;
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
