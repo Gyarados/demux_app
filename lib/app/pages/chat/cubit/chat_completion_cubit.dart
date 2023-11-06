@@ -80,50 +80,28 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   }
 
   void saveTemperature(
-    String temperatureString,
+    double temperature
   ) {
-    double temperature = double.parse(temperatureString);
+    // double temperature = double.parse(temperatureString);
     Chat chat = state.currentChat;
     chat.chatCompletionSettings.temperature = temperature;
     emit(ChatCompletionSettingsSaved(state.chats, chat));
   }
 
   void saveFrequencyPenalty(
-    String value,
+    double value,
   ) {
     Chat chat = state.currentChat;
-    if (value.isEmpty) {
-      chat.chatCompletionSettings.frequencyPenalty = null;
-      emit(ChatCompletionSettingsSaved(state.chats, chat));
-    } else {
-      double? frequencyPenalty;
-      try {
-        frequencyPenalty = double.parse(value);
-      } catch (e) {
-        return;
-      }
-      chat.chatCompletionSettings.frequencyPenalty = frequencyPenalty;
-      emit(ChatCompletionSettingsSaved(state.chats, chat));
-    }
+    chat.chatCompletionSettings.frequencyPenalty = value;
+    emit(ChatCompletionSettingsSaved(state.chats, chat));
   }
 
   void savePresencePenalty(
-    String value,
+    double value,
   ) {
     Chat chat = state.currentChat;
-    if (value.isEmpty) {
-      chat.chatCompletionSettings.presencePenalty = null;
-      emit(ChatCompletionSettingsSaved(state.chats, chat));
-    } else {
-      double? presencePenalty;
-      try {
-        presencePenalty = double.parse(value);
-      } catch (e) {
-        return;
-      }
-      chat.chatCompletionSettings.presencePenalty = presencePenalty;
-      emit(ChatCompletionSettingsSaved(state.chats, chat));
-    }
+    chat.chatCompletionSettings.presencePenalty = value;
+    emit(ChatCompletionSettingsSaved(state.chats, chat));
   }
 
   void saveSystemPrompt(

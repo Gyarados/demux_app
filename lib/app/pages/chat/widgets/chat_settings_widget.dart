@@ -1,6 +1,6 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
-import 'package:demux_app/app/pages/chat/widgets/double_input_widget.dart';
+import 'package:demux_app/app/pages/chat/widgets/double_slider_widget.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/domain/constants.dart';
@@ -17,13 +17,10 @@ class ChatSettingsWidget extends StatefulWidget {
 
 class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   final systemPromptController = TextEditingController();
-  final temperatureController = TextEditingController();
   final topPController = TextEditingController();
   final quantityController = TextEditingController();
   final stopController = TextEditingController();
   final maxTokensController = TextEditingController();
-  final presencePenaltyController = TextEditingController();
-  final frequencyPenaltyController = TextEditingController();
   final logitBiasController = TextEditingController();
   final ExpansionTileController settingsExpandController =
       ExpansionTileController();
@@ -59,45 +56,17 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     }
   }
 
-  temperatureListener() {
-    chatCompletionCubit.saveTemperature(temperatureController.text);
-  }
-
-  frequencyPenaltyListener() {
-    chatCompletionCubit.saveFrequencyPenalty(frequencyPenaltyController.text);
-  }
-
-  presencePenaltyListener() {
-    chatCompletionCubit.savePresencePenalty(presencePenaltyController.text);
-  }
-  //   logitBiasListener() {
-  //   chatCompletionCubit.saveLogitBias(logitBiasController.text);
-  // }
-  //   maxTokensListener() {
-  //   chatCompletionCubit.saveMaxTokens(maxTokensController.text);
-  // }
-
   @override
   void initState() {
     chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
     updateSettingsFromState(chatCompletionCubit.state);
     systemPromptFocusNode.addListener(systemPromptListener);
-
-    temperatureController.addListener(temperatureListener);
-    frequencyPenaltyController.addListener(frequencyPenaltyListener);
-    presencePenaltyController.addListener(presencePenaltyListener);
-    // logitBiasController.addListener(logitBiasListener);
-    // maxTokensController.addListener(maxTokensListener);
-
     super.initState();
   }
 
   @override
   void dispose() {
     systemPromptController.dispose();
-    temperatureController.dispose();
-    frequencyPenaltyController.dispose();
-    presencePenaltyController.dispose();
     super.dispose();
   }
 
@@ -119,11 +88,6 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     chatCompletionSettings = currentChat.chatCompletionSettings;
     selectedModel = chatCompletionSettings.model;
     systemPromptController.text = chatCompletionSettings.systemPrompt ?? "";
-    temperatureController.text = chatCompletionSettings.temperature.toString();
-
-    frequencyPenaltyController.text = chatCompletionSettings.frequencyPenalty != null? chatCompletionSettings.frequencyPenalty.toString() : "";
-    presencePenaltyController.text = chatCompletionSettings.presencePenalty != null? chatCompletionSettings.presencePenalty.toString() : "";
-
     systemPromptsAreVisible =
         chatCompletionSettings.systemPromptsAreVisible ?? true;
     sendEmptyMessage = chatCompletionSettings.sendEmptyMessage ?? false;
@@ -154,13 +118,15 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
       SizedBox(
         height: 16,
       ),
-      DoubleInputWidget(
-        temperatureController,
-        label: "Temperature",
-        min: 0,
-        max: 2,
-        allowNull: false,
-      ),
+      DoubleSliderWidget(
+          label: "Temperature",
+          min: 0,
+          max: 2,
+          divisions: 20,
+          defaultValue: 0.5,
+          currentValue: chatCompletionSettings.temperature ?? 0.5,
+          onChanged: (value) => chatCompletionCubit.saveTemperature(value),
+          onReset: () => chatCompletionCubit.saveTemperature(0.5)),
       TextField(
         focusNode: systemPromptFocusNode,
         enabled: !loading,
@@ -187,22 +153,26 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
             title: Text("Advanced settings"),
             shape: InputBorder.none,
             children: [
-              Padding(
-                  padding: EdgeInsets.all(8),
-                  child: DoubleInputWidget(
-                    frequencyPenaltyController,
-                    label: "Frequency penalty",
-                    min: -2,
-                    max: 2,
-                  )),
-              Padding(
-                  padding: EdgeInsets.all(8),
-                  child: DoubleInputWidget(
-                    presencePenaltyController,
-                    label: "Presence penalty",
-                    min: -2,
-                    max: 2,
-                  )),
+              DoubleSliderWidget(
+                  label: "Frequency penalty",
+                  min: -2,
+                  max: 2,
+                  divisions: 40,
+                  defaultValue: 0,
+                  currentValue: chatCompletionSettings.frequencyPenalty ?? 0,
+                  onChanged: (value) =>
+                      chatCompletionCubit.saveFrequencyPenalty(value),
+                  onReset: () => chatCompletionCubit.saveFrequencyPenalty(0)),
+              DoubleSliderWidget(
+                  label: "Presence penalty",
+                  min: -2,
+                  max: 2,
+                  divisions: 40,
+                  defaultValue: 0,
+                  currentValue: chatCompletionSettings.presencePenalty ?? 0,
+                  onChanged: (value) =>
+                      chatCompletionCubit.savePresencePenalty(value),
+                  onReset: () => chatCompletionCubit.savePresencePenalty(0)),
               // Text("Logit bias"),
               // Text("Max tokens"),
               // Text("N"),
