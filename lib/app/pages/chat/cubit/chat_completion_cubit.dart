@@ -33,7 +33,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
 
     emit(ChatCompletionLoading(state.chats, chat));
 
-    if (chat.messages.isEmpty && chat.name == "New chat") {
+    if (chat.messages.isEmpty && chat.name == "OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME") {
       chat.name = userMessageContent;
     }
 

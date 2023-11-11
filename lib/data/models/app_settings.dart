@@ -1,3 +1,4 @@
+import 'package:demux_app/domain/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'app_settings.g.dart';
@@ -6,15 +7,33 @@ part 'app_settings.g.dart';
 class AppSettings {
   bool isDarkMode;
   double textScaleFactor;
-  String apiKey;
+  String openAiApiKey;
+  String stabilityAiApiKey;
   bool showIntroductionMessages;
 
   AppSettings({
     this.isDarkMode = false,
-    this.textScaleFactor = 1,
-    this.apiKey = '',
+    this.textScaleFactor = DEFAULT_TEXT_SCALE_FACTOR,
+    this.openAiApiKey = '',
+    this.stabilityAiApiKey = '',
     this.showIntroductionMessages = true,
   });
+
+  copyWith({
+    bool? isDarkMode,
+    double? textScaleFactor,
+    String? openAiApiKey,
+    String? stabilityAiApiKey,
+    bool? showIntroductionMessages,
+  }) {
+    return AppSettings(
+        isDarkMode: isDarkMode ?? this.isDarkMode,
+        textScaleFactor: textScaleFactor ?? this.textScaleFactor,
+        openAiApiKey: openAiApiKey ?? this.openAiApiKey,
+        stabilityAiApiKey: stabilityAiApiKey ?? this.stabilityAiApiKey,
+        showIntroductionMessages:
+            showIntroductionMessages ?? this.showIntroductionMessages);
+  }
 
   factory AppSettings.fromJson(Map<String, dynamic> json) =>
       _$AppSettingsFromJson(json);

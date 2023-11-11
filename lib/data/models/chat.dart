@@ -22,7 +22,7 @@ class Chat {
       {required this.messages,
       required this.chatCompletionSettings,
       String? uuid,
-      this.name = "New chat",
+      this.name = "OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME",
       required this.lastUpdated})
       : uuid = uuid ?? UUIDGenerator.newUUID;
 

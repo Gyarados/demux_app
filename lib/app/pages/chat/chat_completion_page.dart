@@ -36,7 +36,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
     chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
-    chatCompletionCubit.setApiKey(appSettingsCubit.getApiKey());
+    chatCompletionCubit.setApiKey(appSettingsCubit.getOpenAiApiKey());
     updateChatsFromState(chatCompletionCubit.state);
     super.initState();
   }
@@ -96,7 +96,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                       children: [
                         ChatWidget(),
                         if (appSettingsCubit.showIntroductionMessages() &&
-                            appSettingsCubit.apiKeyIsMissing())
+                            appSettingsCubit.openAiApiKeyIsMissing())
                           IntrodutionCTAWidget(),
                       ],
                     ),

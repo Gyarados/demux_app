@@ -17,13 +17,16 @@ class AppSettingsPage extends StatefulWidget {
 
 class _AppSettingsPageState extends State<AppSettingsPage> {
   late AppSettingsCubit appSettingsCubit;
-  final TextEditingController apiKeyController = TextEditingController();
+  final TextEditingController openAiApiKeyController = TextEditingController();
+  final TextEditingController stabilityAiApiKeyController =
+      TextEditingController();
   bool showIntroMessages = true;
 
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
-    apiKeyController.text = appSettingsCubit.getApiKey();
+    openAiApiKeyController.text = appSettingsCubit.getOpenAiApiKey();
+    stabilityAiApiKeyController.text = appSettingsCubit.getStabilityAiApiKey();
     showIntroMessages = appSettingsCubit.showIntroductionMessages();
     super.initState();
   }
@@ -32,6 +35,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<AppSettingsCubit, AppSettings>(
       builder: (context, settings) {
+        print("Settings from BlocBuilder: ${settings.toJson()}");
         return Container(
           color: Colors.grey.shade200,
           padding: EdgeInsets.all(16.0),
@@ -52,19 +56,54 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                     Expanded(
                       child: TextField(
                         obscureText: true,
-                        controller: apiKeyController,
+                        controller: openAiApiKeyController,
                         decoration:
                             InputDecoration(labelText: "OpenAI API Key"),
                         onChanged: (value) {
-                          appSettingsCubit.updateApiKey(value);
+                          print("onChanged OpenAI API Key: $value");
+                          appSettingsCubit.updateOpenAiApiKey(value);
                         },
                       ),
                     ),
-                    if (apiKeyController.text.isNotEmpty)
+                    if (openAiApiKeyController.text.isNotEmpty)
                       IconButton(
                           onPressed: () {
-                            apiKeyController.clear();
-                            appSettingsCubit.resetOpenAIAPIKey();
+                            openAiApiKeyController.clear();
+                            appSettingsCubit.resetOpenAiApiKey();
+                          },
+                          icon: Icon(Icons.close))
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
+              Container(
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        obscureText: true,
+                        controller: stabilityAiApiKeyController,
+                        decoration:
+                            InputDecoration(labelText: "Stability AI API Key"),
+                        onChanged: (value) {
+                          print("onChanged Stability API Key: $value");
+                          appSettingsCubit.updateStabilityAiApiKey(value);
+                        },
+                      ),
+                    ),
+                    if (stabilityAiApiKeyController.text.isNotEmpty)
+                      IconButton(
+                          onPressed: () {
+                            stabilityAiApiKeyController.clear();
+                            appSettingsCubit.resetStabilityAiApiKey();
                           },
                           icon: Icon(Icons.close))
                   ],

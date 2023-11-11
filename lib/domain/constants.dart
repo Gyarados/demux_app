@@ -3,6 +3,8 @@ const String OPENAI_API_URL = "https://api.openai.com/";
 
 const bool USE_MOCK_API_SERVICE = false;
 
+const double DEFAULT_TEXT_SCALE_FACTOR = 1;
+
 const String OPENAI_CHAT_COMPLETION_ENDPOINT = "/v1/chat/completions";
 const String OPENAI_CHAT_COMPLETION_REFERENCE =
     "https://platform.openai.com/docs/api-reference/chat/create";
@@ -17,7 +19,10 @@ const List<String> OPENAI_CHAT_COMPLETION_MODEL_LIST = [
   "gpt-3.5-turbo-16k-0613"
 ];
 const String OPENAI_CHAT_COMPLETION_DEFAULT_MODEL = "gpt-3.5-turbo";
+const double OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE = 0;
+const double OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE = 2;
 const double OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE = 0.5;
+const String OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME = "New chat";
 
 const String OPENAI_IMAGE_GENERATION_ENDPOINT = "/v1/images/generations";
 const String OPENAI_IMAGE_GENERATION_REFERENCE =
@@ -35,5 +40,3 @@ const List<String> OPENAI_IMAGE_SIZE_LIST = [
   "512x512",
   "1024x1024",
 ];
-
-const String APP_VERSION = "0.0.1 (Alpha)";

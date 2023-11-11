@@ -13,7 +13,8 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       chatCompletionSettings: ChatCompletionSettings.fromJson(
           json['chat_completion_settings'] as Map<String, dynamic>),
       uuid: json['uuid'] as String?,
-      name: json['name'] as String? ?? "New chat",
+      name:
+          json['name'] as String? ?? "OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME",
       lastUpdated: RelativeDateTime.fromJson(
           json['last_updated'] as Map<String, dynamic>),
     );

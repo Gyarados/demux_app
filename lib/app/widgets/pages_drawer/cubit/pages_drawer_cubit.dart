@@ -4,16 +4,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 class PagesDrawerCubit extends HydratedCubit<PageRoutes> {
   PagesDrawerCubit() : super(PageRoutes.chatCompletion);
 
-  // List<String> pageRoutes = [
-
-  // ];
-
-  // ChatCompletionPage chatCompletionPage = ChatCompletionPage();
-  // ImageGenerationPage imageGenerationPage = ImageGenerationPage();
-  // ImageEditPage imageEditPage = ImageEditPage();
-  // ImageVariationPage imageVariationPage = ImageVariationPage();
-  // AppSettingsPage appSettingsPage = AppSettingsPage();
-
   void navigateTo(PageRoutes route) {
     emit(route);
   }
@@ -24,6 +14,10 @@ class PagesDrawerCubit extends HydratedCubit<PageRoutes> {
 
   bool isPageFromOpenAi(PageRoutes page) {
     return openAiPages.contains(page);
+  }
+
+  bool isPageFromStabilityAi(PageRoutes page) {
+    return false;
   }
 
   @override

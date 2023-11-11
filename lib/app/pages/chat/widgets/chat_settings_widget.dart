@@ -120,13 +120,13 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
       ),
       DoubleSliderWidget(
           label: "Temperature",
-          min: 0,
-          max: 2,
+          min: OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE,
+          max: OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE,
           divisions: 20,
           defaultValue: 0.5,
-          currentValue: chatCompletionSettings.temperature ?? 0.5,
+          currentValue: chatCompletionSettings.temperature ?? OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
           onChanged: (value) => chatCompletionCubit.saveTemperature(value),
-          onReset: () => chatCompletionCubit.saveTemperature(0.5)),
+          onReset: () => chatCompletionCubit.saveTemperature(OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE)),
       TextField(
         focusNode: systemPromptFocusNode,
         enabled: !loading,
