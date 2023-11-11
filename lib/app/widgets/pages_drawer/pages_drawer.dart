@@ -1,6 +1,6 @@
 import 'package:demux_app/app/utils/show_snackbar.dart';
-import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_cubit.dart';
-import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_states.dart';
+import 'package:demux_app/app/widgets/pages_drawer/cubit/api_pages_cubit.dart';
+import 'package:demux_app/app/widgets/pages_drawer/cubit/page_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -14,12 +14,12 @@ class PagesDrawer extends StatefulWidget {
 }
 
 class _PagesDrawerState extends State<PagesDrawer> {
-  late PagesDrawerCubit pagesDrawerCubit;
+  late ApiPagesCubit pagesDrawerCubit;
   String appVersion = '...';
 
   @override
   void initState() {
-    pagesDrawerCubit = BlocProvider.of<PagesDrawerCubit>(context);
+    pagesDrawerCubit = BlocProvider.of<ApiPagesCubit>(context);
     PackageInfo.fromPlatform().then((packageInfo) {
       setState(() {
         appVersion = packageInfo.version;
@@ -30,86 +30,91 @@ class _PagesDrawerState extends State<PagesDrawer> {
     super.initState();
   }
 
-  void onDrawerItemTapped(int index) {}
+  Widget getPageRouteIcon(DemuxPageRoute route) {
+    switch (route.classification) {
+      case 'Text to Text':
+        return Icon(Icons.chat);
+      case 'Text to Image':
+        return Icon(Icons.image);
+      case 'Image to Image':
+        return Icon(Icons.photo_library);
+      case 'Text & Image to Image':
+        return Icon(Icons.edit);
+      default:
+        return Icon(Icons.help);
+    }
+  }
 
-  List<ListTile> getListTilesFromPages(List pages, BuildContext context) {
-    return pages.asMap().entries.map((entry) {
-      return ListTile(
-        title: Text("page.pageName"),
-        selected: false,
-        onTap: () {
-          Navigator.of(context).pop();
-        },
-      );
+  List<Widget> getListTilesFromPageRoutes(
+      List<DemuxPageRoute> pageRoutes, BuildContext context) {
+    return pageRoutes.map((route) {
+      bool selected = pagesDrawerCubit.getCurrentPageRoute() == route;
+      return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: selected ? Colors.blueGrey : Colors.transparent,
+          ),
+          child: ListTile(
+            leading: getPageRouteIcon(route),
+            selectedColor: Colors.white,
+            title: Text(route.pageName),
+            selected: selected,
+            onTap: () {
+              pagesDrawerCubit.navigateTo(route);
+              Navigator.of(context).pop();
+            },
+          ));
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(children: [
           DrawerHeader(
             child: Image(image: AssetImage('assets/app_icon.png')),
           ),
-          ExpansionTile(
-            title: Text("OpenAI API"),
-            initiallyExpanded: pagesDrawerCubit
-                .isPageFromOpenAi(pagesDrawerCubit.getCurrentPage()),
-            children: [
-              ListTile(
-                leading: Icon(Icons.chat_bubble_rounded),
-                selectedTileColor: Colors.blueGrey,
-                selectedColor: Colors.white,
-                title: Text(PageRoutes.chatCompletion.pageName),
-                selected: pagesDrawerCubit.getCurrentPage() ==
-                    PageRoutes.chatCompletion,
-                onTap: () {
-                  pagesDrawerCubit.navigateTo(PageRoutes.chatCompletion);
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.image),
-                selectedTileColor: Colors.blueGrey,
-                selectedColor: Colors.white,
-                title: Text(PageRoutes.imageGeneration.pageName),
-                selected: pagesDrawerCubit.getCurrentPage() ==
-                    PageRoutes.imageGeneration,
-                onTap: () {
-                  pagesDrawerCubit.navigateTo(PageRoutes.imageGeneration);
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.image),
-                selectedTileColor: Colors.blueGrey,
-                selectedColor: Colors.white,
-                title: Text(PageRoutes.imageVariation.pageName),
-                selected: pagesDrawerCubit.getCurrentPage() ==
-                    PageRoutes.imageVariation,
-                onTap: () {
-                  pagesDrawerCubit.navigateTo(PageRoutes.imageVariation);
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.image),
-                selectedTileColor: Colors.blueGrey,
-                selectedColor: Colors.white,
-                title: Text(PageRoutes.imageEdit.pageName),
-                selected:
-                    pagesDrawerCubit.getCurrentPage() == PageRoutes.imageEdit,
-                onTap: () {
-                  pagesDrawerCubit.navigateTo(PageRoutes.imageEdit);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blueGrey.shade100.withOpacity(0.5)),
+                child: ExpansionTile(
+                  shape: InputBorder.none,
+                  title: Text("OpenAI API"),
+                  initiallyExpanded: pagesDrawerCubit
+                      .isPageFromOpenAi(pagesDrawerCubit.getCurrentPageRoute()),
+                  children: getListTilesFromPageRoutes(
+                      DemuxPageRoute.openAiPages, context),
+                )),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blueGrey.shade100.withOpacity(0.5)),
+                child: ExpansionTile(
+                  shape: InputBorder.none,
+                  title: Text("Stability AI API"),
+                  initiallyExpanded: pagesDrawerCubit.isPageFromStabilityAi(
+                      pagesDrawerCubit.getCurrentPageRoute()),
+                  children: getListTilesFromPageRoutes(
+                      DemuxPageRoute.stabilityAiPages, context),
+                )),
           ),
           ListTile(
-            title: Text("Anthropic API (Soon)", style: TextStyle(color: Colors.black26),),
+            title: Text(
+              "Anthropic API (Soon)",
+              style: TextStyle(color: Colors.black26),
+            ),
           ),
           // ListTile(
           //   title: Text("Llama API (Soon)"),
@@ -123,11 +128,11 @@ class _PagesDrawerState extends State<PagesDrawer> {
             leading: Icon(Icons.settings),
             selectedTileColor: Colors.blueGrey,
             selectedColor: Colors.white,
-            title: Text(PageRoutes.appSettings.pageName),
-            selected:
-                pagesDrawerCubit.getCurrentPage() == PageRoutes.appSettings,
+            title: Text(DemuxPageRoute.appSettings.pageName),
+            selected: pagesDrawerCubit.getCurrentPageRoute() ==
+                DemuxPageRoute.appSettings,
             onTap: () {
-              pagesDrawerCubit.navigateTo(PageRoutes.appSettings);
+              pagesDrawerCubit.navigateTo(DemuxPageRoute.appSettings);
               Navigator.of(context).pop();
             },
           ),

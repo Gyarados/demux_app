@@ -71,13 +71,11 @@ class AppSettingsCubit extends HydratedCubit<AppSettings> {
 
   @override
   AppSettings? fromJson(Map<String, dynamic> json) {
-    print("fromJson: $json");
     return AppSettings.fromJson(json);
   }
 
   @override
   Map<String, dynamic>? toJson(AppSettings state) {
-    print("toJson: ${state.toJson()}");
     return state.toJson();
   }
 

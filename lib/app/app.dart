@@ -5,8 +5,8 @@ import 'package:demux_app/app/pages/images/image_variation_page.dart';
 import 'package:demux_app/app/pages/settings/app_settings_page.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/app_bar.dart';
-import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_cubit.dart';
-import 'package:demux_app/app/widgets/pages_drawer/cubit/pages_drawer_states.dart';
+import 'package:demux_app/app/widgets/pages_drawer/cubit/api_pages_cubit.dart';
+import 'package:demux_app/app/widgets/pages_drawer/cubit/page_routes.dart';
 import 'package:demux_app/app/widgets/pages_drawer/pages_drawer.dart';
 import 'package:demux_app/data/models/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -44,31 +44,33 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late AppSettingsCubit appSettingsCubit;
-  late PagesDrawerCubit pagesDrawerCubit;
+  late ApiPagesCubit pagesDrawerCubit;
 
-  // ChatCompletionPage chatCompletionPage = ChatCompletionPage();
-  // ImageGenerationPage imageGenerationPage = ImageGenerationPage();
-  // ImageEditPage imageEditPage = ImageEditPage();
-  // ImageVariationPage imageVariationPage = ImageVariationPage();
-  // AppSettingsPage appSettingsPage = AppSettingsPage();
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
-    pagesDrawerCubit = BlocProvider.of<PagesDrawerCubit>(context);
+    pagesDrawerCubit = BlocProvider.of<ApiPagesCubit>(context);
     super.initState();
   }
 
-  Widget getCurrentPage(PageRoutes pageRoute) {
+  Widget getCurrentPage(DemuxPageRoute pageRoute) {
     switch (pageRoute) {
-      case PageRoutes.chatCompletion:
+      // OpenAI
+      case DemuxPageRoute.openAiChatCompletion:
         return ChatCompletionPage();
-      case PageRoutes.imageGeneration:
+      case DemuxPageRoute.openAiImageGeneration:
         return ImageGenerationPage();
-      case PageRoutes.imageEdit:
+      case DemuxPageRoute.openAiImageEdit:
         return ImageEditPage();
-      case PageRoutes.imageVariation:
+      case DemuxPageRoute.openAiImageVariation:
         return ImageVariationPage();
-      case PageRoutes.appSettings:
+
+      // Stability AI
+      case DemuxPageRoute.stabilityAiImageGeneration:
+        return ImageGenerationPage();
+
+      // App
+      case DemuxPageRoute.appSettings:
         return AppSettingsPage();
       default:
         return ChatCompletionPage();
@@ -109,7 +111,7 @@ class _AppState extends State<App> {
                     }
                   }))),
               debugShowCheckedModeBanner: false,
-              home: BlocBuilder<PagesDrawerCubit, PageRoutes>(
+              home: BlocBuilder<ApiPagesCubit, DemuxPageRoute>(
                 builder: (context, pageRoute) => Scaffold(
                   appBar: getAppBar(
                     context: context,
