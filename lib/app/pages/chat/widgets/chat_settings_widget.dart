@@ -115,18 +115,6 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           );
         }).toList(),
       ),
-      SizedBox(
-        height: 16,
-      ),
-      DoubleSliderWidget(
-          label: "Temperature",
-          min: OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE,
-          max: OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE,
-          divisions: 20,
-          defaultValue: 0.5,
-          currentValue: chatCompletionSettings.temperature ?? OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
-          onChanged: (value) => chatCompletionCubit.saveTemperature(value),
-          onReset: () => chatCompletionCubit.saveTemperature(OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE)),
       TextField(
         focusNode: systemPromptFocusNode,
         enabled: !loading,
@@ -142,6 +130,20 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           contentPadding: EdgeInsets.symmetric(vertical: 16),
         ),
       ),
+      SizedBox(
+        height: 16,
+      ),
+      DoubleSliderWidget(
+          label: "Temperature",
+          min: OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE,
+          max: OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE,
+          divisions: 20,
+          defaultValue: 0.5,
+          currentValue: chatCompletionSettings.temperature ??
+              OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
+          onChanged: (value) => chatCompletionCubit.saveTemperature(value),
+          onReset: () => chatCompletionCubit
+              .saveTemperature(OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE)),
       SizedBox(
         height: 16,
       ),
