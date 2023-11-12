@@ -39,7 +39,7 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
-    imageResultsCubit.setApiKey(appSettingsCubit.getOpenAiApiKey());
+    imageResultsCubit.setOpenAiApiKey(appSettingsCubit.getOpenAiApiKey());
     super.initState();
   }
 
@@ -60,7 +60,7 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
             cameraOnPressed: cameraOnPressed,
             sendButtonOnPressed: getImageVariations,
             closeButtonOnPressed: closeButtonOnPressed),
-        getImageResultsWidget(imageResultsCubit),
+        ImageResultsWidget(imageResultsCubit),
       ],
     );
   }

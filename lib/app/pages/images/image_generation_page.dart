@@ -25,15 +25,13 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
 
   bool loading = false;
 
-  List<String> imageUrls = [];
-
   GenerationImageApiCubit imageResultsCubit = GenerationImageApiCubit();
   late AppSettingsCubit appSettingsCubit;
 
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
-    imageResultsCubit.setApiKey(appSettingsCubit.getOpenAiApiKey());
+    imageResultsCubit.setOpenAiApiKey(appSettingsCubit.getOpenAiApiKey());
     super.initState();
   }
 
@@ -50,7 +48,7 @@ class _ImageGenerationPageState extends State<ImageGenerationPage> {
           imageSizeOnChanged: imageSizeOnChanged,
           sendButtonOnPressed: getImageGenerations,
         ),
-        getImageResultsWidget(imageResultsCubit),
+        ImageResultsWidget(imageResultsCubit),
       ],
     );
   }

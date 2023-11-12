@@ -1,40 +1,28 @@
 import 'package:flutter/material.dart';
 
-class DoubleSliderWidget extends StatefulWidget {
+class DoubleSliderWidget extends StatelessWidget {
   final double min;
   final double max;
   final double defaultValue;
   final double currentValue;
   final String label;
   final int divisions;
+  final int fractionDigits;
   final Function onChanged;
-  final Function onReset;
 
-  DoubleSliderWidget(
-      {required this.min,
-      required this.max,
-      required this.divisions,
-      required this.defaultValue,
-      required this.currentValue,
-      required this.label,
-      required this.onChanged,
-      required this.onReset});
-
-  @override
-  _DoubleSliderWidgetState createState() => _DoubleSliderWidgetState();
-}
-
-class _DoubleSliderWidgetState extends State<DoubleSliderWidget> {
-  late double _currentValue = widget.currentValue;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  DoubleSliderWidget({
+    required this.min,
+    required this.max,
+    required this.divisions,
+    this.fractionDigits = 1,
+    required this.defaultValue,
+    required this.currentValue,
+    required this.label,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    _currentValue = widget.currentValue;
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -44,7 +32,8 @@ class _DoubleSliderWidgetState extends State<DoubleSliderWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("${widget.label}: ${_currentValue.toStringAsFixed(1)}"),
+          Text(
+              "$label: ${currentValue.toStringAsFixed(fractionDigits)}"),
           Row(
             children: [
               Expanded(
@@ -53,17 +42,14 @@ class _DoubleSliderWidgetState extends State<DoubleSliderWidget> {
                     overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
                   ),
                   child: Slider(
-                    divisions: widget.divisions,
-                    label: _currentValue.toStringAsFixed(1),
+                    divisions: divisions,
+                    label: currentValue.toStringAsFixed(fractionDigits),
                     activeColor: Colors.blueGrey,
-                    value: _currentValue,
-                    min: widget.min,
-                    max: widget.max,
+                    value: currentValue,
+                    min: min,
+                    max: max,
                     onChanged: (value) {
-                      setState(() {
-                        _currentValue = value;
-                        widget.onChanged(value);
-                      });
+                        onChanged(value);
                     },
                   ),
                 ),
@@ -78,10 +64,7 @@ class _DoubleSliderWidgetState extends State<DoubleSliderWidget> {
                 ),
                 child: Text('Reset'),
                 onPressed: () {
-                  setState(() {
-                    _currentValue = widget.defaultValue;
-                    widget.onReset();
-                  });
+                    onChanged(defaultValue);
                 },
               )
             ],

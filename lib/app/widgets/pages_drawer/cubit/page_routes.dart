@@ -1,6 +1,30 @@
 import 'package:demux_app/domain/constants.dart';
 
 class DemuxPageRoute {
+  static DemuxPageRoute getRouteFromPath(String path) {
+    switch (path) {
+      // OpenAI
+      case '/openai-chat-completion':
+        return DemuxPageRoute.openAiChatCompletion;
+      case '/openai-image-generation':
+        return DemuxPageRoute.openAiImageGeneration;
+      case '/openai-image-variation':
+        return DemuxPageRoute.openAiImageVariation;
+      case '/openai-image-edit':
+        return DemuxPageRoute.openAiImageEdit;
+      
+      // Stability AI
+      case '/stability-ai-image-generation':
+        return DemuxPageRoute.stabilityAiImageGeneration;
+
+      // App
+      case '/app-settings':
+        return DemuxPageRoute.appSettings;
+      default:
+        return DemuxPageRoute.openAiChatCompletion;
+    }
+  }
+
   // OpenAI
   static const openAiChatCompletion = DemuxPageRoute._(
     path: '/openai-chat-completion',
@@ -45,21 +69,21 @@ class DemuxPageRoute {
     apiReferenceUrl: STABILITY_AI_IMAGE_GENERATION_REFERENCE,
     classification: 'Text to Image',
   );
-    static const stabilityAiImageEditing = DemuxPageRoute._(
+  static const stabilityAiImageEditing = DemuxPageRoute._(
     path: '/stability-ai-image-editing',
     pageName: 'Image Editing',
     pageEndpoint: STABILITY_AI_IMAGE_TO_IMAGE_ENDPOINT,
     apiReferenceUrl: STABILITY_AI_IMAGE_GENERATION_REFERENCE,
     classification: 'Text & Image to Image',
   );
-    static const stabilityAiImageUpscaling = DemuxPageRoute._(
+  static const stabilityAiImageUpscaling = DemuxPageRoute._(
     path: '/stability-ai-image-upscaling',
     pageName: 'Image Upscaling',
     pageEndpoint: STABILITY_AI_IMAGE_UPSCALE_ENDPOINT,
     apiReferenceUrl: STABILITY_AI_IMAGE_GENERATION_REFERENCE,
     classification: 'Image to Image',
   );
-      static const stabilityAiImageMasking = DemuxPageRoute._(
+  static const stabilityAiImageMasking = DemuxPageRoute._(
     path: '/stability-ai-image-masking',
     pageName: 'Image Masking',
     pageEndpoint: STABILITY_AI_IMAGE_MASKING_ENDPOINT,
@@ -68,9 +92,9 @@ class DemuxPageRoute {
   );
   static const List<DemuxPageRoute> stabilityAiPages = [
     stabilityAiImageGeneration,
-    stabilityAiImageEditing,
-    stabilityAiImageUpscaling,
-    stabilityAiImageMasking,
+    // stabilityAiImageEditing,
+    // stabilityAiImageUpscaling,
+    // stabilityAiImageMasking,
   ];
 
   // App

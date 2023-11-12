@@ -2,6 +2,7 @@ import 'package:demux_app/app/pages/chat/chat_completion_page.dart';
 import 'package:demux_app/app/pages/images/image_edit_page.dart';
 import 'package:demux_app/app/pages/images/image_generation_page.dart';
 import 'package:demux_app/app/pages/images/image_variation_page.dart';
+import 'package:demux_app/app/pages/images/stability_ai_text_to_image_page.dart';
 import 'package:demux_app/app/pages/settings/app_settings_page.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/app_bar.dart';
@@ -67,7 +68,7 @@ class _AppState extends State<App> {
 
       // Stability AI
       case DemuxPageRoute.stabilityAiImageGeneration:
-        return ImageGenerationPage();
+        return StabilityAiTextToImagePage();
 
       // App
       case DemuxPageRoute.appSettings:

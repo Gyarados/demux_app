@@ -138,12 +138,10 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           min: OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE,
           max: OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE,
           divisions: 20,
-          defaultValue: 0.5,
+          defaultValue: OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
           currentValue: chatCompletionSettings.temperature ??
               OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
-          onChanged: (value) => chatCompletionCubit.saveTemperature(value),
-          onReset: () => chatCompletionCubit
-              .saveTemperature(OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE)),
+          onChanged: (value) => chatCompletionCubit.saveTemperature(value),),
       SizedBox(
         height: 16,
       ),
@@ -163,8 +161,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
                   defaultValue: 0,
                   currentValue: chatCompletionSettings.frequencyPenalty ?? 0,
                   onChanged: (value) =>
-                      chatCompletionCubit.saveFrequencyPenalty(value),
-                  onReset: () => chatCompletionCubit.saveFrequencyPenalty(0)),
+                      chatCompletionCubit.saveFrequencyPenalty(value),),
               DoubleSliderWidget(
                   label: "Presence penalty",
                   min: -2,
@@ -173,8 +170,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
                   defaultValue: 0,
                   currentValue: chatCompletionSettings.presencePenalty ?? 0,
                   onChanged: (value) =>
-                      chatCompletionCubit.savePresencePenalty(value),
-                  onReset: () => chatCompletionCubit.savePresencePenalty(0)),
+                      chatCompletionCubit.savePresencePenalty(value),),
               // Text("Logit bias"),
               // Text("Max tokens"),
               // Text("N"),

@@ -40,7 +40,7 @@ class OpenAiService {
 
   Map<String, String> getHeaders() {
     return {
-      "Authorization": "Bearer ${apiKey ?? OPENAI_API_KEY}",
+      "Authorization": "Bearer $apiKey",
       "Content-Type": "application/json; charset=UTF-8",
     };
   }

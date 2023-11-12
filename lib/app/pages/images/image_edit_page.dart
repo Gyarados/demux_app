@@ -42,7 +42,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
-    imageResultsCubit.setApiKey(appSettingsCubit.getOpenAiApiKey());
+    imageResultsCubit.setOpenAiApiKey(appSettingsCubit.getOpenAiApiKey());
     super.initState();
   }
 
@@ -66,7 +66,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
           sendButtonOnPressed: getImageEdits,
           removeSelectedImage: removeSelectedImage,
         ),
-        getImageResultsWidget(imageResultsCubit),
+        ImageResultsWidget(imageResultsCubit),
       ],
     );
   }

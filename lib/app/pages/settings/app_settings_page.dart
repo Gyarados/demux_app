@@ -139,8 +139,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   defaultValue: 1,
                   currentValue: settings.textScaleFactor,
                   onChanged: (value) =>
-                      appSettingsCubit.updateTextScaleFactor(value),
-                  onReset: () => appSettingsCubit.resetTextScaleFactor()),
+                      appSettingsCubit.updateTextScaleFactor(value),),
               SizedBox(height: 16),
               Expanded(
                   child: ListView(

@@ -7,12 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:demux_app/app/pages/images/widgets/downloadable_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-List<DownloadableImage> getImages(List<String> imageUrls) {
-  return imageUrls
-      .map(
-        (url) => DownloadableImage(url: url),
-      )
-      .toList();
+List<DownloadableImage> getImagesFromState(ImageApiState state) {
+  if (state.b64Strings != null) {
+    return state.b64Strings!
+        .map((b64String) => DownloadableImage(b64String: b64String))
+        .toList();
+  }
+  if (state.urls != null) {
+    return state.urls!.map((url) => DownloadableImage(url: url)).toList();
+  } else {
+    return [];
+  }
 }
 
 List<Widget> getPlaceholders() {
@@ -49,11 +54,16 @@ void showDownloadsSnackbar(BuildContext context, Directory directory) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-Widget getImageResultsWidget(ImageApiCubit cubit) {
-  return BlocBuilder<ImageApiCubit, ImageApiState>(
+class ImageResultsWidget extends StatelessWidget {
+  final ImageApiCubit cubit;
+  const ImageResultsWidget(this.cubit, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ImageApiCubit, ImageApiState>(
     bloc: cubit,
     builder: (context, state) {
-      List<DownloadableImage> downloadableImages = getImages(state.urls);
+      List<DownloadableImage> downloadableImages = getImagesFromState(state);
       return Container(
         padding: EdgeInsets.only(top: 16),
         child: Column(
@@ -104,4 +114,5 @@ Widget getImageResultsWidget(ImageApiCubit cubit) {
       );
     },
   );
+  }
 }

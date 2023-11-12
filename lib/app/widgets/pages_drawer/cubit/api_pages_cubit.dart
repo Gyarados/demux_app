@@ -24,20 +24,7 @@ class ApiPagesCubit extends HydratedCubit<DemuxPageRoute> {
   DemuxPageRoute fromJson(Map<String, dynamic> json) {
     String path = json["path"];
 
-    switch (path) {
-      case '/chat-completion':
-        return DemuxPageRoute.openAiChatCompletion;
-      case '/image-generation':
-        return DemuxPageRoute.openAiImageGeneration;
-      case '/image-variation':
-        return DemuxPageRoute.openAiImageVariation;
-      case '/image-edit':
-        return DemuxPageRoute.openAiImageEdit;
-      case '/app-settings':
-        return DemuxPageRoute.appSettings;
-      default:
-        return DemuxPageRoute.openAiChatCompletion;
-    }
+    return DemuxPageRoute.getRouteFromPath(path);
   }
 
   @override
