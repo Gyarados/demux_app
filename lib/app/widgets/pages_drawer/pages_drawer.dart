@@ -73,7 +73,8 @@ class _PagesDrawerState extends State<PagesDrawer> {
       backgroundColor: Colors.white,
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Column(children: [
+        Expanded(child:SingleChildScrollView(
+            child: Column(children: [
           DrawerHeader(
             child: Image(image: AssetImage('assets/app_icon.png')),
           ),
@@ -122,7 +123,7 @@ class _PagesDrawerState extends State<PagesDrawer> {
           // ListTile(
           //   title: Text("Google API (Soon)"),
           // )
-        ]),
+        ]))),
         Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           ListTile(
             leading: Icon(Icons.settings),
