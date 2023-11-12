@@ -15,57 +15,9 @@ env:
   S3_BUCKET_URL: "https://demux-web-frontend.s3.sa-east-1.amazonaws.com/"
 
 jobs:
-  update_version:
-    name: Update Version
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      version_number: ${{ steps.version.outputs.version_number }}
-      build_number: ${{ steps.version.outputs.build_number }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up yq
-        uses: mikefarah/yq@master
-
-      - name: Read version and build number
-        id: version
-        run: |
-          version=$(yq e '.version' pubspec.yaml)
-          IFS='+' read -ra ADDR <<< "$version"
-          version_number=${ADDR[0]}
-          build_number=${ADDR[1]}
-          echo "version_number=$(echo $version_number | awk -F. -v OFS=. '{$NF++; print}')" >> $GITHUB_OUTPUT
-          echo "build_number=$(($build_number + 1))" >> $GITHUB_OUTPUT
-
-      - name: Write new version and build number
-        run: |
-          yq e ".version = \"${{ steps.version.outputs.version_number }}+${{ steps.version.outputs.build_number }}\"" -i pubspec.yaml
-
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add pubspec.yaml
-          git commit -m "[skip ci] Version ${{ steps.version.outputs.version_number }}"
-
-      - name: Push changes
-        run: |
-          git push origin HEAD:main
-
-      - name: Create and push tags
-        run: |
-          git tag "v${{ steps.version.outputs.version_number }}"
-          git push origin :refs/tags/latest
-          git tag latest
-          git push origin --tag
-
   deploy_web:
     name: Deploy Web 
     runs-on: ubuntu-latest
-    needs: update_version
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -110,7 +62,6 @@ jobs:
   deploy_android:
     name: Deploy Android 
     runs-on: ubuntu-latest
-    needs: update_version
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -144,3 +95,53 @@ jobs:
         with:
           name: android-bundle-${{ needs.update_version.outputs.build_number }}
           path: build/app/outputs/bundle/release/app-release-${{ needs.update_version.outputs.build_number }}.aab
+
+  update_version:
+    name: Update Version
+    runs-on: ubuntu-latest
+    needs: 
+      - deploy_android
+      - deploy_web
+    permissions:
+      contents: write
+    outputs:
+      version_number: ${{ steps.version.outputs.version_number }}
+      build_number: ${{ steps.version.outputs.build_number }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up yq
+        uses: mikefarah/yq@master
+
+      - name: Read version and build number
+        id: version
+        run: |
+          version=$(yq e '.version' pubspec.yaml)
+          IFS='+' read -ra ADDR <<< "$version"
+          version_number=${ADDR[0]}
+          build_number=${ADDR[1]}
+          echo "version_number=$(echo $version_number | awk -F. -v OFS=. '{$NF++; print}')" >> $GITHUB_OUTPUT
+          echo "build_number=$(($build_number + 1))" >> $GITHUB_OUTPUT
+
+      - name: Write new version and build number
+        run: |
+          yq e ".version = \"${{ steps.version.outputs.version_number }}+${{ steps.version.outputs.build_number }}\"" -i pubspec.yaml
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add pubspec.yaml
+          git commit -m "[skip ci] Version ${{ steps.version.outputs.version_number }}"
+
+      - name: Push changes
+        run: |
+          git push origin HEAD:main
+
+      - name: Create and push tags
+        run: |
+          git tag "v${{ steps.version.outputs.version_number }}"
+          git push origin :refs/tags/latest
+          git tag latest
+          git push origin --tag
