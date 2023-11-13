@@ -13,18 +13,21 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 Widget getAPISettingsContainer({
   required List<Widget> children,
 }) {
-  return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black,
-              blurRadius: 10,
-              spreadRadius: 1,
-              blurStyle: BlurStyle.normal),
-        ],
-      ),
-      child: Column(children: children));
+  return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+            color: Colors.grey[200],
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black,
+                  blurRadius: 4,
+                  spreadRadius: 1,
+                  blurStyle: BlurStyle.normal),
+            ],
+          ),
+          child: Column(children: children)));
 }
 
 Widget getImageQuantityInput(
@@ -210,29 +213,21 @@ Widget getSendButton(
     bool enabled = true,
     bool loadingResults = false}) {
   return Padding(
-      padding: EdgeInsets.only(top: 16),
-      child: GestureDetector(
-          onTap: loadingResults ? null : sendButtonOnPressed,
-          child: Container(
-            height: 30,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: loadingResults ? Colors.grey[200] : Colors.blueGrey,
-            ),
-            child: Center(
-                child: loadingResults
-                    ? SpinKitFadingCube(
-                        color: Colors.blueGrey,
-                        size: 15,
-                      )
-                    : Text(
-                        text,
-                        style: TextStyle(
-                          color: Colors.white,
-                          // fontWeight: FontWeight.bold,
-                        ),
-                      )),
-          )));
+      padding: EdgeInsets.only(top: 8),
+      child: !loadingResults
+          ? Padding(
+              padding: EdgeInsets.all(8),
+              child: TextButton(
+                onPressed: sendButtonOnPressed,
+                child: Text(text),
+              ))
+          : Padding(
+              padding: EdgeInsets.all(16),
+              child: SpinKitRing(
+                lineWidth: 4,
+                size: 32,
+                color: Colors.blueGrey,
+              )));
 }
 
 Widget getImageEditAPISettings({
@@ -378,10 +373,9 @@ Widget getStabilityAiTextToImageAPISettings({
 }) {
   return getAPISettingsContainer(children: [
     getDescriptionTextField(
-      loadingResults: loadingResults,
-      descriptionController: descriptionController,
-      maxLength: null
-    ),
+        loadingResults: loadingResults,
+        descriptionController: descriptionController,
+        maxLength: null),
     Padding(
         padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
         child: DoubleSliderWidget(
