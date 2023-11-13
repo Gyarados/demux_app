@@ -62,8 +62,7 @@ class EditAreaPainter extends CustomPainter {
 
   Future<Uint8List> exportMask() async {
     if (lastPaintSize == null) {
-      throw Exception(
-          "Size not available. Make sure the painter has painted at least once.");
+      throw Exception("Mask not available");
     }
 
     final recorder = ui.PictureRecorder();

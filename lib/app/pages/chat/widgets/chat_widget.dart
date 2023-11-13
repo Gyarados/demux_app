@@ -101,16 +101,13 @@ class _ChatWidgetState extends State<ChatWidget> {
       chatCompletionSettings = currentChat.chatCompletionSettings;
       systemPromptsAreVisible = chatCompletionSettings.systemPromptsAreVisible!;
       messages = currentChat.messages;
-      return Scaffold(
-        backgroundColor: Colors.blueGrey.shade200,
-        body: Stack(
+      return Stack(
           children: [
             getChatMessagesV3(),
             Align(
                 alignment: Alignment.bottomCenter, child: getMessageControls()),
           ],
-        ),
-      );
+        );
     });
   }
 
@@ -352,7 +349,7 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   Widget getChatMessagesV3() {
     return Scaffold(
-        backgroundColor: Colors.blueGrey.shade200,
+        backgroundColor: Colors.transparent,
         floatingActionButton: getFloatingActionButton(),
         body: SingleChildScrollView(
           physics: ClampingScrollPhysics(),

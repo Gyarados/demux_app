@@ -6,6 +6,7 @@ import 'package:demux_app/app/pages/images/stability_ai_text_to_image_page.dart'
 import 'package:demux_app/app/pages/settings/app_settings_page.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/app_bar.dart';
+import 'package:demux_app/app/widgets/limited_width.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/api_pages_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/page_routes.dart';
 import 'package:demux_app/app/widgets/pages_drawer/pages_drawer.dart';
@@ -13,28 +14,6 @@ import 'package:demux_app/data/models/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-Widget buildRunnableApp({
-  required bool isWeb,
-  required double webAppWidth,
-  required Widget app,
-}) {
-  if (!isWeb) {
-    return app;
-  }
-
-  return Container(
-    color: Colors.blueGrey.shade200,
-    child: Center(
-      child: ClipRect(
-        child: SizedBox(
-          width: webAppWidth,
-          child: app,
-        ),
-      ),
-    ),
-  );
-}
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -123,7 +102,8 @@ class _AppState extends State<App> {
                   drawer: PagesDrawer(),
                   body: Container(
                       color: Colors.blueGrey[700],
-                      child: getCurrentPage(pageRoute)),
+                      child: getLimitedWidthWidget(
+                          width: 1600, child: getCurrentPage(pageRoute))),
                 ),
               ),
             ));

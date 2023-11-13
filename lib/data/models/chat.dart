@@ -2,6 +2,7 @@ import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/data/utils/custom_datetime.dart';
 import 'package:demux_app/data/utils/uuid_generator.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'chat.g.dart';
@@ -22,7 +23,7 @@ class Chat {
       {required this.messages,
       required this.chatCompletionSettings,
       String? uuid,
-      this.name = "OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME",
+      this.name = OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME,
       required this.lastUpdated})
       : uuid = uuid ?? UUIDGenerator.newUUID;
 

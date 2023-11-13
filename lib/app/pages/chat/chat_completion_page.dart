@@ -64,14 +64,22 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
             finishEditingChatName();
           }
         },
+        backgroundColor: Colors.transparent,
         body: DefaultTabController(
             length: 2,
             child: Column(children: [
               Container(
-                  color: Colors.blueGrey,
-                  child: Row(children: [
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(10)),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+                    child:Row(children: [
                     Expanded(
                         child: TabBar(
+                          
                       indicatorPadding: EdgeInsets.all(3),
                       dividerColor: Colors.blueGrey,
                       labelColor: Colors.white,
@@ -87,7 +95,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                       ],
                     )),
                     getChatListIconButton()
-                  ])),
+                  ]))),
               Expanded(
                   child: TabBarView(
                       physics: NeverScrollableScrollPhysics(),

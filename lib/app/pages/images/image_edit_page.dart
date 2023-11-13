@@ -129,6 +129,15 @@ class _ImageEditPageState extends State<ImageEditPage> {
       loadingResults = true;
     });
 
+    if (selectedImage == null) {
+      showSnackbar("No image selected", context,
+          criticality: MessageCriticality.warning);
+      setState(() {
+        loadingResults = false;
+      });
+      return;
+    }
+
     String description = descriptionController.text;
 
     late int quantity;
@@ -137,10 +146,22 @@ class _ImageEditPageState extends State<ImageEditPage> {
     } catch (e) {
       showSnackbar("Invalid quantity", context,
           criticality: MessageCriticality.warning);
+      setState(() {
+        loadingResults = false;
+      });
       return;
     }
 
-    mask = await editAreaPainter.exportMask();
+    try {
+      mask = await editAreaPainter.exportMask();
+    } catch (e) {
+      showSnackbar("Unable to obtain mask", context,
+          criticality: MessageCriticality.warning);
+      setState(() {
+        loadingResults = false;
+      });
+      return;
+    }
 
     setState(() {});
 

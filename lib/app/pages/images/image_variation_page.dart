@@ -119,12 +119,24 @@ class _ImageVariationPageState extends State<ImageVariationPage> {
       loadingResults = true;
     });
 
+    if (selectedImage == null) {
+      showSnackbar("No image selected", context,
+          criticality: MessageCriticality.warning);
+      setState(() {
+        loadingResults = false;
+      });
+      return;
+    }
+
     late int quantity;
     try {
       quantity = int.parse(imageQuantityController.text);
     } catch (e) {
       showSnackbar("Invalid quantity", context,
           criticality: MessageCriticality.warning);
+      setState(() {
+        loadingResults = false;
+      });
       return;
     }
 

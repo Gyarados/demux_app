@@ -43,10 +43,6 @@ void main() async {
       //   create: (BuildContext context) => GenerationImageResultsCubit(),
       // ),
     ],
-    child: buildRunnableApp(
-      isWeb: kIsWeb,
-      webAppWidth: 1600,
-      app: const App(),
-    ),
+    child: const App(),
   ));
 }

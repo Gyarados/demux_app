@@ -8,6 +8,7 @@ AppBar getAppBar(
     String? pageEndpoint,
     String? apiReferenceUrl}) {
   return AppBar(
+    centerTitle: true,
     iconTheme: IconThemeData(color: Colors.white),
     actions: apiReferenceUrl != null
         ? [
@@ -33,6 +34,7 @@ AppBar getAppBar(
           ]
         : null,
     title: RichText(
+      textAlign: TextAlign.center,
       text: TextSpan(
         children: <TextSpan>[
           TextSpan(

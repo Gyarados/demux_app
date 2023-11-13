@@ -61,58 +61,79 @@ class ImageResultsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ImageApiCubit, ImageApiState>(
-    bloc: cubit,
-    builder: (context, state) {
-      List<DownloadableImage> downloadableImages = getImagesFromState(state);
-      return Container(
-        padding: EdgeInsets.only(top: 16),
-        child: Column(
-          children: [
-            if (state.prompt != null)
+      bloc: cubit,
+      builder: (context, state) {
+        List<DownloadableImage> downloadableImages = getImagesFromState(state);
+        return Container(
+          padding: EdgeInsets.only(top: 16),
+          child: Column(
+            children: [
               Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(state.prompt!,
-                      style: TextStyle(
-                          fontSize: 16, color: Colors.grey.shade200))),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    downloadableImages.length == 1
-                        ? "${downloadableImages.length} Image"
-                        : "${downloadableImages.length} Images",
-                    style: TextStyle(fontSize: 16, color: Colors.grey.shade200),
-                  ),
-                  TextButton(
-                    onPressed: downloadableImages.isNotEmpty
-                        ? () async {
-                            await grantExternalStoragePermission();
+                padding: EdgeInsets.only(
+                  bottom: 8,
+                  left: 8,
+                  right: 8,
+                  top: 0,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blueGrey.shade100,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Column(children: [
+                    if (state.prompt != null)
+                      Padding(
+                          padding: EdgeInsets.only(
+                              top: 8, left: 8, right: 8, bottom: 0),
+                          child: Text('"${state.prompt!}"',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.blueGrey.shade800))),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            downloadableImages.length == 1
+                                ? "${downloadableImages.length} Image"
+                                : "${downloadableImages.length} Images",
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey.shade800),
+                          ),
+                          TextButton(
+                            onPressed: downloadableImages.isNotEmpty
+                                ? () async {
+                                    await grantExternalStoragePermission();
 
-                            List<Future> futures = [];
-                            for (var downloadableImage in downloadableImages) {
-                              futures.add(downloadableImage.downloadImage());
-                            }
-                            await Future.wait(futures);
+                                    List<Future> futures = [];
+                                    for (var downloadableImage
+                                        in downloadableImages) {
+                                      futures.add(
+                                          downloadableImage.downloadImage());
+                                    }
+                                    await Future.wait(futures);
 
-                            Directory directory =
-                                await downloadableImages.first.getDirectory();
+                                    Directory directory =
+                                        await downloadableImages.first
+                                            .getDirectory();
 
-                            showDownloadsSnackbar(context, directory);
-                          }
-                        : null,
-                    child: Text("Download all"),
-                  ),
-                ],
+                                    showDownloadsSnackbar(context, directory);
+                                  }
+                                : null,
+                            child: Text("Download all"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+                ),
               ),
-            ),
-            // if (imageUrls.isEmpty) ...getPlaceholders(),
-            if (downloadableImages.isNotEmpty) ...downloadableImages,
-          ],
-        ),
-      );
-    },
-  );
+              // if (imageUrls.isEmpty) ...getPlaceholders(),
+              if (downloadableImages.isNotEmpty) ...downloadableImages,
+            ],
+          ),
+        );
+      },
+    );
   }
 }
