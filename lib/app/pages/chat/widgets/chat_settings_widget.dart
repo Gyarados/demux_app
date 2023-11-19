@@ -1,6 +1,7 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/widgets/double_slider_widget.dart';
+import 'package:demux_app/app/widgets/model_dropdown.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/domain/constants.dart';
@@ -33,7 +34,6 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   int systemPromptMaxLines = 1;
   FocusNode systemPromptFocusNode = FocusNode();
   bool loading = false;
-  List<String> modelList = OPENAI_CHAT_COMPLETION_MODEL_LIST;
 
   String selectedModel = OPENAI_CHAT_COMPLETION_DEFAULT_MODEL;
   bool systemPromptsAreVisible = true;
@@ -95,26 +95,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
 
   List<Widget> getSettingsInputWidgets() {
     return [
-      DropdownButtonFormField(
-        decoration: InputDecoration(
-          labelText: 'Model',
-        ),
-        value: selectedModel,
-        onChanged: !loading
-            ? (String? value) {
-                setState(() {
-                  selectedModel = value!;
-                });
-                chatCompletionCubit.saveSelectedModel(selectedModel);
-              }
-            : null,
-        items: modelList.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ),
+      ModelDropDownWidget(),
       TextField(
         focusNode: systemPromptFocusNode,
         enabled: !loading,
@@ -125,24 +106,25 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
         maxLines: systemPromptMaxLines,
         minLines: 1,
         keyboardType: TextInputType.multiline,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           labelText: 'System prompt',
           contentPadding: EdgeInsets.symmetric(vertical: 16),
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: 16,
       ),
       DoubleSliderWidget(
-          label: "Temperature",
-          min: OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE,
-          max: OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE,
-          divisions: 20,
-          defaultValue: OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
-          currentValue: chatCompletionSettings.temperature ??
-              OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
-          onChanged: (value) => chatCompletionCubit.saveTemperature(value),),
-      SizedBox(
+        label: "Temperature",
+        min: OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE,
+        max: OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE,
+        divisions: 20,
+        defaultValue: OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
+        currentValue: chatCompletionSettings.temperature ??
+            OPENAI_CHAT_COMPLETION_DEFAULT_TEMPERATURE,
+        onChanged: (value) => chatCompletionCubit.saveTemperature(value),
+      ),
+      const SizedBox(
         height: 16,
       ),
       Container(
@@ -150,27 +132,29 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
               color: Colors.grey.shade300,
               borderRadius: BorderRadius.circular(10)),
           child: ExpansionTile(
-            title: Text("Advanced settings"),
+            title: const Text("Advanced settings"),
             shape: InputBorder.none,
             children: [
               DoubleSliderWidget(
-                  label: "Frequency penalty",
-                  min: -2,
-                  max: 2,
-                  divisions: 40,
-                  defaultValue: 0,
-                  currentValue: chatCompletionSettings.frequencyPenalty ?? 0,
-                  onChanged: (value) =>
-                      chatCompletionCubit.saveFrequencyPenalty(value),),
+                label: "Frequency penalty",
+                min: -2,
+                max: 2,
+                divisions: 40,
+                defaultValue: 0,
+                currentValue: chatCompletionSettings.frequencyPenalty ?? 0,
+                onChanged: (value) =>
+                    chatCompletionCubit.saveFrequencyPenalty(value),
+              ),
               DoubleSliderWidget(
-                  label: "Presence penalty",
-                  min: -2,
-                  max: 2,
-                  divisions: 40,
-                  defaultValue: 0,
-                  currentValue: chatCompletionSettings.presencePenalty ?? 0,
-                  onChanged: (value) =>
-                      chatCompletionCubit.savePresencePenalty(value),),
+                label: "Presence penalty",
+                min: -2,
+                max: 2,
+                divisions: 40,
+                defaultValue: 0,
+                currentValue: chatCompletionSettings.presencePenalty ?? 0,
+                onChanged: (value) =>
+                    chatCompletionCubit.savePresencePenalty(value),
+              ),
               // Text("Logit bias"),
               // Text("Max tokens"),
               // Text("N"),
@@ -178,11 +162,11 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
               // Text("Top P"),
             ],
           )),
-      SizedBox(
+      const SizedBox(
         height: 16,
       ),
       Container(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: 16,
           right: 16,
         ),
@@ -190,8 +174,8 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
             color: Colors.grey.shade300,
             borderRadius: BorderRadius.circular(10)),
         child: CheckboxListTile(
-          contentPadding: EdgeInsets.all(0),
-          title: Text('Show system prompts'),
+          contentPadding: const EdgeInsets.all(0),
+          title: const Text('Show system prompts'),
           value: systemPromptsAreVisible,
           onChanged: (newValue) {
             setState(() {
@@ -201,11 +185,11 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           },
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: 16,
       ),
       Container(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: 16,
           right: 16,
         ),
@@ -213,8 +197,8 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
             color: Colors.grey.shade300,
             borderRadius: BorderRadius.circular(10)),
         child: CheckboxListTile(
-          contentPadding: EdgeInsets.all(0),
-          title: Text("Send empty message"),
+          contentPadding: const EdgeInsets.all(0),
+          title: const Text("Send empty message"),
           value: sendEmptyMessage,
           onChanged: (newValue) {
             setState(() {
@@ -224,13 +208,13 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
           },
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: 16,
       ),
       TextButton(
         style: TextButton.styleFrom(
             foregroundColor: Colors.white, backgroundColor: Colors.red),
-        child: Text('Clear chat messages'),
+        child: const Text('Clear chat messages'),
         onPressed: () {
           chatCompletionCubit.clearChat();
         },
@@ -240,7 +224,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
 
   Widget getAPISettingsV3() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
           color: Colors.grey[200],
           border: Border.all(color: Colors.blueGrey[200]!)),

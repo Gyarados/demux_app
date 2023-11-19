@@ -6,6 +6,7 @@ import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/app/pages/images/widgets/edit_area_painter.dart';
 import 'package:demux_app/app/pages/images/widgets/selectable_area_image_widget.dart';
 import 'package:demux_app/app/pages/images/widgets/selected_image_widget.dart';
+import 'package:demux_app/app/widgets/model_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_selectionarea/flutter_markdown_selectionarea.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -376,6 +377,7 @@ Widget getStabilityAiTextToImageAPISettings({
         loadingResults: loadingResults,
         descriptionController: descriptionController,
         maxLength: null),
+    // ModelDropDownWidget(),
     Padding(
         padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
         child: DoubleSliderWidget(

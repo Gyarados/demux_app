@@ -7,6 +7,7 @@ import 'package:demux_app/data/api/api_repository.dart';
 import 'package:demux_app/data/api/mocked_api_repository.dart';
 import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
+import 'package:demux_app/data/models/openai_model.dart';
 import 'package:demux_app/domain/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,7 +29,16 @@ class OpenAiService {
     return response.statusCode >= 200 && response.statusCode < 300;
   }
 
-  List<String> processResponse(http.Response response) {
+  Map<String, dynamic> processResponse(http.Response response) {
+    Map<String, dynamic> responseJson = jsonDecode(response.body);
+    if (isSuccess(response)) {
+      return responseJson;
+    } else {
+      throw "Request failed: ${responseJson['error']['message']}";
+    }
+  }
+
+  List<String> processImageResponse(http.Response response) {
     if (isSuccess(response)) {
       return getImageUrlListFromResponse(response);
     } else {
@@ -62,7 +72,7 @@ class OpenAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    return processResponse(response);
+    return processImageResponse(response);
   }
 
   Future<List<String>> getImageVariations({
@@ -85,7 +95,7 @@ class OpenAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    return processResponse(response);
+    return processImageResponse(response);
   }
 
   Future<List<String>> getEditedImages({
@@ -113,16 +123,19 @@ class OpenAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    return processResponse(response);
+    return processImageResponse(response);
   }
 
   String? dataMapper(String event) {
     event = event.substring(6);
     Map<String, dynamic> eventObj = jsonDecode(event);
-    if (eventObj['choices'][0]["finish_reason"] == "stop") {
+    var finishReason = eventObj['choices'][0]["finish_reason"];
+    var finishDetails = eventObj['choices'][0]["finish_details"];
+    if (finishReason != null || finishDetails != null) {
       return null;
     }
-    return eventObj['choices'][0]['delta']['content'];
+    var deltaContent = eventObj['choices'][0]['delta']['content'] ?? "";
+    return deltaContent;
   }
 
   StreamController getChatResponseStream(
@@ -180,5 +193,55 @@ class OpenAiService {
     });
 
     return streamController;
+  }
+
+  List<String> parseModelIds(
+    List<OpenAiModel> models, {
+    String? pattern,
+    String? antiPattern,
+  }) {
+    List<String> modelIds = [];
+
+    for (var model in models) {
+      String id = model.id;
+      if (pattern == null && antiPattern == null) {
+        modelIds.add(id);
+      }
+      if (pattern != null && antiPattern == null) {
+        if (id.contains(pattern)) {
+          modelIds.add(id);
+        }
+      }
+      if (pattern == null && antiPattern != null) {
+        if (!id.contains(antiPattern)) {
+          modelIds.add(id);
+        }
+      }
+      if (pattern != null && antiPattern != null) {
+        if (id.contains(pattern) && !id.contains(antiPattern)) {
+          modelIds.add(id);
+        }
+      }
+    }
+
+    return modelIds;
+  }
+
+  Future<List<String>> getChatModels() async {
+    late http.Response response;
+    try {
+      response = await apiService.get(OPENAI_MODEL_ENDPOINT, getHeaders());
+    } catch (e) {
+      throw Exception('Server error');
+    }
+    Map<String, dynamic> responseJson = processResponse(response);
+
+    List<dynamic> dataJson = responseJson['data'];
+
+    List<OpenAiModel> modelList = jsonToOpenAiModelList(dataJson);
+
+    List<String> modelIds =
+        parseModelIds(modelList, pattern: "gpt", antiPattern: "instruct");
+    return modelIds;
   }
 }

@@ -7,16 +7,7 @@ const String OPENAI_API_URL = "https://api.openai.com/";
 const String OPENAI_CHAT_COMPLETION_ENDPOINT = "/v1/chat/completions";
 const String OPENAI_CHAT_COMPLETION_REFERENCE =
     "https://platform.openai.com/docs/api-reference/chat/create";
-const List<String> OPENAI_CHAT_COMPLETION_MODEL_LIST = [
-  "gpt-4",
-  "gpt-4-0613",
-  "gpt-4-32k",
-  "gpt-4-32k-0613",
-  "gpt-3.5-turbo",
-  "gpt-3.5-turbo-0613",
-  "gpt-3.5-turbo-16k",
-  "gpt-3.5-turbo-16k-0613"
-];
+const String OPENAI_MODEL_ENDPOINT = "/v1/models";
 const String OPENAI_CHAT_COMPLETION_DEFAULT_MODEL = "gpt-3.5-turbo";
 const double OPENAI_CHAT_COMPLETION_MIN_TEMPERATURE = 0;
 const double OPENAI_CHAT_COMPLETION_MAX_TEMPERATURE = 2;

@@ -22,7 +22,7 @@ class ChatCompletionSettings {
   Map? logitBias;
 
   // Custom settings:
-  String? systemPrompt = '';
+  String? systemPrompt;
   bool? systemPromptsAreVisible = true;
   bool? sendEmptyMessage = false;
 
@@ -37,18 +37,42 @@ class ChatCompletionSettings {
       this.frequencyPenalty,
       this.logitBias});
 
+  copyWith({
+    String? model,
+    // List? functions,
+    double? temperature,
+    double? topP,
+    int? n,
+    List? stop,
+    int? maxTokens,
+    double? presencePenalty,
+    double? frequencyPenalty,
+    Map? logitBias,
+  }) {
+    return ChatCompletionSettings(
+      model: model ?? this.model,
+      temperature: temperature ?? this.temperature,
+      topP: topP ?? this.topP,
+      n: n ?? this.n,
+      stop: stop ?? this.stop,
+      maxTokens: maxTokens ?? this.maxTokens,
+      presencePenalty: presencePenalty ?? this.presencePenalty,
+      frequencyPenalty: frequencyPenalty ?? this.frequencyPenalty,
+      logitBias: logitBias ?? this.logitBias,
+    );
+  }
+
   factory ChatCompletionSettings.fromJson(Map<String, dynamic> json) =>
       _$ChatCompletionSettingsFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChatCompletionSettingsToJson(this);
 
   ChatCompletionSettings removeCustomSettings() {
-    var copy = ChatCompletionSettings.fromJson(toJson());
-    copy
-      ..systemPrompt = null
-      ..systemPromptsAreVisible = null
-      ..sendEmptyMessage = null;
-    return copy;
+    // copy
+    //   ..systemPrompt = null
+    //   ..systemPromptsAreVisible = null
+    //   ..sendEmptyMessage = null;
+    return copyWith();
   }
 
   Map<String, dynamic> getRequestJson() {

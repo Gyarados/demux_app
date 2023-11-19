@@ -2,6 +2,7 @@ import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/data/utils/custom_datetime.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/domain/openai_service.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -28,12 +29,21 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     openAiService.apiKey = apiKey;
   }
 
+  Future<List<String>> getOpenAiChatModels() async {
+    return await openAiService.getChatModels();
+  }
+
+  String getSelectedModel() {
+    return state.currentChat.chatCompletionSettings.model;
+  }
+
   void getChatCompletion(String userMessageContent) {
     Chat chat = state.currentChat;
 
     emit(ChatCompletionLoading(state.chats, chat));
 
-    if (chat.messages.isEmpty && chat.name == "OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME") {
+    if (chat.messages.isEmpty &&
+        chat.name == OPENAI_CHAT_COMPLETION_DEFAULT_CHAT_NAME) {
       chat.name = userMessageContent;
     }
 
@@ -79,10 +89,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     emit(ChatCompletionSettingsSaved(state.chats, chat));
   }
 
-  void saveTemperature(
-    double temperature
-  ) {
-    // double temperature = double.parse(temperatureString);
+  void saveTemperature(double temperature) {
     Chat chat = state.currentChat;
     chat.chatCompletionSettings.temperature = temperature;
     emit(ChatCompletionSettingsSaved(state.chats, chat));
