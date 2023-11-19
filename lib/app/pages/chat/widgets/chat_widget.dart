@@ -115,7 +115,7 @@ class _ChatWidgetState extends State<ChatWidget> {
     return isScrollAtBottom
         ? null
         : Container(
-            margin: EdgeInsets.only(bottom: 60),
+            margin: const EdgeInsets.only(bottom: 60),
             child: FloatingActionButton(
                 backgroundColor: Colors.blueGrey,
                 foregroundColor: Colors.white,
@@ -125,7 +125,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                   });
                 },
                 mini: true,
-                child: Icon(Icons.keyboard_double_arrow_down_rounded)),
+                child: const Icon(Icons.keyboard_double_arrow_down_rounded)),
           );
   }
 
@@ -193,10 +193,10 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   Widget getMessageControls() {
     return Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: AnimatedContainer(
           curve: Curves.bounceInOut,
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           padding: EdgeInsets.all(messagePromptPadding),
           decoration: BoxDecoration(
             boxShadow: [
@@ -204,7 +204,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                 color: Colors.black.withOpacity(0.3),
                 spreadRadius: 4,
                 blurRadius: 5,
-                offset: Offset(0, 0),
+                offset: const Offset(0, 0),
               ),
             ],
             color: Colors.grey[200],
@@ -217,7 +217,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                   enabled: !loading,
                   controller: userMessageController,
                   keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Message",
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(4),
@@ -230,8 +230,8 @@ class _ChatWidgetState extends State<ChatWidget> {
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,
-                padding: EdgeInsets.all(0),
-                icon: loading ? Icon(Icons.stop) : Icon(Icons.send),
+                padding: const EdgeInsets.all(0),
+                icon: loading ? const Icon(Icons.stop) : const Icon(Icons.send),
                 onPressed: loading ? stopGenerating : sendMessage,
               ),
             ],
@@ -282,7 +282,7 @@ class _ChatWidgetState extends State<ChatWidget> {
             onPressed: () {
               stopEditingMessage(context);
             },
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
           ),
           TextButton(
             onPressed: () {
@@ -290,7 +290,7 @@ class _ChatWidgetState extends State<ChatWidget> {
               stopEditingMessage(context);
               chatCompletionCubit.saveCurrentMessages(messages);
             },
-            child: Text("Save"),
+            child: const Text("Save"),
           ),
         ]),
         TextField(
@@ -324,7 +324,7 @@ class _ChatWidgetState extends State<ChatWidget> {
           : Center(
               child: TextButton(
                 onPressed: sendContinueMessage,
-                child: Text("Continue"),
+                child: const Text("Continue"),
               ),
             );
     }
@@ -352,8 +352,8 @@ class _ChatWidgetState extends State<ChatWidget> {
         backgroundColor: Colors.transparent,
         floatingActionButton: getFloatingActionButton(),
         body: SingleChildScrollView(
-          physics: ClampingScrollPhysics(),
-          padding: EdgeInsets.all(8),
+          physics: const ClampingScrollPhysics(),
+          padding: const EdgeInsets.all(8),
           controller: scrollController,
           child: Column(
             children: [
@@ -380,7 +380,7 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   Widget chatMessageWidget(int index) {
     return Padding(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Container(
             decoration: BoxDecoration(
                 color: getMessageColor(messages[index].role),
@@ -388,10 +388,10 @@ class _ChatWidgetState extends State<ChatWidget> {
             child: ListTile(
               dense: false,
               contentPadding:
-                  EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
+                  const EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
               horizontalTitleGap: 0,
               title: Padding(
-                  padding: EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -399,7 +399,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                           decoration: BoxDecoration(
                               color: Colors.blueGrey.shade50,
                               borderRadius: BorderRadius.circular(10)),
-                          padding: EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(6),
                           child: Row(children: [
                             Icon(
                                 getMessageIcon(
@@ -408,20 +408,20 @@ class _ChatWidgetState extends State<ChatWidget> {
                                 size: 30,
                                 color: Colors.blueGrey),
                             if (messages[index].modelUsed != null)
-                              SizedBox(
+                              const SizedBox(
                                 width: 8,
                               ),
                             if (messages[index].modelUsed != null)
                               Text(
                                 messages[index].modelUsed!,
-                                style: TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 14),
                               )
                           ]),
                         ),
                         MenuAnchor(
                           menuChildren: <Widget>[
                             MenuItemButton(
-                              child: Text("Copy"),
+                              child: const Text("Copy"),
                               onPressed: () {
                                 copyMessage(context, messages[index].content);
                               },
@@ -432,7 +432,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                                 chatCompletionCubit
                                     .saveCurrentMessages(messages);
                               },
-                              child: Text("Edit"),
+                              child: const Text("Edit"),
                             ),
                             MenuItemButton(
                               onPressed: () {
@@ -442,7 +442,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                                       .saveCurrentMessages(messages);
                                 });
                               },
-                              child: Text(
+                              child: const Text(
                                 "Delete",
                                 style: TextStyle(color: Colors.red),
                               ),
@@ -458,7 +458,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                                   controller.open();
                                 }
                               },
-                              icon: Icon(Icons.more_vert),
+                              icon: const Icon(Icons.more_vert),
                             );
                           },
                         ),
