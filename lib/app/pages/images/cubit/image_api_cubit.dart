@@ -62,6 +62,14 @@ class ImageApiCubit extends HydratedCubit<ImageApiState> {
     emit(ImageApiRequested(urls: imageUrls));
   }
 
+  Future<List<String>> getStabilityAiEngines() async {
+    return await stabilityAiService.getEngines();
+  }
+
+  // String getSelectedModel() {
+  //   return state.currentChat.chatCompletionSettings.model;
+  // }
+
   Future<void> getStabilityAiTextToImage({
     required String engineId,
     required String prompt,

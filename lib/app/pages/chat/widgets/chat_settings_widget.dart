@@ -93,9 +93,26 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     sendEmptyMessage = chatCompletionSettings.sendEmptyMessage ?? false;
   }
 
+  Future<List<String>> updateModelList() async {
+    return await chatCompletionCubit.getOpenAiChatModels();
+  }
+
+  void saveSelectedModel(String selectedModel) {
+    chatCompletionCubit.saveSelectedModel(selectedModel);
+  }
+
+  String getSelectedModel() {
+    return chatCompletionCubit.getSelectedModel();
+  }
+
   List<Widget> getSettingsInputWidgets() {
     return [
-      ModelDropDownWidget(),
+      ModelDropDownWidget(
+        label: 'Model',
+        updateModelList: updateModelList,
+        saveSelectedModel: saveSelectedModel,
+        getSelectedModel: getSelectedModel,
+      ),
       TextField(
         focusNode: systemPromptFocusNode,
         enabled: !loading,

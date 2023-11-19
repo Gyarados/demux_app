@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:demux_app/data/api/base_api_repository.dart';
 import 'package:demux_app/data/api/api_repository.dart';
 import 'package:demux_app/data/api/mocked_api_repository.dart';
+import 'package:demux_app/data/models/stability_ai_engine.dart';
 import 'package:demux_app/domain/constants.dart';
+import 'package:demux_app/domain/utils/process_response.dart';
 import 'package:http/http.dart' as http;
 
 class StabilityAiService {
@@ -16,23 +17,19 @@ class StabilityAiService {
 
   StabilityAiService({this.apiKey});
 
-  List<String> getImageUrlListFromResponse(http.Response response) {
-    Map<String, dynamic> responseJson = jsonDecode(response.body);
+  List<String> getImageBase64ListFromJson(Map<String, dynamic> responseJson) {
     return List<String>.from(
         responseJson['artifacts'].map((item) => item['base64']));
   }
 
-  bool isSuccess(http.Response response) {
-    return response.statusCode >= 200 && response.statusCode < 300;
-  }
-
-  List<String> processResponse(http.Response response) {
-    if (isSuccess(response)) {
-      return getImageUrlListFromResponse(response);
-    } else {
-      Map<String, dynamic> responseJson = jsonDecode(response.body);
-      print(responseJson);
-      throw "Request failed: ${responseJson['message']}";
+  List<String> getImageResultsFromResponse(http.Response response){
+    try {
+      Map<String, dynamic> responseJson = processResponse(response);
+      return getImageBase64ListFromJson(responseJson);
+    } on ResponseException catch (e) {
+      throw Exception("Request failed: ${e.responseJson['message']}");
+    } catch (e) {
+      throw Exception("Request failed");
     }
   }
 
@@ -48,6 +45,18 @@ class StabilityAiService {
       "Authorization": "Bearer $apiKey",
       "Content-Type": "application/json; charset=UTF-8",
     };
+  }
+
+  Future<List<String>> getEngines() async {
+    late http.Response response;
+    try {
+      response = await apiService.get(STABILITY_AI_ENGINES_ENDPOINT, getHeaders());
+    } catch (e) {
+      throw Exception('Server error');
+    }
+    List<dynamic> responseJson = processResponse(response);
+    List<StabilityAiEngine> engineList = jsonToStabilityAiEngineList(responseJson);
+    return engineList.map((e) => e.id).toList();
   }
 
   Future<List<String>> getGeneratedImages({
@@ -80,6 +89,6 @@ class StabilityAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    return processResponse(response);
+    return getImageResultsFromResponse(response);
   }
 }

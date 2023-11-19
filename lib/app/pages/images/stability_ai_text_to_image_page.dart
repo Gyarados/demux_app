@@ -51,6 +51,9 @@ class _StabilityAiTextToImagePageState
             onHeightChanged: onHeightChanged,
             onWidthChanged: onWidthChanged,
             onQuantityChanged: onQuantityChanged,
+            getSelectedModel: getSelectedModel,
+            saveSelectedModel: saveSelectedModel,
+            updateModelList: updateEngineList,
             height: height,
             width: width,
             quantity: quantity),
@@ -63,6 +66,20 @@ class _StabilityAiTextToImagePageState
   void dispose() {
     descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<List<String>> updateEngineList() async {
+    return await imageResultsCubit.getStabilityAiEngines();
+  }
+
+  void saveSelectedModel(String selectedModel) {
+    setState(() {
+      engineId = selectedModel;
+    });
+  }
+
+  String getSelectedModel() {
+    return engineId;
   }
 
   void onHeightChanged(double value) {

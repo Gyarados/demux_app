@@ -9,6 +9,7 @@ import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/data/models/openai_model.dart';
 import 'package:demux_app/domain/constants.dart';
+import 'package:demux_app/domain/utils/process_response.dart';
 import 'package:http/http.dart' as http;
 
 class OpenAiService {
@@ -20,31 +21,18 @@ class OpenAiService {
 
   OpenAiService({this.apiKey});
 
-  List<String> getImageUrlListFromResponse(http.Response response) {
-    Map<String, dynamic> responseJson = jsonDecode(response.body);
+  List<String> getImageUrlListFromJson(Map<String, dynamic> responseJson) {
     return List<String>.from(responseJson['data'].map((item) => item['url']));
   }
 
-  bool isSuccess(http.Response response) {
-    return response.statusCode >= 200 && response.statusCode < 300;
-  }
-
-  Map<String, dynamic> processResponse(http.Response response) {
-    Map<String, dynamic> responseJson = jsonDecode(response.body);
-    if (isSuccess(response)) {
-      return responseJson;
-    } else {
-      throw "Request failed: ${responseJson['error']['message']}";
-    }
-  }
-
-  List<String> processImageResponse(http.Response response) {
-    if (isSuccess(response)) {
-      return getImageUrlListFromResponse(response);
-    } else {
-      Map<String, dynamic> responseJson = jsonDecode(response.body);
-      print(responseJson);
-      throw "Request failed: ${responseJson['error']['message']}";
+  List<String> getImageResultsFromResponse(http.Response response){
+    try {
+      Map<String, dynamic> responseJson = processResponse(response);
+      return getImageUrlListFromJson(responseJson);
+    } on ResponseException catch (e) {
+      throw Exception("Request failed: ${e.responseJson['error']['message']}");
+    } catch (e) {
+      throw Exception("Request failed");
     }
   }
 
@@ -72,7 +60,7 @@ class OpenAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    return processImageResponse(response);
+    return getImageResultsFromResponse(response);
   }
 
   Future<List<String>> getImageVariations({
@@ -95,7 +83,7 @@ class OpenAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    return processImageResponse(response);
+    return getImageResultsFromResponse(response);
   }
 
   Future<List<String>> getEditedImages({
@@ -123,7 +111,7 @@ class OpenAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    return processImageResponse(response);
+    return getImageResultsFromResponse(response);
   }
 
   String? dataMapper(String event) {

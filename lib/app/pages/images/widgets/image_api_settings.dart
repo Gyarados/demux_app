@@ -371,15 +371,25 @@ Widget getStabilityAiTextToImageAPISettings({
   required void Function(double value) onHeightChanged,
   required void Function(double value) onWidthChanged,
   required void Function(double value) onQuantityChanged,
+  required Function updateModelList,
+  required Function saveSelectedModel,
+  required Function getSelectedModel,
 }) {
   return getAPISettingsContainer(children: [
     getDescriptionTextField(
         loadingResults: loadingResults,
         descriptionController: descriptionController,
         maxLength: null),
-    // ModelDropDownWidget(),
     Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+        padding: EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 8),
+        child: ModelDropDownWidget(
+          label: "Engine",
+          updateModelList: updateModelList,
+          saveSelectedModel: saveSelectedModel,
+          getSelectedModel: getSelectedModel,
+        )),
+    Padding(
+        padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
         child: DoubleSliderWidget(
           label: "Quantity",
           min: 1,

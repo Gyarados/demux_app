@@ -5,7 +5,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ModelDropDownWidget extends StatefulWidget {
-  const ModelDropDownWidget({super.key});
+  final String label;
+  final Function updateModelList;
+  final Function saveSelectedModel;
+  final Function getSelectedModel;
+  const ModelDropDownWidget({
+    super.key,
+    required this.label,
+    required this.updateModelList,
+    required this.saveSelectedModel,
+    required this.getSelectedModel,
+  });
 
   @override
   State<ModelDropDownWidget> createState() => _ModelDropDownWidgetState();
@@ -19,12 +29,13 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
   late String selectedModel;
   bool selectedModelNotAvailable = false;
 
-  late ChatCompletionCubit chatCompletionCubit;
+  // late ChatCompletionCubit chatCompletionCubit;
 
   @override
   void initState() {
-    chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
-    selectedModel = chatCompletionCubit.getSelectedModel();
+    // chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
+    // selectedModel = chatCompletionCubit.getSelectedModel();
+    selectedModel = widget.getSelectedModel();
     updateModelList();
     super.initState();
   }
@@ -35,7 +46,8 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
       modelList.clear();
     });
 
-    modelList = await chatCompletionCubit.getOpenAiChatModels();
+    // modelList = await chatCompletionCubit.getOpenAiChatModels();
+    modelList = await widget.updateModelList();
     setState(() {
       modelList = modelList;
 
@@ -53,8 +65,8 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
   Widget build(BuildContext context) {
     return BlocConsumer<ChatCompletionCubit, ChatCompletionState>(
       listener: (context, state) async {
-        if (selectedModel != state.currentChat.chatCompletionSettings.model) {
-          selectedModel = state.currentChat.chatCompletionSettings.model;
+        if (selectedModel != widget.getSelectedModel()) {
+          selectedModel = widget.getSelectedModel();
           await updateModelList();
         }
       },
@@ -62,15 +74,16 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
         return Row(children: [
           Expanded(
               child: DropdownButtonFormField(
-            decoration: const InputDecoration(
-              labelText: 'Model',
+            decoration: InputDecoration(
+              labelText: widget.label,
             ),
             value: selectedModel,
             onChanged: (String? value) {
               setState(() {
                 selectedModel = value!;
+                selectedModelNotAvailable = false;
               });
-              chatCompletionCubit.saveSelectedModel(selectedModel);
+              widget.saveSelectedModel(selectedModel);
             },
             items: loading
                 ? null
@@ -82,9 +95,11 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
                               ? Text(
                                   "$value (Unavailable)",
                                   style: TextStyle(color: Colors.red),
+                                  overflow: TextOverflow.ellipsis,
                                 )
                               : Text(
                                   value,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                     );
                   }).toList(),

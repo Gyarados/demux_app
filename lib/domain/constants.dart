@@ -30,6 +30,7 @@ const List<String> OPENAI_IMAGE_SIZE_LIST = [
 
 // Stability AI
 const String STABILITY_AI_API_URL = "https://api.stability.ai/";
+const String STABILITY_AI_ENGINES_ENDPOINT = "/v1/engines/list";
 const String STABILITY_AI_TEXT_TO_IMAGE_ENDPOINT =
     "/v1/generation/{engine_id}/text-to-image";
 const String STABILITY_AI_IMAGE_TO_IMAGE_ENDPOINT =
