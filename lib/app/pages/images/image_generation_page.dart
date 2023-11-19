@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class ImageGenerationPage extends StatefulWidget {
-  ImageGenerationPage();
+  const ImageGenerationPage({super.key});
 
   @override
   State<ImageGenerationPage> createState() => _ImageGenerationPageState();

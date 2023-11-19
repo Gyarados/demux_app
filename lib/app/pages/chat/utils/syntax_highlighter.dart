@@ -33,7 +33,7 @@ class SelectableHighlightView extends StatelessWidget {
   final bool isCodeBlock;
 
   SelectableHighlightView(
-    String input, {
+    String input, {super.key, 
     this.language,
     this.theme = const {},
     this.padding,
@@ -48,7 +48,7 @@ class SelectableHighlightView extends StatelessWidget {
     var currentSpans = spans;
     List<List<TextSpan>> stack = [];
 
-    _traverse(Node node) {
+    traverse(Node node) {
       if (node.value != null) {
         currentSpans.add(node.className == null
             ? TextSpan(text: node.value)
@@ -60,17 +60,17 @@ class SelectableHighlightView extends StatelessWidget {
         stack.add(currentSpans);
         currentSpans = tmp;
 
-        node.children!.forEach((n) {
-          _traverse(n);
+        for (var n in node.children!) {
+          traverse(n);
           if (n == node.children!.last) {
             currentSpans = stack.isEmpty ? spans : stack.removeLast();
           }
-        });
+        }
       }
     }
 
     for (var node in nodes) {
-      _traverse(node);
+      traverse(node);
     }
     return spans;
   }
@@ -98,7 +98,7 @@ class SelectableHighlightView extends StatelessWidget {
       decoration: BoxDecoration(
           color: theme[_rootKey]?.backgroundColor ?? _defaultBackgroundColor,
           borderRadius: isCodeBlock
-              ? BorderRadius.vertical(bottom: Radius.circular(10))
+              ? const BorderRadius.vertical(bottom: Radius.circular(10))
               : BorderRadius.circular(10)),
       padding: padding,
       child: Text.rich(
@@ -154,11 +154,11 @@ class CodeElementBuilder extends MarkdownElementBuilder {
         Container(
           decoration: BoxDecoration(
               color: Colors.blueGrey.shade100,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(8))),
           child: ListTile(
             title: Text(language),
             trailing: IconButton(
-              icon: Icon(Icons.copy),
+              icon: const Icon(Icons.copy),
               onPressed: () async {
                 await copyMessage(context, element.textContent);
               },
@@ -172,18 +172,18 @@ class CodeElementBuilder extends MarkdownElementBuilder {
             decoration: BoxDecoration(
                 color: syntaxTheme['root']?.backgroundColor,
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(10))),
+                    const BorderRadius.vertical(bottom: Radius.circular(10))),
             child: Scrollbar(
               controller: scrollController,
               interactive: true,
               thumbVisibility: true,
               trackVisibility: true,
               thickness: 8,
-              radius: Radius.circular(20),
+              radius: const Radius.circular(20),
               scrollbarOrientation: ScrollbarOrientation.bottom,
               child: SingleChildScrollView(
                   controller: scrollController,
-                  physics: ScrollPhysics(),
+                  physics: const ScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: getSelectableHighlightView(
                     element,

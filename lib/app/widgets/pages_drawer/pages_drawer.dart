@@ -33,15 +33,15 @@ class _PagesDrawerState extends State<PagesDrawer> {
   Widget getPageRouteIcon(DemuxPageRoute route) {
     switch (route.classification) {
       case 'Text to Text':
-        return Icon(Icons.chat);
+        return const Icon(Icons.chat);
       case 'Text to Image':
-        return Icon(Icons.image);
+        return const Icon(Icons.image);
       case 'Image to Image':
-        return Icon(Icons.photo_library);
+        return const Icon(Icons.photo_library);
       case 'Text & Image to Image':
-        return Icon(Icons.edit);
+        return const Icon(Icons.edit);
       default:
-        return Icon(Icons.help);
+        return const Icon(Icons.help);
     }
   }
 
@@ -75,20 +75,20 @@ class _PagesDrawerState extends State<PagesDrawer> {
           Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Expanded(child:SingleChildScrollView(
             child: Column(children: [
-          DrawerHeader(
+          const DrawerHeader(
             child: Image(image: AssetImage('assets/app_icon.png')),
           ),
 
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.blueGrey.shade100.withOpacity(0.5)),
                 child: ExpansionTile(
                   shape: InputBorder.none,
-                  title: Text("OpenAI API"),
+                  title: const Text("OpenAI API"),
                   initiallyExpanded: pagesDrawerCubit
                       .isPageFromOpenAi(pagesDrawerCubit.getCurrentPageRoute()),
                   children: getListTilesFromPageRoutes(
@@ -96,22 +96,22 @@ class _PagesDrawerState extends State<PagesDrawer> {
                 )),
           ),
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.blueGrey.shade100.withOpacity(0.5)),
                 child: ExpansionTile(
                   shape: InputBorder.none,
-                  title: Text("Stability AI API"),
+                  title: const Text("Stability AI API"),
                   initiallyExpanded: pagesDrawerCubit.isPageFromStabilityAi(
                       pagesDrawerCubit.getCurrentPageRoute()),
                   children: getListTilesFromPageRoutes(
                       DemuxPageRoute.stabilityAiPages, context),
                 )),
           ),
-          ListTile(
+          const ListTile(
             title: Text(
               "Anthropic API (Soon)",
               style: TextStyle(color: Colors.black26),
@@ -126,7 +126,7 @@ class _PagesDrawerState extends State<PagesDrawer> {
         ]))),
         Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           ListTile(
-            leading: Icon(Icons.settings),
+            leading: const Icon(Icons.settings),
             selectedTileColor: Colors.blueGrey,
             selectedColor: Colors.white,
             title: Text(DemuxPageRoute.appSettings.pageName),
@@ -138,18 +138,18 @@ class _PagesDrawerState extends State<PagesDrawer> {
             },
           ),
           ListTile(
-            contentPadding: EdgeInsets.all(0),
+            contentPadding: const EdgeInsets.all(0),
             dense: true,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(appVersion),
-                Text("•"),
+                const Text("•"),
                 TextButton(
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       foregroundColor: Colors.black),
-                  child: Text("About us"),
+                  child: const Text("About us"),
                   onPressed: () async {
                     Uri uri = Uri.parse("https://www.desidera.dev");
                     try {

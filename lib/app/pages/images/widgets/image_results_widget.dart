@@ -26,12 +26,12 @@ List<Widget> getPlaceholders() {
   return List.generate(
       numPlaceholders,
       (index) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.grey.shade600.withAlpha(
-                      maxAlpha - (index * maxAlpha / numPlaceholders).toInt()),
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+                      maxAlpha - index * maxAlpha ~/ numPlaceholders),
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
               height: 100,
             ),
           ));
@@ -65,11 +65,11 @@ class ImageResultsWidget extends StatelessWidget {
       builder: (context, state) {
         List<DownloadableImage> downloadableImages = getImagesFromState(state);
         return Container(
-          padding: EdgeInsets.only(top: 16),
+          padding: const EdgeInsets.only(top: 16),
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   bottom: 8,
                   left: 8,
                   right: 8,
@@ -82,14 +82,14 @@ class ImageResultsWidget extends StatelessWidget {
                   child: Column(children: [
                     if (state.prompt != null)
                       Padding(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                               top: 8, left: 8, right: 8, bottom: 0),
                           child: Text('"${state.prompt!}"',
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.blueGrey.shade800))),
                     Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -120,7 +120,7 @@ class ImageResultsWidget extends StatelessWidget {
                                     showDownloadsSnackbar(context, directory);
                                   }
                                 : null,
-                            child: Text("Download all"),
+                            child: const Text("Download all"),
                           ),
                         ],
                       ),

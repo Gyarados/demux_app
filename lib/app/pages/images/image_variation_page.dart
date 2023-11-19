@@ -14,7 +14,7 @@ import 'package:image_picker/image_picker.dart';
 
 @RoutePage()
 class ImageVariationPage extends StatefulWidget {
-  ImageVariationPage();
+  const ImageVariationPage({super.key});
 
   @override
   State<ImageVariationPage> createState() => _ImageVariationPageState();

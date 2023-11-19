@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class ChatCompletionPage extends StatefulWidget {
-  ChatCompletionPage();
+  const ChatCompletionPage({super.key});
 
   @override
   State<ChatCompletionPage> createState() => _ChatCompletionPageState();
@@ -69,15 +69,15 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
             length: 2,
             child: Column(children: [
               Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.blueGrey,
                     borderRadius:
                         BorderRadius.vertical(bottom: Radius.circular(10)),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
                     child:Row(children: [
-                    Expanded(
+                    const Expanded(
                         child: TabBar(
                           
                       indicatorPadding: EdgeInsets.all(3),
@@ -98,18 +98,18 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   ]))),
               Expanded(
                   child: TabBarView(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                     Stack(
                       children: [
-                        ChatWidget(),
+                        const ChatWidget(),
                         if (appSettingsCubit.showIntroductionMessages() &&
                             appSettingsCubit.openAiApiKeyIsMissing())
-                          IntrodutionCTAWidget(),
+                          const IntrodutionCTAWidget(),
                       ],
                     ),
                     // ChatWidget(),
-                    ChatSettingsWidget(),
+                    const ChatSettingsWidget(),
                   ])),
             ])));
   }
@@ -119,7 +119,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
         onPressed: () {
           scaffoldKey.currentState!.openEndDrawer();
         },
-        icon: Icon(
+        icon: const Icon(
           Icons.chat,
           color: Colors.white,
         ));
@@ -154,7 +154,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                                     _showCheckbox = false;
                                   });
                                 },
-                                child: Text("Delete")),
+                                child: const Text("Delete")),
                             TextButton(
                                 onPressed: () {
                                   setState(() {
@@ -162,7 +162,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                                     _showCheckbox = false;
                                   });
                                 },
-                                child: Text("Cancel")),
+                                child: const Text("Cancel")),
                           ]))),
                       Checkbox(
                           value: selectedChats.length == chats.length,
@@ -183,7 +183,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                         chatCompletionCubit.createNewChat();
                         setState(() {});
                       },
-                      child: Text("Create new chat"))),
+                      child: const Text("Create new chat"))),
         ),
         // Expanded(
         //     child: ListView.builder(
@@ -238,7 +238,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
       key: listTileKey,
       selectedColor: Colors.white,
       selectedTileColor: Colors.blueGrey,
-      contentPadding: EdgeInsets.only(left: 8),
+      contentPadding: const EdgeInsets.only(left: 8),
       trailing: Checkbox(
         value: selectedChats.contains(chat),
         onChanged: (value) {
@@ -285,7 +285,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
       textColor: isCurrent ? Colors.white : Colors.black,
       iconColor: isCurrent ? Colors.white : Colors.black,
       backgroundColor: isCurrent ? Colors.blueGrey : Colors.white,
-      tilePadding: EdgeInsets.only(right: 8),
+      tilePadding: const EdgeInsets.only(right: 8),
       title: ListTile(
         key: listTileKey,
         selectedColor: Colors.white,
@@ -312,7 +312,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
       ),
       children: [
         Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -323,7 +323,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                     onPressed: () {
                       chatCompletionCubit.deleteChat(chat);
                     },
-                    child: Text("Delete")),
+                    child: const Text("Delete")),
                 TextButton(
                     onPressed: () {
                       setState(() {
@@ -331,7 +331,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                         chatBeingRenamed = chat;
                       });
                     },
-                    child: Text("Rename")),
+                    child: const Text("Rename")),
               ],
             ))
       ],

@@ -68,7 +68,7 @@ class EditAreaPainter extends CustomPainter {
     final recorder = ui.PictureRecorder();
     final offscreenCanvas = Canvas(
         recorder,
-        Rect.fromPoints(Offset(0, 0),
+        Rect.fromPoints(const Offset(0, 0),
             Offset(image!.width.toDouble(), image!.height.toDouble())));
 
     // Calculate the scale factors
@@ -92,7 +92,7 @@ class EditAreaPainter extends CustomPainter {
     // First draw an opaque background color
     canvas.drawRect(
         Rect.fromPoints(
-            Offset(0, 0), Offset(lastPaintSize!.width, lastPaintSize!.height)),
+            const Offset(0, 0), Offset(lastPaintSize!.width, lastPaintSize!.height)),
         Paint()..color = Colors.green);
 
     final transparentCirclePaint = Paint()
@@ -127,7 +127,7 @@ class EditAreaPainter extends CustomPainter {
 
     final recorder = ui.PictureRecorder();
     final offscreenCanvas = Canvas(recorder,
-        Rect.fromPoints(Offset(0, 0), Offset(size.width, size.height)));
+        Rect.fromPoints(const Offset(0, 0), Offset(size.width, size.height)));
 
     // Drawing the circles onto the offscreen buffer with fully opaque colors
     final opaqueCirclePaint = Paint()
@@ -146,7 +146,7 @@ class EditAreaPainter extends CustomPainter {
         offsetX, offsetY, image!.width * scale, image!.height * scale));
 
     canvas.saveLayer(
-        Rect.fromPoints(Offset(0, 0), Offset(size.width, size.height)),
+        Rect.fromPoints(const Offset(0, 0), Offset(size.width, size.height)),
         selectionPaint);
     canvas.drawPicture(picture);
     canvas.restore();

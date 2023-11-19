@@ -9,7 +9,7 @@ import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
 
 @RoutePage()
 class AppSettingsPage extends StatefulWidget {
-  AppSettingsPage();
+  const AppSettingsPage({super.key});
 
   @override
   State<AppSettingsPage> createState() => _AppSettingsPageState();
@@ -38,19 +38,19 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
         print("Settings from BlocBuilder: ${settings.toJson()}");
         return Container(
           color: Colors.grey.shade200,
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 16,
                   right: 16,
                   bottom: 16,
                 ),
                 decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Row(
                   children: [
                     Expanded(
@@ -58,7 +58,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                         obscureText: true,
                         controller: openAiApiKeyController,
                         decoration:
-                            InputDecoration(labelText: "OpenAI API Key"),
+                            const InputDecoration(labelText: "OpenAI API Key"),
                         onChanged: (value) {
                           print("onChanged OpenAI API Key: $value");
                           appSettingsCubit.updateOpenAiApiKey(value);
@@ -71,20 +71,20 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                             openAiApiKeyController.clear();
                             appSettingsCubit.resetOpenAiApiKey();
                           },
-                          icon: Icon(Icons.close))
+                          icon: const Icon(Icons.close))
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 16,
                   right: 16,
                   bottom: 16,
                 ),
                 decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Row(
                   children: [
                     Expanded(
@@ -92,7 +92,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                         obscureText: true,
                         controller: stabilityAiApiKeyController,
                         decoration:
-                            InputDecoration(labelText: "Stability AI API Key"),
+                            const InputDecoration(labelText: "Stability AI API Key"),
                         onChanged: (value) {
                           print("onChanged Stability API Key: $value");
                           appSettingsCubit.updateStabilityAiApiKey(value);
@@ -105,22 +105,22 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                             stabilityAiApiKeyController.clear();
                             appSettingsCubit.resetStabilityAiApiKey();
                           },
-                          icon: Icon(Icons.close))
+                          icon: const Icon(Icons.close))
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 16,
                   right: 16,
                 ),
                 decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: CheckboxListTile(
-                  contentPadding: EdgeInsets.all(0),
-                  title: Text("Show introduction messages"),
+                  contentPadding: const EdgeInsets.all(0),
+                  title: const Text("Show introduction messages"),
                   value: showIntroMessages,
                   onChanged: (newValue) {
                     setState(() {
@@ -130,7 +130,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   },
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               DoubleSliderWidget(
                   label: "Text Scale Factor",
                   min: 0.5,
@@ -140,7 +140,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   currentValue: settings.textScaleFactor,
                   onChanged: (value) =>
                       appSettingsCubit.updateTextScaleFactor(value),),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Expanded(
                   child: ListView(
                 children: [
@@ -171,7 +171,7 @@ This is a simplified explanation, but it covers the basic idea. Would you like t
   Widget chatExampleMessageWidget(String role, double textScaleFactor) {
     return ListTile(
       dense: true,
-      contentPadding: EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
+      contentPadding: const EdgeInsets.only(left: 8, top: 0, bottom: 8, right: 8),
       // horizontalTitleGap: 0,
       tileColor: getMessageColor(role),
       leading: Column(children: [

@@ -30,14 +30,14 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
         Container(
             decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(10))),
             child: Column(children: [
               Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 8,
                   ),
-                  Expanded(
+                  const Expanded(
                       child: Text(
                     "Selected image",
                     textAlign: TextAlign.start,
@@ -49,7 +49,7 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                         ? null
                         : () {
                             setState(() {
-                              timer = Timer.periodic(Duration(milliseconds: 25),
+                              timer = Timer.periodic(const Duration(milliseconds: 25),
                                   (timer) {
                                 removeLastSelectedPoint();
                               });
@@ -60,7 +60,7 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                         timer?.cancel();
                       });
                     },
-                    child: IconButton(
+                    child: const IconButton(
                         onPressed: null,
                         icon: Icon(
                           Icons.undo_rounded,
@@ -69,14 +69,14 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                   ),
                   IconButton(
                     onPressed: loadingResults ? null : removeAllPoints,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.replay_sharp,
                       color: Colors.black,
                     ),
                   ),
                   IconButton(
                     onPressed: loadingResults ? null : removeSelectedImage,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
                       color: Colors.red,
                     ),
@@ -84,9 +84,9 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                 ],
               ),
               Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Column(children: [
-                    Text("Selection radius"),
+                    const Text("Selection radius"),
                     SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                             overlayShape: SliderComponentShape.noOverlay,
@@ -103,7 +103,7 @@ class _SelectableAreaImageState extends State<SelectableAreaImage> {
                             });
                           },
                         )),
-                    Text("Select the area which will be replaced."),
+                    const Text("Select the area which will be replaced."),
                   ])),
             ])),
         GestureDetector(

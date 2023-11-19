@@ -15,12 +15,12 @@ Widget getAPISettingsContainer({
   required List<Widget> children,
 }) {
   return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
             color: Colors.grey[200],
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                   color: Colors.black,
                   blurRadius: 4,
@@ -38,7 +38,7 @@ Widget getImageQuantityInput(
   return TextField(
     controller: imageQuantityController,
     enabled: !loadingResults,
-    decoration: InputDecoration(
+    decoration: const InputDecoration(
       labelText: 'Quantity (1-10)',
       contentPadding: EdgeInsets.all(0.0),
     ),
@@ -53,7 +53,7 @@ Widget getImageQuantityAndSizeDropdownRow({
   required void Function(String?)? imageSizeOnChanged,
 }) {
   return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 0),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 0),
       child: Row(
         children: [
           Expanded(
@@ -63,7 +63,7 @@ Widget getImageQuantityAndSizeDropdownRow({
           )),
           Expanded(
               child: DropdownButtonFormField(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Size',
               contentPadding: EdgeInsets.all(0.0),
             ),
@@ -88,7 +88,7 @@ Widget getImageQuantityAndSizeDoubleInput({
   required Function(double value) onWidthChanged,
 }) {
   return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 0),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 0),
       child: Column(
         children: [
           Expanded(
@@ -126,14 +126,14 @@ Widget getDescriptionTextField({
   int? maxLength = 1000,
 }) {
   return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 0),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 0),
       child: TextField(
         controller: descriptionController,
         enabled: !loadingResults,
         maxLines: 5,
         minLines: 1,
         maxLength: maxLength,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           labelText: 'Description',
         ),
       ));
@@ -146,29 +146,29 @@ Widget getGalleryCameraImagePicker({
   required void Function()? cameraOnPressed,
 }) {
   return Padding(
-      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
       child: Container(
           decoration: BoxDecoration(
             color: Colors.grey.shade300,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Column(children: [
             Row(children: [
               Expanded(
                   child: Padding(
-                      padding: EdgeInsets.only(top: 0, right: 16, left: 16),
+                      padding: const EdgeInsets.only(top: 0, right: 16, left: 16),
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueGrey),
                         onPressed: loadingResults || loadingSelectedImage
                             ? null
                             : galleryOnPressed,
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.file_upload,
                           color: Colors.white,
                         ),
-                        label: Text(
+                        label: const Text(
                           "Gallery",
                           style: TextStyle(color: Colors.white),
                         ),
@@ -176,18 +176,18 @@ Widget getGalleryCameraImagePicker({
               if (!kIsWeb)
                 Expanded(
                     child: Padding(
-                        padding: EdgeInsets.only(top: 0, right: 16, left: 16),
+                        padding: const EdgeInsets.only(top: 0, right: 16, left: 16),
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueGrey),
                           onPressed: loadingResults || loadingSelectedImage
                               ? null
                               : cameraOnPressed,
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                           ),
-                          label: Text(
+                          label: const Text(
                             "Camera",
                             style: TextStyle(color: Colors.white),
                           ),
@@ -201,7 +201,7 @@ Widget getGalleryCameraImagePicker({
                   size: 75,
                   color: Colors.grey.shade500,
                 ),
-                MarkdownBody(
+                const MarkdownBody(
                     data: "- PNG\n- 1:1 aspect ratio (square)\n- Maximum 4MB"),
               ],
             ),
@@ -214,15 +214,15 @@ Widget getSendButton(
     bool enabled = true,
     bool loadingResults = false}) {
   return Padding(
-      padding: EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: 8),
       child: !loadingResults
           ? Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: TextButton(
                 onPressed: sendButtonOnPressed,
                 child: Text(text),
               ))
-          : Padding(
+          : const Padding(
               padding: EdgeInsets.all(16),
               child: SpinKitRing(
                 lineWidth: 4,
@@ -266,12 +266,12 @@ Widget getImageEditAPISettings({
         cameraOnPressed: cameraOnPressed,
       ),
     if (selectedImage != null)
-      SizedBox(
+      const SizedBox(
         height: 16,
       ),
     if (selectedImage != null)
       Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SelectableAreaImage(
             editAreaPainter,
             removeSelectedImage,
@@ -313,12 +313,12 @@ Widget getImageVariationAPISettings({
         cameraOnPressed: cameraOnPressed,
       ),
     if (selectedImage != null)
-      SizedBox(
+      const SizedBox(
         height: 16,
       ),
     if (selectedImage != null)
       Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SelectedImageWidget(
             selectedImage: selectedImage,
             loadingResults: loadingResults,
@@ -381,7 +381,7 @@ Widget getStabilityAiTextToImageAPISettings({
         descriptionController: descriptionController,
         maxLength: null),
     Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 8),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 8),
         child: ModelDropDownWidget(
           label: "Engine",
           updateModelList: updateModelList,
@@ -389,7 +389,7 @@ Widget getStabilityAiTextToImageAPISettings({
           getSelectedModel: getSelectedModel,
         )),
     Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
         child: DoubleSliderWidget(
           label: "Quantity",
           min: 1,
@@ -401,7 +401,7 @@ Widget getStabilityAiTextToImageAPISettings({
           onChanged: onQuantityChanged,
         )),
     Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
         child: DoubleSliderWidget(
           label: "Height",
           min: 128,
@@ -413,7 +413,7 @@ Widget getStabilityAiTextToImageAPISettings({
           onChanged: onHeightChanged,
         )),
     Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
         child: DoubleSliderWidget(
           label: "Width",
           min: 128,

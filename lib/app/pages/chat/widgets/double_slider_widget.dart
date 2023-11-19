@@ -10,7 +10,8 @@ class DoubleSliderWidget extends StatelessWidget {
   final int fractionDigits;
   final Function onChanged;
 
-  DoubleSliderWidget({
+  const DoubleSliderWidget({
+    super.key,
     required this.min,
     required this.max,
     required this.divisions,
@@ -24,21 +25,20 @@ class DoubleSliderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey.shade300,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-              "$label: ${currentValue.toStringAsFixed(fractionDigits)}"),
+          Text("$label: ${currentValue.toStringAsFixed(fractionDigits)}"),
           Row(
             children: [
               Expanded(
                 child: SliderTheme(
-                  data: SliderThemeData(
+                  data: const SliderThemeData(
                     overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
                   ),
                   child: Slider(
@@ -49,12 +49,12 @@ class DoubleSliderWidget extends StatelessWidget {
                     min: min,
                     max: max,
                     onChanged: (value) {
-                        onChanged(value);
+                      onChanged(value);
                     },
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               TextButton(
@@ -62,9 +62,9 @@ class DoubleSliderWidget extends StatelessWidget {
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.red,
                 ),
-                child: Text('Reset'),
+                child: const Text('Reset'),
                 onPressed: () {
-                    onChanged(defaultValue);
+                  onChanged(defaultValue);
                 },
               )
             ],

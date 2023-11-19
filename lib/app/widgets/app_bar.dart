@@ -9,7 +9,7 @@ AppBar getAppBar(
     String? apiReferenceUrl}) {
   return AppBar(
     centerTitle: true,
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: Colors.white),
     actions: apiReferenceUrl != null
         ? [
             IconButton(
@@ -27,7 +27,7 @@ AppBar getAppBar(
                         criticality: MessageCriticality.error);
                   }
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.help_outline,
                   color: Colors.white,
                 ))
@@ -39,12 +39,12 @@ AppBar getAppBar(
         children: <TextSpan>[
           TextSpan(
             text: pageName, // \n creates a new line
-            style: TextStyle(fontSize: 18, color: Colors.white),
+            style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
           if (pageEndpoint != null)
             TextSpan(
               text: '\n$pageEndpoint',
-              style: TextStyle(fontSize: 12, color: Colors.white),
+              style: const TextStyle(fontSize: 12, color: Colors.white),
             ),
         ],
       ),

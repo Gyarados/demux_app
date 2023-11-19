@@ -37,7 +37,7 @@ class MockedApiRepository extends ApiRepositoryBase {
     Map<String, dynamic> body,
   ) async {
     http.Response response = mockImageResults(body);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return response;
   }
 
@@ -67,7 +67,7 @@ class MockedApiRepository extends ApiRepositoryBase {
             (i + chunkSize < mockText.length) ? i + chunkSize : mockText.length;
         final data = utf8.encode(mockText.substring(i, end));
         streamController.add(data);
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 500));
       }
 
       streamController.close();
@@ -89,7 +89,7 @@ class MockedApiRepository extends ApiRepositoryBase {
     List<http.MultipartFile> files,
   ) async {
     http.Response response = mockImageResults(body);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return response;
   }
 }

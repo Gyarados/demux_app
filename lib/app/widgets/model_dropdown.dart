@@ -94,7 +94,7 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
                           (selectedModelNotAvailable && value == selectedModel)
                               ? Text(
                                   "$value (Unavailable)",
-                                  style: TextStyle(color: Colors.red),
+                                  style: const TextStyle(color: Colors.red),
                                   overflow: TextOverflow.ellipsis,
                                 )
                               : Text(
@@ -105,7 +105,7 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
                   }).toList(),
           )),
           if (loading)
-            SpinKitRing(
+            const SpinKitRing(
               color: Colors.blueGrey,
               size: 32,
               lineWidth: 4,

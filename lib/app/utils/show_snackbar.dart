@@ -9,17 +9,17 @@ enum MessageCriticality {
 Widget getSnackBarIcon(MessageCriticality criticality) {
   switch (criticality) {
     case MessageCriticality.info:
-      return Icon(
+      return const Icon(
         Icons.info,
         color: Colors.blueGrey,
       );
     case MessageCriticality.warning:
-      return Icon(
+      return const Icon(
         Icons.warning,
         color: Colors.amber,
       );
     case MessageCriticality.error:
-      return Icon(
+      return const Icon(
         Icons.error,
         color: Colors.red,
       );
@@ -38,7 +38,7 @@ void showSnackbar(
       leading: getSnackBarIcon(criticality),
       title: Text(
         message,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
     ),
   ));

@@ -21,22 +21,22 @@ class SelectedImageWidget extends StatelessWidget {
         Container(
             decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(10))),
             child: Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
-                Expanded(
+                const Expanded(
                     child: Text(
                   "Selected image",
                   style: TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.start,
                 )),
                 IconButton(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   onPressed: loadingResults ? null : closeButtonOnPressed,
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.close,
                     color: Colors.red,
                   ),

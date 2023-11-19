@@ -96,7 +96,7 @@ class DownloadableImage extends StatelessWidget {
     if (wasSynchronouslyLoaded || frame != null) {
       return child;
     }
-    return SpinKitRing(
+    return const SpinKitRing(
       color: Colors.white,
     );
   }
@@ -110,7 +110,7 @@ class DownloadableImage extends StatelessWidget {
       return child;
     }
     return Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Center(
           child: CircularProgressIndicator(
             color: Colors.grey.shade300,
@@ -125,13 +125,13 @@ class DownloadableImage extends StatelessWidget {
   Widget errorBuilder(
       BuildContext context, Object exception, StackTrace? stackTrace) {
     return Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Center(
           child: Container(
             width: 200,
             height: 200,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
                 color: Colors.grey.shade700),
             child: Column(children: [
               Icon(
@@ -140,7 +140,7 @@ class DownloadableImage extends StatelessWidget {
                 size: 150,
               ),
               Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
                     'Failed to load image',
                     style: TextStyle(
@@ -219,7 +219,7 @@ class DownloadableImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: 8),
         child: GestureDetector(
           onLongPressStart: (details) {
             FocusScope.of(context).unfocus();
@@ -233,7 +233,7 @@ class DownloadableImage extends StatelessWidget {
               items: [
                 PopupMenuItem(
                   child: TextButton(
-                    child: Text('Download'),
+                    child: const Text('Download'),
                     onPressed: () async {
                       Navigator.pop(context);
                       await grantExternalStoragePermission();
@@ -244,7 +244,7 @@ class DownloadableImage extends StatelessWidget {
                 if (url != null)
                   PopupMenuItem(
                     child: TextButton(
-                      child: Text('Copy URL'),
+                      child: const Text('Copy URL'),
                       onPressed: () {
                         Navigator.pop(context);
                         copyUrl(context);

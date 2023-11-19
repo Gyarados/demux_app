@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class StabilityAiTextToImagePage extends StatefulWidget {
-  StabilityAiTextToImagePage();
+  const StabilityAiTextToImagePage({super.key});
 
   @override
   State<StabilityAiTextToImagePage> createState() =>

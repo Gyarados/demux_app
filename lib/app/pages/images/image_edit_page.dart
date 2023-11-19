@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 
 @RoutePage()
 class ImageEditPage extends StatefulWidget {
-  ImageEditPage();
+  const ImageEditPage({super.key});
 
   @override
   State<ImageEditPage> createState() => _ImageEditPageState();

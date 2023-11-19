@@ -37,23 +37,23 @@ class _AppState extends State<App> {
     switch (pageRoute) {
       // OpenAI
       case DemuxPageRoute.openAiChatCompletion:
-        return ChatCompletionPage();
+        return const ChatCompletionPage();
       case DemuxPageRoute.openAiImageGeneration:
-        return ImageGenerationPage();
+        return const ImageGenerationPage();
       case DemuxPageRoute.openAiImageEdit:
-        return ImageEditPage();
+        return const ImageEditPage();
       case DemuxPageRoute.openAiImageVariation:
-        return ImageVariationPage();
+        return const ImageVariationPage();
 
       // Stability AI
       case DemuxPageRoute.stabilityAiImageGeneration:
-        return StabilityAiTextToImagePage();
+        return const StabilityAiTextToImagePage();
 
       // App
       case DemuxPageRoute.appSettings:
-        return AppSettingsPage();
+        return const AppSettingsPage();
       default:
-        return ChatCompletionPage();
+        return const ChatCompletionPage();
     }
   }
 
@@ -99,7 +99,7 @@ class _AppState extends State<App> {
                     pageEndpoint: pageRoute.pageEndpoint,
                     apiReferenceUrl: pageRoute.apiReferenceUrl,
                   ),
-                  drawer: PagesDrawer(),
+                  drawer: const PagesDrawer(),
                   body: Container(
                       color: Colors.blueGrey[700],
                       child: getLimitedWidthWidget(
