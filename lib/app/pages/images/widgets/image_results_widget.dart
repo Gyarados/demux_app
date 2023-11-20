@@ -54,14 +54,21 @@ void showDownloadsSnackbar(BuildContext context, Directory directory) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-class ImageResultsWidget extends StatelessWidget {
+class ImageResultsWidget extends StatefulWidget {
   final ImageApiCubit cubit;
   const ImageResultsWidget(this.cubit, {super.key});
 
   @override
+  State<ImageResultsWidget> createState() => _ImageResultsWidgetState();
+}
+
+class _ImageResultsWidgetState extends State<ImageResultsWidget> {
+  List<String> imageSources = [];
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ImageApiCubit, ImageApiState>(
-      bloc: cubit,
+      bloc: widget.cubit,
       builder: (context, state) {
         List<DownloadableImage> downloadableImages = getImagesFromState(state);
         return Container(
@@ -95,8 +102,8 @@ class ImageResultsWidget extends StatelessWidget {
                         children: [
                           Text(
                             downloadableImages.length == 1
-                                ? "${downloadableImages.length} Image"
-                                : "${downloadableImages.length} Images",
+                                ? "${downloadableImages.length} image"
+                                : "${downloadableImages.length} images",
                             style: TextStyle(
                                 fontSize: 16, color: Colors.grey.shade800),
                           ),

@@ -29,12 +29,8 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
   late String selectedModel;
   bool selectedModelNotAvailable = false;
 
-  // late ChatCompletionCubit chatCompletionCubit;
-
   @override
   void initState() {
-    // chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
-    // selectedModel = chatCompletionCubit.getSelectedModel();
     selectedModel = widget.getSelectedModel();
     updateModelList();
     super.initState();
@@ -46,7 +42,6 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
       modelList.clear();
     });
 
-    // modelList = await chatCompletionCubit.getOpenAiChatModels();
     modelList = await widget.updateModelList();
     setState(() {
       modelList = modelList;

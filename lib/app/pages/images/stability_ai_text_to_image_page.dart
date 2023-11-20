@@ -4,6 +4,7 @@ import 'package:demux_app/app/pages/images/widgets/image_api_settings.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/pages/images/widgets/image_results_widget.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +26,7 @@ class _StabilityAiTextToImagePageState
   double quantity = 1;
   double height = 512;
   double width = 512;
-  String engineId = "stable-diffusion-512-v2-1";
+  String engineId = STABILITY_AI_DEFAULT_MODEL;
 
   StabilityAiTextToImageApiCubit imageResultsCubit =
       StabilityAiTextToImageApiCubit();
