@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class PagesDrawer extends StatefulWidget {
   const PagesDrawer({super.key});
@@ -59,7 +60,10 @@ class _PagesDrawerState extends State<PagesDrawer> {
             selectedColor: Colors.white,
             title: Text(route.pageName),
             selected: selected,
-            onTap: () {
+            onTap: () async {
+              await FirebaseAnalytics.instance.logScreenView(
+                screenName: route.path,
+              );
               pagesDrawerCubit.navigateTo(route);
               Navigator.of(context).pop();
             },
@@ -73,8 +77,9 @@ class _PagesDrawerState extends State<PagesDrawer> {
       backgroundColor: Colors.white,
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Expanded(child:SingleChildScrollView(
-            child: Column(children: [
+        Expanded(
+            child: SingleChildScrollView(
+                child: Column(children: [
           const DrawerHeader(
             child: Image(image: AssetImage('assets/app_icon.png')),
           ),
