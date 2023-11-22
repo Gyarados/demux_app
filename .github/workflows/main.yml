@@ -35,8 +35,10 @@ jobs:
           IFS='+' read -ra ADDR <<< "$version"
           version_number=${ADDR[0]}
           build_number=${ADDR[1]}
-          echo "version_number=$(echo $version_number | awk -F. -v OFS=. '{$NF++; print}')" >> $GITHUB_OUTPUT
-          echo "build_number=$(($build_number + 1))" >> $GITHUB_OUTPUT
+          # echo "version_number=$(echo $version_number | awk -F. -v OFS=. '{$NF++; print}')" >> $GITHUB_OUTPUT
+          echo "version_number=$version_number" >> $GITHUB_OUTPUT
+          # echo "build_number=$(($build_number + 1))" >> $GITHUB_OUTPUT
+          echo "build_number=$build_number" >> $GITHUB_OUTPUT
 
   deploy_web:
     name: Deploy Web 
@@ -152,7 +154,7 @@ jobs:
 
       - name: Write new version and build number
         run: |
-          yq e ".version = \"${{ needs.read_version.outputs.version_number }}+${{ needs.read_version.outputs.build_number }}\"" -i pubspec.yaml
+          yq e ".version = \"$(echo ${{ needs.read_version.outputs.version_number }} | awk -F. '{print $1"."$2"."$3+1}')+$(( ${{ needs.read_version.outputs.build_number }} + 1 ))\"" -i pubspec.yaml
 
       - name: Commit changes
         run: |
