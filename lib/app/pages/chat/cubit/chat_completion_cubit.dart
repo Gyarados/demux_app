@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/message.dart';
@@ -37,7 +39,13 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
     return state.currentChat.chatCompletionSettings.model;
   }
 
-  void getChatCompletion(String userMessageContent) {
+  bool modelHasVision() {
+    List<String> modelsWithVision = ["gpt-4-vision-preview"];
+    return modelsWithVision
+        .contains(state.currentChat.chatCompletionSettings.model);
+  }
+
+  void getChatCompletion(String userMessageContent, {Uint8List? image}) {
     Chat chat = state.currentChat;
 
     emit(ChatCompletionLoading(state.chats, chat));
@@ -59,8 +67,11 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
 
     bool sendEmptyMessage =
         chat.chatCompletionSettings.sendEmptyMessage ?? true;
-    if (userMessageContent.isNotEmpty || sendEmptyMessage) {
+    if (userMessageContent.isNotEmpty || image != null || sendEmptyMessage) {
       Message userMessage = Message("user", userMessageContent);
+      if (image != null){
+        userMessage.image = image;
+      }
       chat.messages.add(userMessage);
       emit(ChatCompletionMessagesSaved(state.chats, chat));
     }

@@ -9,6 +9,7 @@ part of 'message.dart';
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       json['role'] as String,
       json['content'] as String,
+      image: imageFromJson(json['image'] as Map<String, dynamic>),
       modelUsed: json['model_used'] as String?,
     );
 
@@ -25,5 +26,6 @@ Map<String, dynamic> _$MessageToJson(Message instance) {
   }
 
   writeNotNull('model_used', instance.modelUsed);
+  writeNotNull('image', imageToJson(instance.image));
   return val;
 }

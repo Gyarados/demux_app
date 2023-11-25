@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/utils/copy_text.dart';
 import 'package:demux_app/app/pages/chat/utils/syntax_highlighter.dart';
+import 'package:demux_app/app/pages/images/utils/image_processing.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:demux_app/data/models/chat.dart';
@@ -12,6 +14,7 @@ import 'package:demux_app/data/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatWidget extends StatefulWidget {
@@ -42,6 +45,10 @@ class _ChatWidgetState extends State<ChatWidget> {
   late ChatCompletionCubit chatCompletionCubit;
   late AppSettingsCubit appSettingsCubit;
   StreamController? streamController;
+
+  Uint8List? selectedImage;
+
+  bool loadingSelectedImage = false;
 
   @override
   void initState() {
@@ -77,6 +84,41 @@ class _ChatWidgetState extends State<ChatWidget> {
     }
   }
 
+  scrollListener() {
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final minScroll = scrollController.position.minScrollExtent;
+    if (scrollController.position.pixels >= maxScroll) {
+      setState(() {
+        isScrollAtTop = false;
+        isScrollAtBottom = true;
+      });
+    } else if (scrollController.position.pixels <= minScroll) {
+      setState(() {
+        isScrollAtTop = true;
+        isScrollAtBottom = false;
+      });
+    } else {
+      setState(() {
+        isScrollAtTop = false;
+        isScrollAtBottom = false;
+      });
+    }
+  }
+
+  void animateToEnd({int milliseconds = 500}) async {
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: milliseconds),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void jumpToEnd() async {
+    scrollController.jumpTo(
+      scrollController.position.maxScrollExtent,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (needsScroll) {
@@ -102,12 +144,11 @@ class _ChatWidgetState extends State<ChatWidget> {
       systemPromptsAreVisible = chatCompletionSettings.systemPromptsAreVisible!;
       messages = currentChat.messages;
       return Stack(
-          children: [
-            getChatMessagesV3(),
-            Align(
-                alignment: Alignment.bottomCenter, child: getMessageControls()),
-          ],
-        );
+        children: [
+          getChatMessagesV3(),
+          Align(alignment: Alignment.bottomCenter, child: getMessageControls()),
+        ],
+      );
     });
   }
 
@@ -183,10 +224,14 @@ class _ChatWidgetState extends State<ChatWidget> {
     });
 
     String userMessageContent = userMessageController.text;
-    chatCompletionCubit.getChatCompletion(userMessageContent);
+    chatCompletionCubit.getChatCompletion(
+      userMessageContent,
+      image: selectedImage,
+    );
 
     setState(() {
       userMessageController.clear();
+      selectedImage = null;
       needsScroll = true;
     });
   }
@@ -197,7 +242,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         child: AnimatedContainer(
           curve: Curves.bounceInOut,
           duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.all(messagePromptPadding),
+          padding: EdgeInsets.only(left: 4, right: 4, top: 0, bottom: 0),
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -211,26 +256,60 @@ class _ChatWidgetState extends State<ChatWidget> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Expanded(
-                child: TextField(
-                  enabled: !loading,
-                  controller: userMessageController,
-                  keyboardType: TextInputType.multiline,
-                  decoration: const InputDecoration(
-                    hintText: "Message",
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(4),
-                  ),
-                  focusNode: messagePromptFocusNode,
-                  maxLines: messagePromptMaxLines,
-                  minLines: 1,
-                  textCapitalization: TextCapitalization.sentences,
+              if (chatCompletionCubit.modelHasVision() && selectedImage == null)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.only(bottom: 24),
+                  icon: const Icon(Icons.camera_alt),
+                  onPressed: selectImageToSend,
                 ),
+              if (chatCompletionCubit.modelHasVision() && selectedImage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Stack(children: [
+                        Image.memory(
+                          selectedImage!,
+                          // width: 40,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedImage = null;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            )),
+                      ])),
+                ),
+              Expanded(
+                child: Padding(
+                    padding: EdgeInsets.all(4),
+                    child: TextField(
+                      enabled: !loading,
+                      controller: userMessageController,
+                      keyboardType: TextInputType.multiline,
+                      decoration: const InputDecoration(
+                        hintText: "Message",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(4),
+                      ),
+                      focusNode: messagePromptFocusNode,
+                      maxLines: messagePromptMaxLines,
+                      minLines: 1,
+                      textCapitalization: TextCapitalization.sentences,
+                    )),
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,
-                padding: const EdgeInsets.all(0),
+                padding: const EdgeInsets.only(bottom: 24),
                 icon: loading ? const Icon(Icons.stop) : const Icon(Icons.send),
                 onPressed: loading ? stopGenerating : sendMessage,
               ),
@@ -239,39 +318,27 @@ class _ChatWidgetState extends State<ChatWidget> {
         ));
   }
 
-  void animateToEnd({int milliseconds = 500}) async {
-    scrollController.animateTo(
-      scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: milliseconds),
-      curve: Curves.easeInOut,
-    );
-  }
+  void selectImageToSend() async {
+    setState(() {
+      loadingSelectedImage = true;
+    });
 
-  void jumpToEnd() async {
-    scrollController.jumpTo(
-      scrollController.position.maxScrollExtent,
-    );
-  }
-
-  scrollListener() {
-    final maxScroll = scrollController.position.maxScrollExtent;
-    final minScroll = scrollController.position.minScrollExtent;
-    if (scrollController.position.pixels >= maxScroll) {
-      setState(() {
-        isScrollAtTop = false;
-        isScrollAtBottom = true;
-      });
-    } else if (scrollController.position.pixels <= minScroll) {
-      setState(() {
-        isScrollAtTop = true;
-        isScrollAtBottom = false;
-      });
-    } else {
-      setState(() {
-        isScrollAtTop = false;
-        isScrollAtBottom = false;
-      });
+    try {
+      XFile? imageFile = await pickImage(ImageSource.gallery);
+      if (imageFile != null) {
+        Uint8List pngBytes = await processImageFile(imageFile);
+        setState(() {
+          selectedImage = pngBytes;
+        });
+      }
+    } catch (e) {
+      showSnackbar(e.toString(), context,
+          criticality: MessageCriticality.error);
     }
+
+    setState(() {
+      loadingSelectedImage = false;
+    });
   }
 
   Widget getEditingMessageWidget(int index) {
@@ -466,26 +533,34 @@ class _ChatWidgetState extends State<ChatWidget> {
               titleAlignment: ListTileTitleAlignment.top,
               subtitle: messageBeingEdited == index
                   ? getEditingMessageWidget(index)
-                  : SelectionArea(
-                      child: MarkdownBody(
-                      data: messages[index].content,
-                      onTapText: () {},
-                      onTapLink: (text, url, title) {
-                        launchUrl(Uri.parse(url!));
-                      },
-                      softLineBreak: false,
-                      fitContent: false,
-                      shrinkWrap: true,
-                      builders: {
-                        'code': CodeElementBuilder(
+                  : Column(children: [
+                      if (messages[index].image != null)
+                        Image.memory(
+                          messages[index].image!,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      SelectionArea(
+                          child: MarkdownBody(
+                        data: messages[index].content,
+                        onTapText: () {},
+                        onTapLink: (text, url, title) {
+                          launchUrl(Uri.parse(url!));
+                        },
+                        softLineBreak: false,
+                        fitContent: false,
+                        shrinkWrap: true,
+                        builders: {
+                          'code': CodeElementBuilder(
+                            textScaleFactor:
+                                appSettingsCubit.getTextScaleFactor(),
+                          ),
+                        },
+                        styleSheet: MarkdownStyleSheet(
                           textScaleFactor:
                               appSettingsCubit.getTextScaleFactor(),
                         ),
-                      },
-                      styleSheet: MarkdownStyleSheet(
-                        textScaleFactor: appSettingsCubit.getTextScaleFactor(),
-                      ),
-                    )),
+                      ))
+                    ]),
             )));
   }
 }

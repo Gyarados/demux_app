@@ -75,27 +75,27 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                         BorderRadius.vertical(bottom: Radius.circular(10)),
                   ),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
-                    child:Row(children: [
-                    const Expanded(
-                        child: TabBar(
-                          
-                      indicatorPadding: EdgeInsets.all(3),
-                      dividerColor: Colors.blueGrey,
-                      labelColor: Colors.white,
-                      indicatorColor: Colors.white,
-                      unselectedLabelColor: Colors.white,
-                      tabs: [
-                        Tab(
-                          text: "Chat",
-                        ),
-                        Tab(
-                          text: "Settings",
-                        )
-                      ],
-                    )),
-                    getChatListIconButton()
-                  ]))),
+                      borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(10)),
+                      child: Row(children: [
+                        const Expanded(
+                            child: TabBar(
+                          indicatorPadding: EdgeInsets.all(3),
+                          dividerColor: Colors.blueGrey,
+                          labelColor: Colors.white,
+                          indicatorColor: Colors.white,
+                          unselectedLabelColor: Colors.white,
+                          tabs: [
+                            Tab(
+                              text: "Chat",
+                            ),
+                            Tab(
+                              text: "Settings",
+                            )
+                          ],
+                        )),
+                        getChatListIconButton()
+                      ]))),
               Expanded(
                   child: TabBarView(
                       physics: const NeverScrollableScrollPhysics(),
@@ -126,8 +126,6 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   }
 
   Drawer getChatListDrawer(BuildContext context) {
-    // chats.forEach(
-    //     (chat) => print("$chat ${chat == currentChat ? '- selected' : ''}"));
     return Drawer(
       child: Column(children: [
         Container(

@@ -23,8 +23,8 @@ class ChatCompletionSettings {
 
   // Custom settings:
   String? systemPrompt;
-  bool? systemPromptsAreVisible = true;
-  bool? sendEmptyMessage = false;
+  bool? systemPromptsAreVisible;
+  bool? sendEmptyMessage;
 
   ChatCompletionSettings(
       {required this.model,
@@ -68,10 +68,6 @@ class ChatCompletionSettings {
   Map<String, dynamic> toJson() => _$ChatCompletionSettingsToJson(this);
 
   ChatCompletionSettings removeCustomSettings() {
-    // copy
-    //   ..systemPrompt = null
-    //   ..systemPromptsAreVisible = null
-    //   ..sendEmptyMessage = null;
     return copyWith();
   }
 

@@ -21,7 +21,8 @@ class SelectedImageWidget extends StatelessWidget {
         Container(
             decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(10))),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(10))),
             child: Row(
               children: [
                 const SizedBox(

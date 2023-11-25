@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part "message.g.dart";
@@ -13,29 +16,61 @@ class Message {
 
   // Custom settings:
   String? modelUsed;
+  @JsonKey(
+    fromJson: imageFromJson,
+    toJson: imageToJson,
+  )
+  Uint8List? image;
 
-  Message(this.role, this.content, {this.modelUsed});
+  Message(
+    this.role,
+    this.content, {
+    this.image,
+    this.modelUsed,
+  });
 
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 
-  Message removeCustomSettings() {
-    var copy = Message.fromJson(toJson());
-    copy.modelUsed = null;
-    return copy;
+  copyWith({
+    String? role,
+    String? content,
+  }) {
+    return Message(
+      role ?? this.role,
+      content ?? this.content,
+    );
   }
 
-  Map<String, dynamic> getRequestJson() {
-    var copy = removeCustomSettings();
-    return copy.toJson();
+  Message removeCustomSettings() {
+    return copyWith();
   }
 }
 
 List<Map<String, dynamic>> messageListToJson(List<Message> messages) {
-  List<Map<String, dynamic>> messagesJson =
-      messages.map((message) => message.getRequestJson()).toList();
+  List<Map<String, dynamic>> messagesJson = messages.map((message) {
+    if (message.image == null) {
+      return message.removeCustomSettings().toJson();
+    } else {
+      return <String, dynamic>{
+        "role": message.role,
+        "content": [
+          {
+            "type": "text",
+            "text": message.content,
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "data:image/jpeg;base64,${base64Encode(message.image!)}",
+            },
+          }
+        ]
+      };
+    }
+  }).toList();
   return messagesJson;
 }
 
@@ -43,4 +78,15 @@ List<Message> jsonToMessageList(List<dynamic> messagesJson) {
   List<Message> messages =
       messagesJson.map((messageJson) => Message.fromJson(messageJson)).toList();
   return messages;
+}
+
+Uint8List? imageFromJson(Map<String, dynamic> json) {
+  return base64Decode(json["base64"]);
+}
+
+Map<String, dynamic>? imageToJson(Uint8List? image) {
+  if (image == null){
+    return null;
+  }
+  return {"base64": base64Encode(image)};
 }
