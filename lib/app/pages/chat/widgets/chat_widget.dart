@@ -263,7 +263,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                 IconButton(
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.only(bottom: 24),
-                  icon: const Icon(Icons.camera_alt),
+                  icon: const Icon(Icons.add_photo_alternate),
                   onPressed: selectImageToSend,
                 ),
               if (chatCompletionCubit.modelHasVision() && selectedImage != null)

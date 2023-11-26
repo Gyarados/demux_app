@@ -35,7 +35,6 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<AppSettingsCubit, AppSettings>(
       builder: (context, settings) {
-        print("Settings from BlocBuilder: ${settings.toJson()}");
         return Container(
           color: Colors.grey.shade200,
           padding: const EdgeInsets.all(16.0),
@@ -60,7 +59,6 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                         decoration:
                             const InputDecoration(labelText: "OpenAI API Key"),
                         onChanged: (value) {
-                          print("onChanged OpenAI API Key: $value");
                           appSettingsCubit.updateOpenAiApiKey(value);
                         },
                       ),
@@ -94,7 +92,6 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                         decoration:
                             const InputDecoration(labelText: "Stability AI API Key"),
                         onChanged: (value) {
-                          print("onChanged Stability API Key: $value");
                           appSettingsCubit.updateStabilityAiApiKey(value);
                         },
                       ),

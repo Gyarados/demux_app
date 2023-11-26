@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class HttpClientImplementation extends BaseHttpClient {
   @override
   Future<http.StreamedResponse> send(http.Request request) {
-    var client = FetchClient(mode: RequestMode.cors);
+    var client = FetchClient(mode: RequestMode.cors, streamRequests: true);
     Future<http.StreamedResponse> streamedResponseFuture = client.send(request);
     return streamedResponseFuture;
   }
