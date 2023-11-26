@@ -9,7 +9,7 @@ part of 'message.dart';
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       json['role'] as String,
       json['content'] as String,
-      image: imageFromJson(json['image'] as Map<String, dynamic>),
+      image: imageFromJson(json['image'] as Map<String, dynamic>?),
       modelUsed: json['model_used'] as String?,
     );
 

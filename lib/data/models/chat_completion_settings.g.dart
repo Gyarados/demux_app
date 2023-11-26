@@ -18,11 +18,11 @@ ChatCompletionSettings _$ChatCompletionSettingsFromJson(
       presencePenalty: (json['presence_penalty'] as num?)?.toDouble(),
       frequencyPenalty: (json['frequency_penalty'] as num?)?.toDouble(),
       logitBias: json['logit_bias'] as Map<String, dynamic>?,
-    )
-      ..stream = json['stream'] as bool
-      ..systemPrompt = json['system_prompt'] as String?
-      ..systemPromptsAreVisible = json['system_prompts_are_visible'] as bool?
-      ..sendEmptyMessage = json['send_empty_message'] as bool?;
+      systemPrompt: json['system_prompt'] as String?,
+      sendEmptyMessage: json['send_empty_message'] as bool? ?? false,
+      systemPromptsAreVisible:
+          json['system_prompts_are_visible'] as bool? ?? true,
+    )..stream = json['stream'] as bool;
 
 Map<String, dynamic> _$ChatCompletionSettingsToJson(
     ChatCompletionSettings instance) {

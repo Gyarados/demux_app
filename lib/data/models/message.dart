@@ -47,6 +47,11 @@ class Message {
   Message removeCustomSettings() {
     return copyWith();
   }
+
+  @override
+  String toString() {
+    return 'Message(role: $role, content: $content, modelUsed: $modelUsed, image: $image)';
+  }
 }
 
 List<Map<String, dynamic>> messageListToJson(List<Message> messages) {
@@ -80,12 +85,15 @@ List<Message> jsonToMessageList(List<dynamic> messagesJson) {
   return messages;
 }
 
-Uint8List? imageFromJson(Map<String, dynamic> json) {
+Uint8List? imageFromJson(Map<String, dynamic>? json) {
+  if (json == null || json["base64"] == null) {
+    return null;
+  }
   return base64Decode(json["base64"]);
 }
 
 Map<String, dynamic>? imageToJson(Uint8List? image) {
-  if (image == null){
+  if (image == null) {
     return null;
   }
   return {"base64": base64Encode(image)};
