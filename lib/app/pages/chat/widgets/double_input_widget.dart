@@ -7,13 +7,16 @@ class DoubleInputWidget extends StatefulWidget {
   final int fractionDigits;
   final String label;
   final bool allowNull;
+  final bool enabled;
   const DoubleInputWidget(this.textEditingController,
       {super.key,
       this.label = "",
       this.min,
       this.max,
       this.fractionDigits = 2,
-      this.allowNull = true});
+      this.allowNull = true,
+      this.enabled = true,
+      });
 
   @override
   State<DoubleInputWidget> createState() => _DoubleInputWidgetState();
@@ -28,6 +31,7 @@ class _DoubleInputWidgetState extends State<DoubleInputWidget> {
       autovalidateMode: AutovalidateMode.always,
       key: _formKey,
       child: TextFormField(
+        enabled: widget.enabled,
         controller: widget.textEditingController,
         validator: (value) {
           try {

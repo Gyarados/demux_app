@@ -1,5 +1,6 @@
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/chat/widgets/double_input_widget.dart';
 import 'package:demux_app/app/pages/chat/widgets/double_slider_widget.dart';
 import 'package:demux_app/app/widgets/model_dropdown.dart';
 import 'package:demux_app/data/models/chat.dart';
@@ -38,6 +39,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   String selectedModel = OPENAI_CHAT_COMPLETION_DEFAULT_MODEL;
   bool systemPromptsAreVisible = true;
   bool sendEmptyMessage = false;
+
   late ChatCompletionCubit chatCompletionCubit;
 
   Chat currentChat = Chat.initial();
@@ -56,11 +58,16 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     }
   }
 
+  maxTokensListener() {
+    chatCompletionCubit.saveMaxTokens(maxTokensController.text);
+  }
+
   @override
   void initState() {
     chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
     updateSettingsFromState(chatCompletionCubit.state);
     systemPromptFocusNode.addListener(systemPromptListener);
+    maxTokensController.addListener(maxTokensListener);
     super.initState();
   }
 
@@ -91,6 +98,9 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     systemPromptsAreVisible =
         chatCompletionSettings.systemPromptsAreVisible ?? true;
     sendEmptyMessage = chatCompletionSettings.sendEmptyMessage ?? false;
+    maxTokensController.text = chatCompletionSettings.maxTokens == null
+        ? ""
+        : chatCompletionSettings.maxTokens.toString();
   }
 
   Future<List<String>> updateModelList() async {
@@ -142,7 +152,24 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
         onChanged: (value) => chatCompletionCubit.saveTemperature(value),
       ),
       const SizedBox(
-        height: 16,
+        height: 8,
+      ),
+      Container(
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: 16,
+        ),
+        decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(10)),
+        child: DoubleInputWidget(
+          maxTokensController,
+          label: "Max tokens",
+        ),
+      ),
+      const SizedBox(
+        height: 8,
       ),
       Container(
           decoration: BoxDecoration(

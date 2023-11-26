@@ -24,33 +24,43 @@ Uint8List encodePngImage(img.Image image) {
   return img.encodePng(image);
 }
 
-Future<Uint8List> processImageFile(XFile imageFile) async {
+Future<Uint8List> processImageFile(
+  XFile imageFile, {
+  bool resize = true,
+  bool compress = true,
+}) async {
   img.Image? decodedImage = await decodeImageFile(imageFile);
   if (decodedImage == null) {
     throw Exception('Failed to decode image file');
   }
   decodedImage = decodedImage.convert(numChannels: 4);
 
-  if (decodedImage.width != decodedImage.height) {
-    decodedImage = resizeImageToSquare(decodedImage);
+  if (resize) {
+    if (decodedImage.width != decodedImage.height) {
+      decodedImage = resizeImageToSquare(decodedImage);
+    }
   }
 
   Uint8List pngBytes = encodePngImage(decodedImage);
 
-  int imageSize = pngBytes.lengthInBytes;
-  double imageSizeInMB = imageSize / 1048576.0;
-  double maxImageSizeInMB = 4.0;
+  if (compress) {
+    int imageSize = pngBytes.lengthInBytes;
+    double imageSizeInMB = imageSize / 1048576.0;
+    double maxImageSizeInMB = 4.0;
 
-  double resizeRatio;
-  int height;
-  int width;
-  if (imageSizeInMB > maxImageSizeInMB) {
-    resizeRatio = (maxImageSizeInMB / imageSizeInMB);
-    height = (resizeRatio * decodedImage.height).floor();
-    width = height;
-    decodedImage = resizeImage(decodedImage, width, height);
-    pngBytes = encodePngImage(decodedImage);
+    double resizeRatio;
+    int height;
+    int width;
+    if (imageSizeInMB > maxImageSizeInMB) {
+      resizeRatio = (maxImageSizeInMB / imageSizeInMB);
+      height = (resizeRatio * decodedImage.height).floor();
+      width = height;
+      decodedImage = resizeImage(decodedImage, width, height);
+      pngBytes = encodePngImage(decodedImage);
+    }
+    return pngBytes;
   }
+
   return pngBytes;
 }
 

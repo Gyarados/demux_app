@@ -69,7 +69,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
         chat.chatCompletionSettings.sendEmptyMessage ?? true;
     if (userMessageContent.isNotEmpty || image != null || sendEmptyMessage) {
       Message userMessage = Message("user", userMessageContent);
-      if (image != null){
+      if (image != null) {
         userMessage.image = image;
       }
       chat.messages.add(userMessage);
@@ -119,6 +119,18 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   ) {
     Chat chat = state.currentChat;
     chat.chatCompletionSettings.presencePenalty = value;
+    emit(ChatCompletionSettingsSaved(state.chats, chat));
+  }
+
+  void saveMaxTokens(
+    String valueString,
+  ) {
+    Chat chat = state.currentChat;
+    try {
+      chat.chatCompletionSettings.maxTokens = int.parse(valueString);
+    } catch (e) {
+      chat.chatCompletionSettings.maxTokens = null;
+    }
     emit(ChatCompletionSettingsSaved(state.chats, chat));
   }
 
@@ -225,7 +237,6 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   void createNewChat() {
     Chat newChat = Chat.initial();
     state.chats.insert(0, newChat);
-    // state.chats.add(newChat);
     emit(ChatCompletionChatCreated(state.chats, state.currentChat));
   }
 

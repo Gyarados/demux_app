@@ -273,10 +273,11 @@ class _ChatWidgetState extends State<ChatWidget> {
                       height: 40,
                       width: 40,
                       child: Stack(children: [
-                        Image.memory(
+                        Align(
+                          alignment: Alignment.center,
+                          child: Image.memory(
                           selectedImage!,
-                          // width: 40,
-                        ),
+                        )),
                         IconButton(
                             onPressed: () {
                               setState(() {
@@ -326,7 +327,11 @@ class _ChatWidgetState extends State<ChatWidget> {
     try {
       XFile? imageFile = await pickImage(ImageSource.gallery);
       if (imageFile != null) {
-        Uint8List pngBytes = await processImageFile(imageFile);
+        Uint8List pngBytes = await processImageFile(
+          imageFile,
+          resize: false,
+          compress: false,
+        );
         setState(() {
           selectedImage = pngBytes;
         });
@@ -539,6 +544,8 @@ class _ChatWidgetState extends State<ChatWidget> {
                           messages[index].image!,
                           fit: BoxFit.fitHeight,
                         ),
+                      if (messages[index].image != null)
+                      SizedBox(height: 8,),
                       SelectionArea(
                           child: MarkdownBody(
                         data: messages[index].content,
