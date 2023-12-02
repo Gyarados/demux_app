@@ -5,6 +5,7 @@ import 'package:demux_app/app/pages/chat/widgets/chat_widget.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_settings_widget.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/introduction_cta.dart';
+import 'package:demux_app/data/models/app_settings.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,14 +101,18 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                   child: TabBarView(
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
-                    Stack(
-                      children: [
-                        const ChatWidget(),
-                        if (appSettingsCubit.showIntroductionMessages() &&
-                            appSettingsCubit.openAiApiKeyIsMissing())
-                          const IntrodutionCTAWidget(),
-                      ],
-                    ),
+                    BlocBuilder<AppSettingsCubit, AppSettings>(
+                        builder: (context, state) {
+                      return Stack(
+                        children: [
+                          const ChatWidget(),
+                          if (appSettingsCubit.showIntroductionMessages() &&
+                              appSettingsCubit.openAiApiKeyIsMissing())
+                            const IntrodutionCTAWidget(),
+                        ],
+                      );
+                    }),
+
                     // ChatWidget(),
                     const ChatSettingsWidget(),
                   ])),
