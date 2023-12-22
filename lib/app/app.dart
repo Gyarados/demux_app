@@ -35,9 +35,13 @@ class _AppState extends State<App> {
 
   Widget getCurrentPage(DemuxPageRoute pageRoute) {
     switch (pageRoute) {
+      // Demux
+      case DemuxPageRoute.demuxChatCompletion:
+        return ChatCompletionPage(DemuxPageRoute.demuxChatCompletion.path);
+
       // OpenAI
       case DemuxPageRoute.openAiChatCompletion:
-        return const ChatCompletionPage();
+        return ChatCompletionPage(DemuxPageRoute.openAiChatCompletion.path);
       case DemuxPageRoute.openAiImageGeneration:
         return const ImageGenerationPage();
       case DemuxPageRoute.openAiImageEdit:
@@ -53,7 +57,7 @@ class _AppState extends State<App> {
       case DemuxPageRoute.appSettings:
         return const AppSettingsPage();
       default:
-        return const ChatCompletionPage();
+        return ChatCompletionPage(DemuxPageRoute.openAiChatCompletion.path);
     }
   }
 

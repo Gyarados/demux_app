@@ -93,6 +93,23 @@ class _PagesDrawerState extends State<PagesDrawer> {
                     color: Colors.blueGrey.shade100.withOpacity(0.5)),
                 child: ExpansionTile(
                   shape: InputBorder.none,
+                  title: const Text("Demux API"),
+                  initiallyExpanded: pagesDrawerCubit
+                      .isPageFromDemux(pagesDrawerCubit.getCurrentPageRoute()),
+                  children: getListTilesFromPageRoutes(
+                      DemuxPageRoute.demuxPages, context),
+                )),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blueGrey.shade100.withOpacity(0.5)),
+                child: ExpansionTile(
+                  shape: InputBorder.none,
                   title: const Text("OpenAI API"),
                   initiallyExpanded: pagesDrawerCubit
                       .isPageFromOpenAi(pagesDrawerCubit.getCurrentPageRoute()),

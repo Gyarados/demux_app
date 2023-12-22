@@ -10,6 +10,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   final OpenAiService openAiService;
+  String? pagePath;
 
   ChatCompletionCubit._(
     List<Chat> chats,
@@ -25,6 +26,10 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
       chat,
       openAiService,
     );
+  }
+
+  void setApiPagePath(String pagePath){
+    pagePath = pagePath;
   }
 
   void setApiKey(String apiKey) {

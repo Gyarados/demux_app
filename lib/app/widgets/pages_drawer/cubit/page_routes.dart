@@ -3,6 +3,10 @@ import 'package:demux_app/domain/constants.dart';
 class DemuxPageRoute {
   static DemuxPageRoute getRouteFromPath(String path) {
     switch (path) {
+      // Demux
+      case '/demux-chat-completion':
+        return DemuxPageRoute.demuxChatCompletion;
+
       // OpenAI
       case '/openai-chat-completion':
         return DemuxPageRoute.openAiChatCompletion;
@@ -24,6 +28,18 @@ class DemuxPageRoute {
         return DemuxPageRoute.openAiChatCompletion;
     }
   }
+
+  // Demux
+  static const demuxChatCompletion = DemuxPageRoute._(
+    path: '/demux-chat-completion',
+    pageName: 'Chat Completion',
+    pageEndpoint: "",
+    apiReferenceUrl: null,
+    classification: 'Text to Text',
+  );
+  static const List<DemuxPageRoute> demuxPages = [
+    demuxChatCompletion,
+  ];
 
   // OpenAI
   static const openAiChatCompletion = DemuxPageRoute._(

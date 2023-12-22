@@ -12,6 +12,10 @@ class ApiPagesCubit extends HydratedCubit<DemuxPageRoute> {
     return state;
   }
 
+  bool isPageFromDemux(DemuxPageRoute page) {
+    return DemuxPageRoute.demuxPages.contains(page);
+  }
+
   bool isPageFromOpenAi(DemuxPageRoute page) {
     return DemuxPageRoute.openAiPages.contains(page);
   }

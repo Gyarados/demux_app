@@ -12,7 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class ChatCompletionPage extends StatefulWidget {
-  const ChatCompletionPage({super.key});
+  final String pageRoutePath;
+
+  const ChatCompletionPage(this.pageRoutePath, {super.key});
 
   @override
   State<ChatCompletionPage> createState() => _ChatCompletionPageState();
@@ -37,6 +39,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
     chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
+    chatCompletionCubit.setApiPagePath(widget.pageRoutePath);
     chatCompletionCubit.setApiKey(appSettingsCubit.getOpenAiApiKey());
     updateChatsFromState(chatCompletionCubit.state);
     super.initState();
@@ -66,57 +69,72 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
           }
         },
         backgroundColor: Colors.transparent,
-        body: DefaultTabController(
-            length: 2,
-            child: Column(children: [
-              Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blueGrey,
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(10)),
-                  ),
-                  child: ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(10)),
-                      child: Row(children: [
-                        const Expanded(
-                            child: TabBar(
-                          indicatorPadding: EdgeInsets.all(3),
-                          dividerColor: Colors.blueGrey,
-                          labelColor: Colors.white,
-                          indicatorColor: Colors.white,
-                          unselectedLabelColor: Colors.white,
-                          tabs: [
-                            Tab(
-                              text: "Chat",
-                            ),
-                            Tab(
-                              text: "Settings",
-                            )
-                          ],
-                        )),
-                        getChatListIconButton()
-                      ]))),
-              Expanded(
-                  child: TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                    BlocBuilder<AppSettingsCubit, AppSettings>(
-                        builder: (context, state) {
-                      return Stack(
-                        children: [
-                          const ChatWidget(),
-                          if (appSettingsCubit.showIntroductionMessages() &&
-                              appSettingsCubit.openAiApiKeyIsMissing())
-                            const IntrodutionCTAWidget(),
-                        ],
-                      );
-                    }),
+        body: getChatCompletionBodyByPageRoutePath(widget.pageRoutePath));
+  }
 
-                    // ChatWidget(),
-                    const ChatSettingsWidget(),
-                  ])),
-            ])));
+  Widget getChatAndSettingsTabController() {
+    return DefaultTabController(
+        length: 2,
+        child: Column(children: [
+          Container(
+              decoration: const BoxDecoration(
+                color: Colors.blueGrey,
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(10)),
+              ),
+              child: ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(bottom: Radius.circular(10)),
+                  child: Row(children: [
+                    const Expanded(
+                        child: TabBar(
+                      indicatorPadding: EdgeInsets.all(3),
+                      dividerColor: Colors.blueGrey,
+                      labelColor: Colors.white,
+                      indicatorColor: Colors.white,
+                      unselectedLabelColor: Colors.white,
+                      tabs: [
+                        Tab(
+                          text: "Chat",
+                        ),
+                        Tab(
+                          text: "Settings",
+                        )
+                      ],
+                    )),
+                    getChatListIconButton()
+                  ]))),
+          Expanded(
+              child: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                BlocBuilder<AppSettingsCubit, AppSettings>(
+                    builder: (context, state) {
+                  return Stack(
+                    children: [
+                      ChatWidget(widget.pageRoutePath),
+                      if (appSettingsCubit.showIntroductionMessages() &&
+                          appSettingsCubit.openAiApiKeyIsMissing())
+                        const IntrodutionCTAWidget(),
+                    ],
+                  );
+                }),
+
+                // ChatWidget(),
+                const ChatSettingsWidget(),
+              ])),
+        ]));
+  }
+
+  Widget getChatCompletionBodyByPageRoutePath(String path) {
+    switch (path) {
+      case '/demux-chat-completion':
+        return ChatWidget(widget.pageRoutePath);
+      case '/openai-chat-completion':
+        return getChatAndSettingsTabController();
+      default:
+        return getChatAndSettingsTabController();
+    }
   }
 
   Widget getChatListIconButton() {

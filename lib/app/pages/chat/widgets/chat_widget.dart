@@ -18,7 +18,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatWidget extends StatefulWidget {
-  const ChatWidget({super.key});
+  final String pageRoutePath;
+  const ChatWidget(this.pageRoutePath, {super.key});
 
   @override
   State<ChatWidget> createState() => _ChatWidgetState();
