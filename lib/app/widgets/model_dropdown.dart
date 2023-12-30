@@ -1,5 +1,5 @@
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_cubit.dart';
+import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -58,7 +58,7 @@ class _ModelDropDownWidgetState extends State<ModelDropDownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChatCompletionCubit, ChatCompletionState>(
+    return BlocConsumer<OpenAiChatCompletionCubit, OpenAiChatCompletionState>(
       listener: (context, state) async {
         if (selectedModel != widget.getSelectedModel()) {
           selectedModel = widget.getSelectedModel();

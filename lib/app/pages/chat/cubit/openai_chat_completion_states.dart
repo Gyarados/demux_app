@@ -2,79 +2,79 @@ import 'dart:async';
 
 import 'package:demux_app/data/models/chat.dart';
 
-sealed class ChatCompletionState {
+sealed class OpenAiChatCompletionState {
   final List<Chat> chats;
   final Chat currentChat;
-  ChatCompletionState(
+  OpenAiChatCompletionState(
     this.chats,
     this.currentChat,
   );
 }
 
-class ChatCompletionLoading extends ChatCompletionState {
+class ChatCompletionLoading extends OpenAiChatCompletionState {
   ChatCompletionLoading(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionSettingsSaved extends ChatCompletionState {
+class ChatCompletionSettingsSaved extends OpenAiChatCompletionState {
   ChatCompletionSettingsSaved(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionSettingsChanged extends ChatCompletionState {
+class ChatCompletionSettingsChanged extends OpenAiChatCompletionState {
   ChatCompletionSettingsChanged(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionMessagesSaved extends ChatCompletionState {
+class ChatCompletionMessagesSaved extends OpenAiChatCompletionState {
   ChatCompletionMessagesSaved(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionChatSelected extends ChatCompletionState {
+class ChatCompletionChatSelected extends OpenAiChatCompletionState {
   ChatCompletionChatSelected(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionChatCreated extends ChatCompletionState {
+class ChatCompletionChatCreated extends OpenAiChatCompletionState {
   ChatCompletionChatCreated(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionChatDeleted extends ChatCompletionState {
+class ChatCompletionChatDeleted extends OpenAiChatCompletionState {
   ChatCompletionChatDeleted(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionInitial extends ChatCompletionState {
+class ChatCompletionInitial extends OpenAiChatCompletionState {
   ChatCompletionInitial(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionRetrievedFromMemory extends ChatCompletionState {
+class ChatCompletionRetrievedFromMemory extends OpenAiChatCompletionState {
   ChatCompletionRetrievedFromMemory(
     super.chats,
     super.currentChat,
   );
 }
 
-class ChatCompletionReturned extends ChatCompletionState {
+class ChatCompletionReturned extends OpenAiChatCompletionState {
   final StreamController? streamController;
   ChatCompletionReturned(
     super.chats,

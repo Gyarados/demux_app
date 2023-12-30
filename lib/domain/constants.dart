@@ -2,6 +2,11 @@
 const bool USE_MOCK_API_SERVICE = false;
 const double DEFAULT_TEXT_SCALE_FACTOR = 1;
 
+// Demux
+const String DEMUX_API_URL = "https://clean-evidently-mutt.ngrok-free.app/";
+const String DEMUX_CHAT_COMPLETION_ENDPOINT = "/api/chat";
+
+
 // OpenAI
 const String OPENAI_API_URL = "https://api.openai.com/";
 const String OPENAI_CHAT_COMPLETION_ENDPOINT = "/v1/chat/completions";

@@ -5,6 +5,7 @@ import 'package:demux_app/data/api/api_repository.dart';
 import 'package:demux_app/data/api/mocked_api_repository.dart';
 import 'package:demux_app/data/models/stability_ai_engine.dart';
 import 'package:demux_app/domain/constants.dart';
+import 'package:demux_app/domain/utils/get_headers.dart';
 import 'package:demux_app/domain/utils/process_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,17 +41,10 @@ class StabilityAiService {
     return endpoint.replaceAll('{engine_id}', engineId);
   }
 
-  Map<String, String> getHeaders() {
-    return {
-      "Authorization": "Bearer $apiKey",
-      "Content-Type": "application/json; charset=UTF-8",
-    };
-  }
-
   Future<List<String>> getEngines() async {
     late http.Response response;
     try {
-      response = await apiService.get(STABILITY_AI_ENGINES_ENDPOINT, getHeaders());
+      response = await apiService.get(STABILITY_AI_ENGINES_ENDPOINT, getHeaders(apiKey));
     } catch (e) {
       throw Exception('Server error');
     }
@@ -84,7 +78,7 @@ class StabilityAiService {
             engineId,
             STABILITY_AI_TEXT_TO_IMAGE_ENDPOINT,
           ),
-          getHeaders(),
+          getHeaders(apiKey),
           body);
     } catch (e) {
       throw Exception('Server error');

@@ -1,5 +1,5 @@
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_cubit.dart';
+import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/widgets/double_input_widget.dart';
 import 'package:demux_app/app/pages/chat/widgets/double_slider_widget.dart';
 import 'package:demux_app/app/widgets/model_dropdown.dart';
@@ -40,7 +40,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
   bool systemPromptsAreVisible = true;
   bool sendEmptyMessage = false;
 
-  late ChatCompletionCubit chatCompletionCubit;
+  late OpenAiChatCompletionCubit chatCompletionCubit;
 
   Chat currentChat = Chat.initial();
   late ChatCompletionSettings chatCompletionSettings =
@@ -64,7 +64,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
 
   @override
   void initState() {
-    chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
+    chatCompletionCubit = BlocProvider.of<OpenAiChatCompletionCubit>(context);
     updateSettingsFromState(chatCompletionCubit.state);
     systemPromptFocusNode.addListener(systemPromptListener);
     maxTokensController.addListener(maxTokensListener);
@@ -79,7 +79,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatCompletionCubit, ChatCompletionState>(
+    return BlocBuilder<OpenAiChatCompletionCubit, OpenAiChatCompletionState>(
       builder: (context, state) {
         if (state is ChatCompletionRetrievedFromMemory ||
             state is ChatCompletionChatSelected) {
@@ -90,7 +90,7 @@ class _ChatSettingsWidgetState extends State<ChatSettingsWidget> {
     );
   }
 
-  void updateSettingsFromState(ChatCompletionState state) {
+  void updateSettingsFromState(OpenAiChatCompletionState state) {
     currentChat = state.currentChat;
     chatCompletionSettings = currentChat.chatCompletionSettings;
     selectedModel = chatCompletionSettings.model;

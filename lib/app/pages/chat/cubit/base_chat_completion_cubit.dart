@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_states.dart';
 import 'package:demux_app/data/models/chat.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/data/utils/custom_datetime.dart';
@@ -8,29 +8,24 @@ import 'package:demux_app/domain/constants.dart';
 import 'package:demux_app/domain/openai_service.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
+abstract class BaseChatCompletionCubit extends HydratedCubit<OpenAiChatCompletionState> {
   final OpenAiService openAiService;
-  String? pagePath;
 
-  ChatCompletionCubit._(
+  BaseChatCompletionCubit._(
     List<Chat> chats,
     Chat chat,
     this.openAiService,
   ) : super(ChatCompletionInitial(chats, chat));
 
-  factory ChatCompletionCubit() {
-    final chat = Chat.initial();
-    OpenAiService openAiService = OpenAiService();
-    return ChatCompletionCubit._(
-      [chat],
-      chat,
-      openAiService,
-    );
-  }
-
-  void setApiPagePath(String pagePath){
-    pagePath = pagePath;
-  }
+  // factory BaseChatCompletionCubit() {
+  //   final chat = Chat.initial();
+  //   OpenAiService openAiService = OpenAiService();
+  //   return BaseChatCompletionCubit._(
+  //     [chat],
+  //     chat,
+  //     openAiService,
+  //   );
+  // }
 
   void setApiKey(String apiKey) {
     openAiService.apiKey = apiKey;
@@ -246,7 +241,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   }
 
   @override
-  ChatCompletionState fromJson(Map<String, dynamic> json) {
+  OpenAiChatCompletionState fromJson(Map<String, dynamic> json) {
     List<dynamic> jsonChats = json['chats'];
 
     List<Chat> chats =
@@ -257,7 +252,7 @@ class ChatCompletionCubit extends HydratedCubit<ChatCompletionState> {
   }
 
   @override
-  Map<String, dynamic>? toJson(ChatCompletionState state) {
+  Map<String, dynamic>? toJson(OpenAiChatCompletionState state) {
     return {
       'chats': state.chats.map((chat) => chat.toJson()).toList(),
       'currentChat': state.currentChat.toJson()

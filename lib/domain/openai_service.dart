@@ -9,6 +9,7 @@ import 'package:demux_app/data/models/chat_completion_settings.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:demux_app/data/models/openai_model.dart';
 import 'package:demux_app/domain/constants.dart';
+import 'package:demux_app/domain/utils/get_headers.dart';
 import 'package:demux_app/domain/utils/process_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,13 +37,6 @@ class OpenAiService {
     }
   }
 
-  Map<String, String> getHeaders() {
-    return {
-      "Authorization": "Bearer $apiKey",
-      "Content-Type": "application/json; charset=UTF-8",
-    };
-  }
-
   Future<List<String>> getGeneratedImages({
     required String prompt,
     required int quantity,
@@ -56,7 +50,7 @@ class OpenAiService {
     late http.Response response;
     try {
       response = await apiService.post(
-          OPENAI_IMAGE_GENERATION_ENDPOINT, getHeaders(), body);
+          OPENAI_IMAGE_GENERATION_ENDPOINT, getHeaders(apiKey), body);
     } catch (e) {
       throw Exception('Server error');
     }
@@ -79,7 +73,7 @@ class OpenAiService {
     late http.Response response;
     try {
       response = await apiService.filePost(
-          OPENAI_IMAGE_VARIATION_ENDPOINT, getHeaders(), body, [imageFile]);
+          OPENAI_IMAGE_VARIATION_ENDPOINT, getHeaders(apiKey), body, [imageFile]);
     } catch (e) {
       throw Exception('Server error');
     }
@@ -107,7 +101,7 @@ class OpenAiService {
     late http.Response response;
     try {
       response = await apiService.filePost(OPENAI_IMAGE_EDIT_ENDPOINT,
-          getHeaders(), body, [imageFile, maskFile]);
+          getHeaders(apiKey), body, [imageFile, maskFile]);
     } catch (e) {
       throw Exception('Server error');
     }
@@ -136,7 +130,7 @@ class OpenAiService {
     Future<http.StreamedResponse> streamedResponseFuture =
         apiService.streamPost(
       OPENAI_CHAT_COMPLETION_ENDPOINT,
-      getHeaders(),
+      getHeaders(apiKey),
       body,
     );
     final streamController = StreamController<String>();
@@ -218,7 +212,7 @@ class OpenAiService {
   Future<List<String>> getChatModels() async {
     late http.Response response;
     try {
-      response = await apiService.get(OPENAI_MODEL_ENDPOINT, getHeaders());
+      response = await apiService.get(OPENAI_MODEL_ENDPOINT, getHeaders(apiKey));
     } catch (e) {
       throw Exception('Server error');
     }

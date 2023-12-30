@@ -1,4 +1,5 @@
 import 'package:demux_app/app/pages/chat/chat_completion_page.dart';
+import 'package:demux_app/app/pages/chat/demux_chat_completion_page.dart';
 import 'package:demux_app/app/pages/images/image_edit_page.dart';
 import 'package:demux_app/app/pages/images/image_generation_page.dart';
 import 'package:demux_app/app/pages/images/image_variation_page.dart';
@@ -37,11 +38,11 @@ class _AppState extends State<App> {
     switch (pageRoute) {
       // Demux
       case DemuxPageRoute.demuxChatCompletion:
-        return ChatCompletionPage(DemuxPageRoute.demuxChatCompletion.path);
+        return const DemuxChatCompletionPage();
 
       // OpenAI
       case DemuxPageRoute.openAiChatCompletion:
-        return ChatCompletionPage(DemuxPageRoute.openAiChatCompletion.path);
+        return const ChatCompletionPage();
       case DemuxPageRoute.openAiImageGeneration:
         return const ImageGenerationPage();
       case DemuxPageRoute.openAiImageEdit:
@@ -57,7 +58,7 @@ class _AppState extends State<App> {
       case DemuxPageRoute.appSettings:
         return const AppSettingsPage();
       default:
-        return ChatCompletionPage(DemuxPageRoute.openAiChatCompletion.path);
+        return const ChatCompletionPage();
     }
   }
 

@@ -1,4 +1,3 @@
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/api_pages_cubit.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -41,9 +40,9 @@ void main() async {
       BlocProvider<AppSettingsCubit>(
         create: (BuildContext context) => AppSettingsCubit(),
       ),
-      BlocProvider<ChatCompletionCubit>(
-        create: (BuildContext context) => ChatCompletionCubit(),
-      ),
+      // BlocProvider<ChatCompletionCubit>(
+      //   create: (BuildContext context) => ChatCompletionCubit(),
+      // ),
       // BlocProvider<ImageResultsCubit>(
       //   create: (BuildContext context) => ImageResultsCubit(),
       // ),

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_states.dart';
+import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_cubit.dart';
+import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_widget.dart';
 import 'package:demux_app/app/pages/chat/widgets/chat_settings_widget.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
@@ -12,9 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class ChatCompletionPage extends StatefulWidget {
-  final String pageRoutePath;
-
-  const ChatCompletionPage(this.pageRoutePath, {super.key});
+  const ChatCompletionPage({super.key});
 
   @override
   State<ChatCompletionPage> createState() => _ChatCompletionPageState();
@@ -23,7 +21,7 @@ class ChatCompletionPage extends StatefulWidget {
 class _ChatCompletionPageState extends State<ChatCompletionPage>
     with SingleTickerProviderStateMixin {
   late AppSettingsCubit appSettingsCubit;
-  late ChatCompletionCubit chatCompletionCubit;
+  late OpenAiChatCompletionCubit chatCompletionCubit;
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   List<Chat> chats = [];
@@ -38,8 +36,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
   @override
   void initState() {
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
-    chatCompletionCubit = BlocProvider.of<ChatCompletionCubit>(context);
-    chatCompletionCubit.setApiPagePath(widget.pageRoutePath);
+    chatCompletionCubit = OpenAiChatCompletionCubit();
     chatCompletionCubit.setApiKey(appSettingsCubit.getOpenAiApiKey());
     updateChatsFromState(chatCompletionCubit.state);
     super.initState();
@@ -47,29 +44,32 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: scaffoldKey,
-        endDrawer: BlocListener<ChatCompletionCubit, ChatCompletionState>(
-          listenWhen: (previous, current) =>
-              !(previous is ChatCompletionMessagesSaved &&
-                  current is ChatCompletionMessagesSaved),
-          listener: (context, state) {
-            updateChatsFromState(state);
+    return BlocProvider<OpenAiChatCompletionCubit>(
+      create: (BuildContext context) => chatCompletionCubit,
+      child: Scaffold(
+          key: scaffoldKey,
+          endDrawer: BlocListener<OpenAiChatCompletionCubit, OpenAiChatCompletionState>(
+            listenWhen: (previous, current) =>
+                !(previous is ChatCompletionMessagesSaved &&
+                    current is ChatCompletionMessagesSaved),
+            listener: (context, state) {
+              updateChatsFromState(state);
+            },
+            child: getChatListDrawer(context),
+          ),
+          onEndDrawerChanged: (isOpened) {
+            setState(() {});
+            if (!isOpened) {
+              setState(() {
+                _showCheckbox = false;
+                selectedChats.clear();
+              });
+              finishEditingChatName();
+            }
           },
-          child: getChatListDrawer(context),
-        ),
-        onEndDrawerChanged: (isOpened) {
-          setState(() {});
-          if (!isOpened) {
-            setState(() {
-              _showCheckbox = false;
-              selectedChats.clear();
-            });
-            finishEditingChatName();
-          }
-        },
-        backgroundColor: Colors.transparent,
-        body: getChatCompletionBodyByPageRoutePath(widget.pageRoutePath));
+          backgroundColor: Colors.transparent,
+          body: getChatAndSettingsTabController()),
+    );
   }
 
   Widget getChatAndSettingsTabController() {
@@ -112,7 +112,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                     builder: (context, state) {
                   return Stack(
                     children: [
-                      ChatWidget(widget.pageRoutePath),
+                      const ChatWidget(),
                       if (appSettingsCubit.showIntroductionMessages() &&
                           appSettingsCubit.openAiApiKeyIsMissing())
                         const IntrodutionCTAWidget(),
@@ -124,17 +124,6 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
                 const ChatSettingsWidget(),
               ])),
         ]));
-  }
-
-  Widget getChatCompletionBodyByPageRoutePath(String path) {
-    switch (path) {
-      case '/demux-chat-completion':
-        return ChatWidget(widget.pageRoutePath);
-      case '/openai-chat-completion':
-        return getChatAndSettingsTabController();
-      default:
-        return getChatAndSettingsTabController();
-    }
   }
 
   Widget getChatListIconButton() {
@@ -223,7 +212,7 @@ class _ChatCompletionPageState extends State<ChatCompletionPage>
     );
   }
 
-  void updateChatsFromState(ChatCompletionState state) {
+  void updateChatsFromState(OpenAiChatCompletionState state) {
     setState(() {
       chats = state.chats;
       currentChat = state.currentChat;

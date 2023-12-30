@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_cubit.dart';
-import 'package:demux_app/app/pages/chat/cubit/openai_chat_completion_states.dart';
+import 'package:demux_app/app/pages/chat/cubit/demux_chat_completion_cubit.dart';
+import 'package:demux_app/app/pages/chat/cubit/demux_chat_completion_states.dart';
 import 'package:demux_app/app/pages/chat/utils/copy_text.dart';
 import 'package:demux_app/app/pages/chat/utils/syntax_highlighter.dart';
 import 'package:demux_app/app/pages/images/utils/image_processing.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/utils/show_snackbar.dart';
-import 'package:demux_app/data/models/chat.dart';
-import 'package:demux_app/data/models/chat_completion_settings.dart';
+import 'package:demux_app/data/models/demux_chat.dart';
 import 'package:demux_app/data/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,14 +16,14 @@ import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ChatWidget extends StatefulWidget {
-  const ChatWidget({super.key});
+class DemuxChatWidget extends StatefulWidget {
+  const DemuxChatWidget({super.key});
 
   @override
-  State<ChatWidget> createState() => _ChatWidgetState();
+  State<DemuxChatWidget> createState() => _DemuxChatWidgetState();
 }
 
-class _ChatWidgetState extends State<ChatWidget> {
+class _DemuxChatWidgetState extends State<DemuxChatWidget> {
   final messageEditController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   final userMessageController = TextEditingController();
@@ -36,13 +35,11 @@ class _ChatWidgetState extends State<ChatWidget> {
   bool needsScroll = false;
   bool isScrollAtTop = true;
   bool isScrollAtBottom = true;
-  Chat currentChat = Chat.initial();
-  late ChatCompletionSettings chatCompletionSettings =
-      currentChat.chatCompletionSettings;
+  DemuxChat currentChat = DemuxChat(messages: []);
   late List<Message> messages = currentChat.messages;
   bool loading = false;
   bool systemPromptsAreVisible = true;
-  late OpenAiChatCompletionCubit chatCompletionCubit;
+  late DemuxChatCompletionCubit chatCompletionCubit;
   late AppSettingsCubit appSettingsCubit;
   StreamController? streamController;
 
@@ -53,7 +50,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   @override
   void initState() {
     streamController?.close();
-    chatCompletionCubit = BlocProvider.of<OpenAiChatCompletionCubit>(context);
+    chatCompletionCubit = BlocProvider.of<DemuxChatCompletionCubit>(context);
     appSettingsCubit = BlocProvider.of<AppSettingsCubit>(context);
     scrollController.addListener(scrollListener);
     messagePromptFocusNode.addListener(messagePromptListener);
@@ -126,7 +123,7 @@ class _ChatWidgetState extends State<ChatWidget> {
       needsScroll = false;
     }
 
-    return BlocConsumer<OpenAiChatCompletionCubit, OpenAiChatCompletionState>(
+    return BlocConsumer<DemuxChatCompletionCubit, DemuxChatCompletionState>(
         listener: (context, state) {
       if (state is ChatCompletionChatSelected) {
         stopGenerating();
@@ -140,8 +137,6 @@ class _ChatWidgetState extends State<ChatWidget> {
       }
     }, builder: (context, state) {
       currentChat = state.currentChat;
-      chatCompletionSettings = currentChat.chatCompletionSettings;
-      systemPromptsAreVisible = chatCompletionSettings.systemPromptsAreVisible!;
       messages = currentChat.messages;
       return Stack(
         children: [
@@ -242,7 +237,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         child: AnimatedContainer(
           curve: Curves.bounceInOut,
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.only(left: 4, right: 4, top: 0, bottom: 0),
+          padding: EdgeInsets.only(left: 4, right: 4, top: 0, bottom: 0),
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -284,7 +279,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                                 selectedImage = null;
                               });
                             },
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.close,
                               color: Colors.red,
                             )),
@@ -292,7 +287,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                 ),
               Expanded(
                 child: Padding(
-                    padding: const EdgeInsets.all(4),
+                    padding: EdgeInsets.all(4),
                     child: TextField(
                       enabled: !loading,
                       controller: userMessageController,
@@ -545,7 +540,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                           fit: BoxFit.fitHeight,
                         ),
                       if (messages[index].image != null)
-                      const SizedBox(height: 8,),
+                      SizedBox(height: 8,),
                       SelectionArea(
                           child: MarkdownBody(
                         data: messages[index].content,
