@@ -21,7 +21,7 @@ class DemuxService {
   String? dataMapper(String event) {
     event = event.substring(6);
     Map<String, dynamic> eventObj = jsonDecode(event);
-    var finishReason = eventObj['choices'][0]["finish_reason"]; 
+    var finishReason = eventObj['choices'][0]["finish_reason"];
     var finishDetails = eventObj['choices'][0]["finish_details"];
     if (finishReason != null || finishDetails != null) {
       return null;
@@ -34,8 +34,9 @@ class DemuxService {
     List<Message> messages,
   ) {
     final body = <String, dynamic>{};
+    body['model'] = 'deepseek-coder';
     body['messages'] = messageListToJson(messages);
- 
+
     Future<http.StreamedResponse> streamedResponseFuture =
         apiService.streamPost(
       DEMUX_CHAT_COMPLETION_ENDPOINT,
@@ -52,26 +53,26 @@ class DemuxService {
       late StreamSubscription<dynamic> subscription;
       subscription = stream.listen((event) {
         String eventStr = event;
-        try {
-          Map<String, dynamic> eventObj = jsonDecode(eventStr);
-          if (eventObj.containsKey("error")) {
-            streamController.addError(eventObj);
-          }
-        } catch (e) {
-          // print(e);
-        }
+        // try {
+        //   Map<String, dynamic> eventObj = jsonDecode(eventStr);
+        //   if (eventObj.containsKey("error")) {
+        //     streamController.addError(eventObj);
+        //   }
+        // } catch (e) {
+        //   // print(e);
+        // }
+        Map<String, dynamic> eventObj = jsonDecode(eventStr);
 
-        if (eventStr.contains("data")) {
-          String? data = dataMapper(eventStr);
-          if (data != null && !streamController.isClosed) {
-            try {
-              streamController.add(data);
-            } catch (e) {
-              print(e);
-            }
-          } else {
-            streamController.close();
+        Map<String, dynamic>? message = eventObj["message"];
+        String? content = message?["content"];
+        if (content != null && !streamController.isClosed) {
+          try {
+            streamController.add(content);
+          } catch (e) {
+            print(e);
           }
+        } else {
+          streamController.close();
         }
         if (streamController.isClosed) {
           subscription.cancel();

@@ -33,7 +33,7 @@ class DemuxPageRoute {
   static const demuxChatCompletion = DemuxPageRoute._(
     path: '/demux-chat-completion',
     pageName: 'Chat Completion',
-    pageEndpoint: null,
+    pageEndpoint: DEMUX_CHAT_COMPLETION_ENDPOINT,
     apiReferenceUrl: null,
     classification: 'Text to Text',
   );
