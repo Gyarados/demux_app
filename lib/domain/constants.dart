@@ -2,6 +2,10 @@
 const bool USE_MOCK_API_SERVICE = false;
 const double DEFAULT_TEXT_SCALE_FACTOR = 1;
 
+// Firebase
+const bool ENABLE_FIREBASE = false;
+
+
 // OpenAI
 const String OPENAI_API_URL = "https://api.openai.com/";
 const String OPENAI_CHAT_COMPLETION_ENDPOINT = "/v1/chat/completions";
