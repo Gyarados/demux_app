@@ -1,8 +1,6 @@
 name: Deploy Demux App
-on:
-  push:
-    tags:
-      - 'release'
+
+on: workflow_dispatch
 
 env:
   FLUTTER_VERSION: "3.16.0-0.3.pre"
