@@ -6,6 +6,8 @@ const double DEFAULT_TEXT_SCALE_FACTOR = 1;
 const String DEMUX_API_URL = "https://clean-evidently-mutt.ngrok-free.app/";
 const String DEMUX_CHAT_COMPLETION_ENDPOINT = "/api/chat";
 
+// Firebase
+const bool ENABLE_FIREBASE = false;
 
 // OpenAI
 const String OPENAI_API_URL = "https://api.openai.com/";

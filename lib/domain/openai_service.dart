@@ -26,7 +26,7 @@ class OpenAiService {
     return List<String>.from(responseJson['data'].map((item) => item['url']));
   }
 
-  List<String> getImageResultsFromResponse(http.Response response){
+  List<String> getImageResultsFromResponse(http.Response response) {
     try {
       Map<String, dynamic> responseJson = processResponse(response);
       return getImageUrlListFromJson(responseJson);
@@ -216,7 +216,13 @@ class OpenAiService {
     } catch (e) {
       throw Exception('Server error');
     }
-    Map<String, dynamic> responseJson = processResponse(response);
+    Map<String, dynamic> responseJson = {};
+    try {
+      responseJson = processResponse(response);
+    } on ResponseException catch (error, _) {
+      print(error.responseJson);
+      return ["API Error"];
+    }
 
     List<dynamic> dataJson = responseJson['data'];
 

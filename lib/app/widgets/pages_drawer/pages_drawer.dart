@@ -1,6 +1,7 @@
 import 'package:demux_app/app/utils/show_snackbar.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/api_pages_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/page_routes.dart';
+import 'package:demux_app/domain/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -61,9 +62,11 @@ class _PagesDrawerState extends State<PagesDrawer> {
             title: Text(route.pageName),
             selected: selected,
             onTap: () async {
-              await FirebaseAnalytics.instance.logScreenView(
-                screenName: route.path,
-              );
+              if (ENABLE_FIREBASE) {
+                await FirebaseAnalytics.instance.logScreenView(
+                  screenName: route.path,
+                );
+              }
               pagesDrawerCubit.navigateTo(route);
               Navigator.of(context).pop();
             },
