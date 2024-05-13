@@ -1,5 +1,4 @@
 import 'package:demux_app/app/app.dart';
-import 'package:demux_app/app/pages/chat/cubit/chat_completion_cubit.dart';
 import 'package:demux_app/app/pages/settings/cubit/app_settings_cubit.dart';
 import 'package:demux_app/app/widgets/pages_drawer/cubit/api_pages_cubit.dart';
 import 'package:demux_app/domain/constants.dart';
