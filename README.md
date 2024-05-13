@@ -51,6 +51,7 @@ Demux is released under the [GNU General Public License](COPYING).
 If you have any questions, suggestions, or feedback, please feel free to reach out to us:
 
 - Email: [gabriel@desidera.dev](mailto:gabriel@desidera.dev)
+- LinkedIn: [Gabriel Desiderá](https://www.linkedin.com/in/gabriel-marton-desider%C3%A1-9083b314a/)
 - GitHub: [Gyarados](https://github.com/Gyarados)
 
 ## Roadmap 🗺️
